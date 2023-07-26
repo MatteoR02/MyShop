@@ -2,6 +2,7 @@ package DAO;
 import Model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface IArticoloDAO {
@@ -18,6 +19,8 @@ public interface IArticoloDAO {
     int updateProdotto(Articolo prodotto);
     int removeProdotto(int idProdotto);
     int createComposition(List<Integer> idProdotti, String nomeComp, int idCategoria);
+
+    HashMap<Articolo, Integer> getArticoliFromLista(int idLista);
 
     Servizio loadServizio(int idServizio);
     ArrayList<Servizio> loadAllServizi();

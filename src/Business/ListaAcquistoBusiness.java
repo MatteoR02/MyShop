@@ -4,17 +4,66 @@ import DAO.*;
 import Model.Articolo;
 import Model.Cliente;
 import Model.ListaAcquisto;
+import Model.Servizio;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
+
+import static Business.NotWorking_ArticoloBusiness.hasNoFoto;
+import static Business.NotWorking_ArticoloBusiness.setDefaultFoto;
 
 public class ListaAcquistoBusiness {
 
     private static final IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
     private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
     private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
+
+    public static ExecuteResult<ListaAcquisto> getAllListe(){
+        ExecuteResult<ListaAcquisto> result = new ExecuteResult<>();
+        ArrayList<ListaAcquisto> liste = listaAcquistoDAO.loadAllListaAcquisto(); //carica prodotti e prodotti compositi
+        articoloDAO.loadAllProdotti();
+        articoloDAO.loadAllServizi();
+
+
+
+        //result.setObject(liste);
+        result.setMessage(ExecuteResult.ResultStatement.OK.toString());
+        result.execute(SessionManager.ALL_ARTICOLI);
+
+        return null;
+    }
+
+    public static ExecuteResult<Articolo> getAllArticoli(){
+        ExecuteResult<Articolo> result = new ExecuteResult<>();
+        ArrayList<Articolo> articoliUncheck = articoloDAO.loadAllProdotti(); //carica prodotti e prodotti compositi
+        ArrayList<Servizio> serviziUncheck = articoloDAO.loadAllServizi();
+
+        ArrayList<Servizio> servizi = new ArrayList<>();
+        ArrayList<Articolo> articoli = new ArrayList<>();
+
+        for (Servizio serv : serviziUncheck   ) {
+            if (hasNoFoto(serv)){
+                servizi.add((Servizio) setDefaultFoto(serv));
+            } else {
+                servizi.add(serv);
+            }
+        }
+        for (Articolo art : articoliUncheck   ) {
+            if (hasNoFoto(art)){
+                articoli.add(setDefaultFoto(art));
+            } else {
+                articoli.add(art);
+            }
+        }
+
+        articoli.addAll(servizi);
+        result.setObject(articoli);
+        result.setMessage(ExecuteResult.ResultStatement.OK.toString());
+        result.execute(SessionManager.ALL_ARTICOLI);
+
+        return null;
+    }
 
     public static ExecuteResult<Integer> removeArticoloFromAllListe(int idElementToRemove){
         ArrayList<Cliente> clienti = utenteDAO.loadAllClienti();
@@ -110,12 +159,12 @@ public class ListaAcquistoBusiness {
                         idArticoli.add(art.getId());
                     }
                         if (!listaAcquisto.getArticoli().containsKey(articolo)) {
-                            if(ArticoloBusiness.articoloCheckType(articolo.getId()) == ArticoloBusiness.TipoArticolo.SERVIZIO) quantita=1;
+                            if(NotWorking_ArticoloBusiness.articoloCheckType(articolo.getId()) == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO) quantita=1;
                             listaAcquisto.getArticoli().put(articolo,quantita);
                             result.setMessage("Articolo '" + articolo.getNome() + "' aggiunto alla lista '" + listaAcquisto.getNome() +"'");
                             result.setResult(ExecuteResult.ResultStatement.OK);
                             listaAcquistoDAO.insertArticoloInLista(listaAcquisto.getId(),articolo.getId(),quantita);
-                        } else if (ArticoloBusiness.articoloCheckType(articolo.getId())== ArticoloBusiness.TipoArticolo.SERVIZIO){
+                        } else if (NotWorking_ArticoloBusiness.articoloCheckType(articolo.getId())== NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
                                 if (quantita < 0 ){
                                     listaAcquistoDAO.removeArticoloInLista(listaAcquisto.getId(),articolo.getId());
                                     listaAcquisto.getArticoli().remove(articolo);

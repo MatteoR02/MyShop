@@ -29,13 +29,12 @@ import java.util.ListIterator;
  * undefinedCheck
  */
 
-public class ArticoloBusiness {
+public class NotWorking_ArticoloBusiness {
 
-    private static IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
-    private static IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
+    private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     public enum TipoArticolo{PRODOTTO, PRODOTTO_COMPOSITO, SERVIZIO, NOT_ARTICLE}
-
-    private static final Foto defaultFoto = FotoDAO.getInstance().loadDefaultFoto();
 
     public static ExecuteResult<Articolo> getAllArticoli(){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
@@ -368,11 +367,14 @@ public class ArticoloBusiness {
         return articolo.getImmagini().isEmpty();
     }
 
+    private static final Foto defaultFoto = fotoDAO.loadDefaultFoto();
+
     public static Articolo setDefaultFoto(Articolo articolo){
 
         articolo.getImmagini().add(defaultFoto);
 
         return articolo;
     }
+
 
 }

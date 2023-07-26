@@ -1,6 +1,6 @@
 package View;
 
-import Business.ArticoloBusiness;
+import Business.NotWorking_ArticoloBusiness;
 import Business.SessionManager;
 import Model.Articolo;
 import Model.Prodotto;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class CatalogoPanel extends JPanel {
 
-    private final List<Articolo> articoli;
+    private List<Articolo> articoli;
     private MainPage frame;
 
     public CatalogoPanel(ArrayList<Articolo> articoli, MainPage frame) {
@@ -32,22 +32,22 @@ public class CatalogoPanel extends JPanel {
         if ( ((JPanel) SessionManager.getSession().get(SessionManager.CATALOGO_VIEW)).getComponents().length==0   ){
 
             for (Articolo articolo : articoli ) {
-                if(!ArticoloBusiness.isUndefined(articolo.getNome())){
+                if(!NotWorking_ArticoloBusiness.isUndefined(articolo.getNome())){
                     ComponenteCatalogo componenteCatalogo = new ComponenteCatalogo();
                     componenteCatalogo.setId(articolo.getId());
                     componenteCatalogo.setNomeArticolo(articolo.getNome());
                     componenteCatalogo.setPrezzo(articolo.getPrezzo());
                     componenteCatalogo.setNomeCategoria(articolo.getCategoria().getNome());
-                    componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
+                    componenteCatalogo.setDefaultImmagine(NotWorking_ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
                     componenteCatalogo.setNomeProduttore("MyShop");
                     componenteCatalogo.setRecensioni(articolo.getRecensioni());
                     if (articolo instanceof Prodotto){
-                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO);
+                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO);
                         componenteCatalogo.setNomeProduttore(((Prodotto) articolo).getProduttore().getNome());
                     } else if (articolo instanceof ProdottoComposito){
-                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
+                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
                     } else if (articolo instanceof Servizio){
-                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.SERVIZIO);
+                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO);
                     }
 
                     componenti.add(componenteCatalogo);
@@ -63,6 +63,34 @@ public class CatalogoPanel extends JPanel {
             centro = ((JPanel) SessionManager.getSession().get(SessionManager.CATALOGO_VIEW));
             System.out.println("NON LA PRIMA VOLTA");
         }
+
+       /* for (Articolo articolo : articoli ) {
+            if(!NotWorking_ArticoloBusiness.isUndefined(articolo.getNome())){
+                ComponenteCatalogo componenteCatalogo = new ComponenteCatalogo();
+                componenteCatalogo.setId(articolo.getId());
+                componenteCatalogo.setNomeArticolo(articolo.getNome());
+                componenteCatalogo.setPrezzo(articolo.getPrezzo());
+                componenteCatalogo.setNomeCategoria(articolo.getCategoria().getNome());
+                componenteCatalogo.setDefaultImmagine(NotWorking_ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
+                componenteCatalogo.setNomeProduttore("MyShop");
+                componenteCatalogo.setRecensioni(articolo.getRecensioni());
+                if (articolo instanceof Prodotto){
+                    componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO);
+                    componenteCatalogo.setNomeProduttore(((Prodotto) articolo).getProduttore().getNome());
+                } else if (articolo instanceof ProdottoComposito){
+                    componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
+                } else if (articolo instanceof Servizio){
+                    componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO);
+                }
+
+                componenti.add(componenteCatalogo);
+            }
+        }
+        for (ComponenteCatalogo componenteCatalogo: componenti  ) {
+            ArticoloList articoloList = new ArticoloList(componenteCatalogo,frame);
+            centro.add(articoloList);
+        }
+*/
 
         this.add(centro, BorderLayout.CENTER);
         JScrollPane scrollPane = new JScrollPane(centro);

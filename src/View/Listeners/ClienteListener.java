@@ -83,7 +83,7 @@ public class ClienteListener implements ActionListener {
             for (int i=0; i < table.getRowCount(); i++){
                 righeLista.add(tModel.getRighe().get(i));
                 RigaArticoloLista riga = righeLista.get(i);
-                Articolo art = ArticoloBusiness.getArticolo(riga.getIdArticolo()).getSingleObject();
+                Articolo art = NotWorking_ArticoloBusiness.getArticolo(riga.getIdArticolo()).getSingleObject();
                 result = ListaAcquistoBusiness.addOrRemoveToLista(art, lista, riga.getQuantita(),(Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
             }
             JOptionPane.showMessageDialog(frame,"Le quantita' degli articoli nella lista sono state aggiornate", "Quantità modificata", JOptionPane.INFORMATION_MESSAGE);
@@ -112,7 +112,7 @@ public class ClienteListener implements ActionListener {
             if (!mapArticoloLista.keySet().isEmpty()){
                 for (RigaArticoloLista riga: mapArticoloLista.keySet() ) {
                     int idArticolo = riga.getIdArticolo();
-                    Articolo art = ArticoloBusiness.getArticolo(idArticolo).getSingleObject();
+                    Articolo art = NotWorking_ArticoloBusiness.getArticolo(idArticolo).getSingleObject();
                     System.out.println("Articolo selezionato: " + art.getNome());
                     result = ListaAcquistoBusiness.addOrRemoveToLista(art, lista, 0,(Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
                     int indice = mapArticoloLista.get(riga);

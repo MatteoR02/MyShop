@@ -1,6 +1,6 @@
 package View.ViewModel;
 
-import Business.ArticoloBusiness;
+import Business.NotWorking_ArticoloBusiness;
 import Model.Recensione;
 
 import javax.swing.*;
@@ -13,7 +13,7 @@ public class ComponenteCatalogo {
     private float prezzo;
     private String nomeCategoria;
     private String nomeProduttore;
-    private ArticoloBusiness.TipoArticolo tipoArticolo;
+    private NotWorking_ArticoloBusiness.TipoArticolo tipoArticolo;
     private List<ImageIcon> immagini = new ArrayList<>();
     private List<Recensione> recensioni = new ArrayList<>();
 
@@ -78,11 +78,11 @@ public class ComponenteCatalogo {
         this.recensioni = recensioni;
     }
 
-    public ArticoloBusiness.TipoArticolo getTipoArticolo() {
+    public NotWorking_ArticoloBusiness.TipoArticolo getTipoArticolo() {
         return tipoArticolo;
     }
 
-    public void setTipoArticolo(ArticoloBusiness.TipoArticolo tipoArticolo) {
+    public void setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo tipoArticolo) {
         this.tipoArticolo = tipoArticolo;
     }
 }

@@ -9,11 +9,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ArticoloDAO implements IArticoloDAO {
 
-    private static ArticoloDAO instance = new ArticoloDAO();
+    private static final ArticoloDAO instance = new ArticoloDAO();
     private Articolo articolo;
     private Prodotto prodotto;
     private Servizio servizio;
@@ -715,6 +716,37 @@ public class ArticoloDAO implements IArticoloDAO {
                     articoliOfPV.add(loadServizio(id));
                 }
             } return articoliOfPV;
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public HashMap<Articolo, Integer> getArticoliFromLista(int idLista) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.listaacquisto_has_articolo WHERE ListaAcquisto_idListaAcquisto ='"+ idLista +"';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+        HashMap<Articolo, Integer> articoliInLista = new HashMap<>();
+        try {
+            while(rs.next()) {
+                if (isProdotto(rs.getInt("Articolo_idArticolo"))){
+                    articoliInLista.put(loadProdotto(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
+                } else if (isProdottoComposito(rs.getInt("Articolo_idArticolo"))){
+                    articoliInLista.put(loadProdottoComposito(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
+                } else if (isServizio(rs.getInt("Articolo_idArticolo"))) {
+                    articoliInLista.put(loadServizio(rs.getInt("Articolo_idArticolo")), rs.getInt("quantita"));
+                }
+            }return articoliInLista;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());

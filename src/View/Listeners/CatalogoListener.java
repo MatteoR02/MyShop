@@ -57,7 +57,7 @@ public class CatalogoListener implements ActionListener {
             UtenteBusiness.getListeOfCliente((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
             AddToListaDialog addToListaDialog = new AddToListaDialog(frame, "Aggiungi alla lista", comp);
         } else if (ADD_TO_LISTA_BTN.equals(action)){
-            Articolo art = ArticoloBusiness.getArticolo(comp.getId()).getSingleObject();
+            Articolo art = NotWorking_ArticoloBusiness.getArticolo(comp.getId()).getSingleObject();
             ListaAcquisto ls = (ListaAcquisto) listeBox.getSelectedItem();
             int quantita = (Integer) quantitaSpinner.getValue();
             assert ls != null;

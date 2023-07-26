@@ -1,8 +1,6 @@
 package View;
 
-import Business.ArticoloBusiness;
-import Business.SessionManager;
-import Business.UtenteBusiness;
+import Business.*;
 import Model.*;
 import View.Decorator.*;
 import View.Decorator.Menu;
@@ -76,10 +74,8 @@ public class MainPage extends JFrame {
     public void mostraCatalogo(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        Utente utente = (Utente) SessionManager.getSession().get(LOGGED_USER);
-        paginaCorrente = PaginaCorrente.CATALOGO;
 
-        //System.out.println((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI_PV));
+        paginaCorrente = PaginaCorrente.CATALOGO;
         CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this);
         centro.add(catalogoPanel);
         repaint();
