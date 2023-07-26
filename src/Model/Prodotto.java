@@ -38,12 +38,7 @@ public class Prodotto extends Articolo implements IProdotto{
         return "Prodotto{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", prezzo=" + prezzo +
-                ", recensioni=" + recensioni +
                 ", immagini=" + immagini +
-                ", categoria=" + categoria +
-                ", collocazione=" + collocazione +
-                ", produttore=" + produttore +
                 '}';
     }
 }

@@ -18,14 +18,11 @@ public class GuestMenu extends Menu {
         JButton sfogliaCatBtn = new JButton("Sfoglia Catalogo");
         sfogliaCatBtn.setActionCommand(LoginListener.CATALOGO_BTN);
         JButton loginBtn = new JButton("Accedi");
-        loginBtn.setActionCommand(LoginListener.ENTER_LOGIN_BTN);
+        loginBtn.setActionCommand(LoginListener.TO_LOGIN_BTN);
         JButton registerBtn = new JButton("Registrati");
         registerBtn.setActionCommand(LoginListener.REGISTER_BTN);
 
-        JButton exitBtn = new JButton("Chiudi");
-        exitBtn.setActionCommand(LoginListener.EXIT_BTN);
-        JButton backBtn = new JButton("Indietro");
-        backBtn.setActionCommand(LoginListener.BACK_GUEST_BTN);
+
 
         LoginListener loginListener = new LoginListener(frame);
         sfogliaCatBtn.addActionListener(loginListener);
@@ -33,15 +30,13 @@ public class GuestMenu extends Menu {
         registerBtn.addActionListener(loginListener);
 
 
-        backBtn.addActionListener(loginListener);
-        exitBtn.addActionListener(loginListener);
 
-        pulsantiCentro.add(sfogliaCatBtn);
-        pulsantiCentro.add(loginBtn);
-        pulsantiCentro.add(registerBtn);
 
-        pulsantiSud.add(backBtn);
-        pulsantiSud.add(exitBtn);
+        pulsanti.add(sfogliaCatBtn);
+        pulsanti.add(loginBtn);
+        pulsanti.add(registerBtn);
+
+
 
     }
 }

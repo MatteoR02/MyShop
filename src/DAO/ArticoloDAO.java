@@ -89,7 +89,8 @@ public class ArticoloDAO implements IArticoloDAO {
     @Override
     public Prodotto loadProdotto(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.articolo as A INNER JOIN myshop.prodotto as P on A.idArticolo = P.Articolo_idArticolo INNER JOIN myshop.magazzino_has_prodotto AS MP on A.idArticolo = MP.Prodotto_Articolo_idArticolo WHERE A.idArticolo='" + idProdotto + "';";
+        String sql = "SELECT * FROM myshop.articolo as A INNER JOIN myshop.prodotto as P on A.idArticolo = P.Articolo_idArticolo WHERE A.idArticolo='" + idProdotto + "';";
+        //"INNER JOIN myshop.magazzino_has_prodotto AS MP on A.idArticolo = MP.Prodotto_Articolo_idArticolo"
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 
@@ -104,7 +105,8 @@ public class ArticoloDAO implements IArticoloDAO {
                 prodotto.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
                 prodotto.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
                 prodotto.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
-                prodotto.setCollocazione(new Collocazione(rs.getInt("quantita"), rs.getString("corsia"), rs.getInt("scaffale"), magazzinoDAO.loadMagazzino(rs.getInt("Magazzino_idMagazzino"))));
+                prodotto.setCollocazione(magazzinoDAO.loadCollocazioneOfProdotto(rs.getInt("idArticolo")));
+                //prodotto.setCollocazione(new Collocazione(rs.getInt("quantita"), rs.getString("corsia"), rs.getInt("scaffale"), magazzinoDAO.loadMagazzino(rs.getInt("Magazzino_idMagazzino"))));
                 return prodotto;
             }
         } catch (SQLException e) {
@@ -122,27 +124,28 @@ public class ArticoloDAO implements IArticoloDAO {
     }
 
     @Override
-    public ArrayList<Prodotto> loadAllProdotti() {
+    public ArrayList<Articolo> loadAllProdotti() {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.articolo as A INNER JOIN myshop.prodotto as P on A.idArticolo = P.Articolo_idArticolo INNER JOIN myshop.magazzino_has_prodotto AS MP on A.idArticolo = MP.Prodotto_Articolo_idArticolo;";
+        String sql = "SELECT * FROM myshop.articolo as A INNER JOIN myshop.prodotto as P on A.idArticolo = P.Articolo_idArticolo;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
-        ArrayList<Prodotto> prodotti = new ArrayList<>();
+        ArrayList<Articolo> prodotti = new ArrayList<>();
+        ArrayList<Integer> idProdotti = new ArrayList<>();
 
         try {
             while (rs.next()) {
-                prodotto = new Prodotto();
-                prodotto.setId(rs.getInt("idArticolo"));
-                prodotto.setNome(rs.getString("nome"));
-                prodotto.setPrezzo(rs.getFloat("prezzo"));
-                prodotto.setProduttore(produttoreDAO.loadProduttore(rs.getInt("Produttore_idProduttore")));
-                prodotto.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
-                prodotto.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
-                prodotto.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
-                prodotto.setCollocazione(new Collocazione(rs.getInt("quantita"), rs.getString("corsia"), rs.getInt("scaffale"), magazzinoDAO.loadMagazzino(rs.getInt("Magazzino_idMagazzino"))));
-                prodotti.add(prodotto);
+                idProdotti.add(rs.getInt("idArticolo"));
             }
-            return prodotti;
+            for (int id : idProdotti) {
+                if (isProdottoComposito(id)){
+                    prodottoComposito = loadProdottoComposito(id);
+                    prodotti.add(prodottoComposito);
+                } else {
+                    prodotto = loadProdotto(id);
+                    prodotti.add(prodotto);
+                }
+            } return prodotti;
+
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());
@@ -568,7 +571,7 @@ public class ArticoloDAO implements IArticoloDAO {
     }
 
     @Override
-    public List<Servizio> loadAllServizi() {
+    public ArrayList<Servizio> loadAllServizi() {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.articolo as A INNER JOIN myshop.servizio as S on A.idArticolo = S.Articolo_idArticolo;";
         IDbOperation readOp = new ReadOperation(sql);
@@ -688,6 +691,42 @@ public class ArticoloDAO implements IArticoloDAO {
         removeArticolo.close();
 
         return rowCountServizio + rowCountArticolo;
+    }
+
+    @Override
+    public ArrayList<Articolo> loadAllArticoliFromPuntoVendita(int idPuntoVendita) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT A.idArticolo FROM myshop.articolo as A INNER JOIN myshop.puntovendita_has_articolo as PV on A.idArticolo = PV.Articolo_idArticolo WHERE PV.PuntoVendita_idPuntoVendita = '"+idPuntoVendita+"';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+        ArrayList<Integer> idArticoli = new ArrayList<>();
+        ArrayList<Articolo> articoliOfPV = new ArrayList<>();
+
+        try {
+            while (rs.next()) {
+                idArticoli.add(rs.getInt("idArticolo"));
+            }
+            for (int id  : idArticoli ) {
+                if (isProdotto(id)) {
+                    articoliOfPV.add(loadProdotto(id));
+                } else if (isProdottoComposito(id)){
+                    articoliOfPV.add(loadProdottoComposito(id));
+                } else if (isServizio(id)){
+                    articoliOfPV.add(loadServizio(id));
+                }
+            } return articoliOfPV;
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
     }
 
     @Override

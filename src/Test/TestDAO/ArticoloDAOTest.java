@@ -92,13 +92,18 @@ public class ArticoloDAOTest {
 
     @Test
     public void loadAllProdotti(){
-        ArrayList<Prodotto> prodotti = (ArrayList<Prodotto>) articoloDAO.loadAllProdotti();
+        ArrayList<Articolo> prodotti =  articoloDAO.loadAllProdotti();
         System.out.println(prodotti);
     }
 
     @Test
     public void loadProdottoComposito(){
         System.out.println(articoloDAO.loadProdottoComposito(11));
+    }
+
+    @Test
+    public void loadAllArticoliOfPV(){
+        System.out.println(articoloDAO.loadAllArticoliFromPuntoVendita(2));
     }
 
 

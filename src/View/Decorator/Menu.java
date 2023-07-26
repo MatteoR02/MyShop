@@ -6,11 +6,9 @@ import java.util.List;
 
 public abstract class Menu {
 
-    protected List<JButton> pulsantiCentro = new ArrayList<>();
-    protected List<JButton> pulsantiSud = new ArrayList<>();
+    protected List<JButton> pulsanti = new ArrayList<>();
 
-    public List<JButton> getPulsantiCentro() {
-        return pulsantiCentro;
+    public List<JButton> getPulsanti() {
+        return pulsanti;
     }
-    public List<JButton> getPulsantiSud() {return pulsantiSud;}
 }

@@ -21,6 +21,8 @@ public interface IFotoDAO {
 
     int addFotoToArticolo(Foto foto, int idArticolo);
 
+    Foto loadDefaultFoto();
+
     int setFKArticoloHasFotoToDefault(int idArticolo);
 
 }

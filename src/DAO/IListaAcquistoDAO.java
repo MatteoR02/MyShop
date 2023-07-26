@@ -3,19 +3,22 @@ package DAO;
 import Model.Articolo;
 import Model.ListaAcquisto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public interface IListaAcquistoDAO {
 
+    boolean isListaAcquisto(int idLista);
+
     ListaAcquisto loadListaAcquisto(int idLista);
-    List<ListaAcquisto> loadAllListaAcquisto();
+    ArrayList<ListaAcquisto> loadAllListaAcquisto();
     int addListaAcquisto(String nome, int idCliente);
     int updateListaAcquisto(ListaAcquisto listaAcquisto);
     int removeListaAcquisto(int idLista);
 
     Map<Articolo, Integer> getArticoliFromLista(int idLista);
-    List<ListaAcquisto> getListeOfCliente(int idCliente);
+    ArrayList<ListaAcquisto> getListeOfCliente(int idCliente);
 
     boolean isPagata(int idLista);
     int insertArticoloInLista(int idLista, int idArticolo, int quantita);

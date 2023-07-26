@@ -59,4 +59,12 @@ public class PuntoVendita {
     public void setIndirizzo(Indirizzo indirizzo) {
         this.indirizzo = indirizzo;
     }
+
+    @Override
+    public String toString() {
+        return "PuntoVendita{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                '}';
+    }
 }

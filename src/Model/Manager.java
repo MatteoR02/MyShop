@@ -30,7 +30,16 @@ public class Manager extends Utente{
         return messaggi;
     }
 
+
+
     public void setMessaggi(List<Messaggio> messaggi) {
         this.messaggi = messaggi;
+    }
+
+    @Override
+    public String toString() {
+        return "Manager{" +
+                "idPuntoVendita=" + idPuntoVendita +
+                '}';
     }
 }

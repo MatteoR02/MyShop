@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IPuntoVenditaDAO {
 
+    boolean isPuntoVendita(int idPuntoVendita);
+
     PuntoVendita loadPuntoVendita(int idPuntoVendita);
     List<PuntoVendita> loadPuntiVendita();
 

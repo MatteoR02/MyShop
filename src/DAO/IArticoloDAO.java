@@ -1,6 +1,7 @@
 package DAO;
 import Model.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public interface IArticoloDAO {
@@ -9,7 +10,7 @@ public interface IArticoloDAO {
     boolean isServizio(int idArticolo);
 
     Prodotto loadProdotto(int idProdotto);
-    List<Prodotto> loadAllProdotti();
+    ArrayList<Articolo> loadAllProdotti();
     ProdottoComposito loadProdottoComposito(int idProdottoComposito);
     boolean isProdottoComposito(int idProdottoComposito);
     boolean isSottoProdotto(int idProdotto);
@@ -19,10 +20,12 @@ public interface IArticoloDAO {
     int createComposition(List<Integer> idProdotti, String nomeComp, int idCategoria);
 
     Servizio loadServizio(int idServizio);
-    List<Servizio> loadAllServizi();
+    ArrayList<Servizio> loadAllServizi();
     int addServizio(Servizio servizio);
     int updateServizio(Servizio servizio);
     int removeServizio(int idServizio);
+
+    ArrayList<Articolo> loadAllArticoliFromPuntoVendita(int idPuntoVendita);
 
     int setFKCategoriaToDefault(int idCategoria);
     int setFKMagazzinoToDefault(int idMagazzino);

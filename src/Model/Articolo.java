@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Articolo {
 
@@ -77,15 +78,26 @@ public class Articolo {
         this.categoria = categoria;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Articolo articolo = (Articolo) o;
+        return id == articolo.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     @Override
     public String toString() {
         return "Articolo{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
-                ", prezzo=" + prezzo +
-                ", recensioni=" + recensioni +
                 ", immagini=" + immagini +
-                ", categoria=" + categoria +
                 '}';
     }
 }

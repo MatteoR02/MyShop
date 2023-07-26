@@ -5,6 +5,8 @@ import DbInterface.IDbConnection;
 import Model.*;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +45,7 @@ public class TestDAO {
 
         /*int rows = utenteDAO.removeUtente("ciccio");
         System.out.println("Righe eliminate = " + rows);*/
-        Cliente clienteP = new Cliente(new Persona("BABBO", "MINCHIA", "babbominchia@gmail.com", "340", Timestamp.valueOf("2002-01-01 13:02:56.12345678")), "BABBO", "babbo", new Indirizzo("nazione", "citta", "0", "via", 0), Cliente.ProfessioneType.IMPIEGATO, Cliente.CanalePreferitoType.EMAIL, Timestamp.valueOf("2022-11-01 13:02:56.12345678"), Cliente.StatoUtenteType.ABILITATO, new ArrayList<Messaggio>(), new ArrayList<ListaAcquisto>(), new ArrayList<PuntoVendita>());
+        Cliente clienteP = new Cliente(new Persona("BABBO", "MINCHIA", "babbominchia@gmail.com", "340", null), "BABBO", "babbo", new Indirizzo("nazione", "citta", "0", "via", 0), Cliente.ProfessioneType.IMPIEGATO, Cliente.CanalePreferitoType.EMAIL, null, Cliente.StatoUtenteType.ABILITATO, new ArrayList<Messaggio>(), new ArrayList<ListaAcquisto>(), new ArrayList<PuntoVendita>());
        // utenteDAO.addCliente(clienteP);
 
         //utenteDAO.removeCliente("BABBO");

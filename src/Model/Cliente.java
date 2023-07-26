@@ -1,5 +1,6 @@
 package Model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public class Cliente extends Utente {
 
     ;
 
-    private Timestamp dataAbilitazione;
+    private Date dataAbilitazione;
     private ProfessioneType professione;
     private CanalePreferitoType canalePreferito;
     private StatoUtenteType stato;
@@ -25,7 +26,7 @@ public class Cliente extends Utente {
     private List<ListaAcquisto> listeAcquisto;
     private List<PuntoVendita> puntiVenditaRegistrati;
 
-    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Timestamp dataAbilitazione, StatoUtenteType stato, List<Messaggio> messaggi, List<ListaAcquisto> listeAcquisto, List<PuntoVendita> puntiVenditaRegistrati) {
+    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Date dataAbilitazione, StatoUtenteType stato, List<Messaggio> messaggi, List<ListaAcquisto> listeAcquisto, List<PuntoVendita> puntiVenditaRegistrati) {
         super(persona, username, password, indirizzo);
         this.dataAbilitazione = dataAbilitazione;
         this.professione = professione;
@@ -42,11 +43,11 @@ public class Cliente extends Utente {
         this.stato = StatoUtenteType.ABILITATO;
     }
 
-    public Timestamp getDataAbilitazione() {
+    public Date getDataAbilitazione() {
         return dataAbilitazione;
     }
 
-    public void setDataAbilitazione(Timestamp dataAbilitazione) {
+    public void setDataAbilitazione(Date dataAbilitazione) {
         this.dataAbilitazione = dataAbilitazione;
     }
 
@@ -101,18 +102,9 @@ public class Cliente extends Utente {
     @Override
     public String toString() {
         return "Cliente{" +
-                "dataAbilitazione=" + dataAbilitazione +
-                ", professione=" + professione +
-                ", canalePreferito=" + canalePreferito +
-                ", stato=" + stato +
-                ", messaggi=" + messaggi +
-                ", listeAcquisto=" + listeAcquisto +
-                ", puntiVenditaRegistrati=" + puntiVenditaRegistrati +
+                "canalePreferito=" + canalePreferito +
                 ", id=" + id +
-                ", persona=" + persona +
                 ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", indirizzo=" + indirizzo +
                 '}';
     }
 }

@@ -8,6 +8,7 @@ public interface ICategoriaDAO {
 
     Categoria loadCategoria(int idCategoria);
     Categoria loadSottoCategoria(int idCategoria);
+    Categoria loadMacroCategoria(int idCategoria);
     List<Categoria> loadAllCategorie();
     int addCategoria(Categoria categoria);
     int updateCategoria(Categoria categoria);

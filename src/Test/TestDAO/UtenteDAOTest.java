@@ -6,6 +6,7 @@ import Model.*;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -71,9 +72,9 @@ public class UtenteDAOTest {
 
     @Test
     public void addClienteOK(){
-        Persona identita = new Persona("Alessandro","Convertino", "ale@gmail.com","3403403400",Timestamp.valueOf("2001-06-02 00:00:00"));
+        Persona identita = new Persona("Alessandro","Convertino", "ale@gmail.com","3403403400", Date.valueOf("2023-01-01"));
         Indirizzo indirizzo = new Indirizzo("Italia","Lecce","73100","Via AAA",3);
-        Cliente cliente = new Cliente(identita,"Ale5", "Orango", indirizzo, Cliente.ProfessioneType.STUDENTE, Cliente.CanalePreferitoType.EMAIL, Timestamp.valueOf(LocalDateTime.now()), Cliente.StatoUtenteType.ABILITATO,null,null,null);
+        Cliente cliente = new Cliente(identita,"Ale5", "Orango", indirizzo, Cliente.ProfessioneType.STUDENTE, Cliente.CanalePreferitoType.EMAIL, null, Cliente.StatoUtenteType.ABILITATO,null,null,null);
 
         IUtenteDAO utenteDAO = UtenteDAO.getInstance();
         Assert.assertEquals(2,utenteDAO.addCliente(cliente));

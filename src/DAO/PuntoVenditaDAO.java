@@ -22,6 +22,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     public static int PUNTOVENDITA_DEFAULT_ID = 1;
 
     private final IMagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
+    private final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private PuntoVenditaDAO(){
         puntoVendita = null;
@@ -32,9 +33,33 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     }
 
     @Override
+    public boolean isPuntoVendita(int idPuntoVendita) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+
+        String sql = "SELECT count(*) AS count FROM myshop.puntovendita WHERE idPuntoVendita='" + idPuntoVendita + "';";
+
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                int count = rs.getInt("count");
+                return count == 1;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            readOp.close();
+        }
+    }
+
+    @Override
     public PuntoVendita loadPuntoVendita(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.magazzino WHERE idMagazzino = '" + idPuntoVendita + "';";
+        String sql = "SELECT * FROM myshop.puntovendita WHERE idPuntoVendita = '" + idPuntoVendita + "';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 
@@ -65,7 +90,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     @Override
     public List<PuntoVendita> loadPuntiVendita() {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.magazzino;";
+        String sql = "SELECT * FROM myshop.puntovendita;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<PuntoVendita> puntiVendita = new ArrayList<>();
@@ -74,6 +99,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
             while (rs.next()){
                 puntoVendita = new PuntoVendita();
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
+                puntoVendita.setNome(rs.getString("nome"));
                 puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
                 //puntoVendita.setArticoli();
@@ -96,7 +122,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     @Override
     public PuntoVendita loadPuntoVenditaOfManager(int idManager) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.magazzino WHERE Manager_Utente_idUtente = '" + idManager + "';";
+        String sql = "SELECT * FROM myshop.puntovendita WHERE Manager_Utente_idUtente = '" + idManager + "';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 
@@ -105,9 +131,10 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
             if (rs.getRow() == 1) {
                 puntoVendita = new PuntoVendita();
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
+                puntoVendita.setNome(rs.getString("nome"));
                 puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
-                //puntoVendita.setArticoli();
+                puntoVendita.setArticoli(articoloDAO.loadAllArticoliFromPuntoVendita(rs.getInt("idPuntoVendita")));
                 return puntoVendita;
             }
         } catch (SQLException e) {

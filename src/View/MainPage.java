@@ -1,12 +1,18 @@
 package View;
 
-import Model.Cliente;
-import Model.Utente;
+import Business.ArticoloBusiness;
+import Business.SessionManager;
+import Business.UtenteBusiness;
+import Model.*;
 import View.Decorator.*;
 import View.Decorator.Menu;
+import View.ViewModel.ComponenteCatalogo;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+
+import static Business.SessionManager.LOGGED_USER;
 
 public class MainPage extends JFrame {
 
@@ -17,12 +23,17 @@ public class MainPage extends JFrame {
     private JPanel sud = new JPanel();
     private JPanel main = new JPanel();
 
+    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, LISTE, ARTICOLO}
+
+    private PaginaCorrente paginaCorrente;
+
     public MainPage() {
         super("MyShop");
         this.setSize(1000,700);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
+        ArticoloBusiness.getAllArticoli();
 
         ImageIcon icon = new ImageIcon("resources/appIcon.png");
         Image iconImage = icon.getImage();
@@ -35,12 +46,12 @@ public class MainPage extends JFrame {
         nord.setBackground(sfondo);
         centro.setBackground(sfondo);
 
-        Menu guestMenu = new GuestMenu(this);
+        Menu bottomMenu = new BottomMenu(this);
 
         mostraMain();
 
         sud.setLayout(new FlowLayout(FlowLayout.RIGHT));
-        for (JButton btn : guestMenu.getPulsantiSud()) {
+        for (JButton btn : bottomMenu.getPulsanti()) {
             btn.setFocusPainted(false);
             sud.add(btn);
         }
@@ -65,7 +76,12 @@ public class MainPage extends JFrame {
     public void mostraCatalogo(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new CatalogoPanel());
+        Utente utente = (Utente) SessionManager.getSession().get(LOGGED_USER);
+        paginaCorrente = PaginaCorrente.CATALOGO;
+
+        //System.out.println((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI_PV));
+        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this);
+        centro.add(catalogoPanel);
         repaint();
         validate();
     }
@@ -73,7 +89,7 @@ public class MainPage extends JFrame {
     public void mostraLogin(){
         centro.removeAll();
         centro.setLayout(new GridBagLayout());
-        centro.add(new LoginPanel());
+        centro.add(new LoginPanel(this));
         repaint();
         validate();
     }
@@ -88,8 +104,54 @@ public class MainPage extends JFrame {
     public void mostraMain(){
         centro.removeAll();
         centro.setLayout(new GridBagLayout());
-        centro.add(new GuestMainPanel(this));
+
+        paginaCorrente = PaginaCorrente.MAIN;
+
+        Utente u = (Utente) SessionManager.getSession().get(LOGGED_USER);
+        if (u instanceof Cliente){
+            centro.add(new ClienteMainPanel(this));
+        } else if(u instanceof Manager){
+            centro.add(new ManagerMainPanel(this));
+        } else {
+            centro.add(new GuestMainPanel(this));
+        }
         repaint();
         validate();
+    }
+
+    public void mostraClientiTable(){
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+
+        Manager m = (Manager) SessionManager.getSession().get(LOGGED_USER);
+        UtenteBusiness.getAllClientiOfPV(m.getIdPuntoVendita());
+        //System.out.println((ArrayList<Cliente>) SessionManager.getSession().get(SessionManager.ALL_CLIENTI_PV));
+        centro.add(new ClientiTablePanel((ArrayList<Cliente>) SessionManager.getSession().get(SessionManager.ALL_CLIENTI_PV), this));
+
+        repaint();
+        validate();
+    }
+
+    public void mostraListe(){
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        Cliente c = (Cliente) SessionManager.getSession().get(LOGGED_USER);
+        UtenteBusiness.getListeOfCliente(c);
+        centro.add(new ListeAcquistoPanel(this, (ArrayList<ListaAcquisto>) SessionManager.getSession().get(SessionManager.LISTE_CLIENTE)), BorderLayout.CENTER);
+        repaint();
+        validate();
+    }
+
+    public void mostraArticolo(ComponenteCatalogo comp){
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new InfoArticoloPanel(this, comp));
+        paginaCorrente = PaginaCorrente.ARTICOLO;
+        repaint();
+        validate();
+    }
+
+    public PaginaCorrente getPaginaCorrente(){
+        return paginaCorrente;
     }
 }

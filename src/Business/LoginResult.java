@@ -7,6 +7,7 @@ public class LoginResult {
     private Result result;
     private String message;
 
+
     public Result getResult() {
         return result;
     }

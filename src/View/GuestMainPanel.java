@@ -14,21 +14,16 @@ public class GuestMainPanel extends JPanel {
         this.setBackground(sfondo);
         Font buttonFont = new Font("Arial", Font.PLAIN, 20);
         Dimension buttonDimension = new Dimension(200, 70);
+        Insets insets = new Insets(10,10,10,10);
 
         Menu guestMenu = new GuestMenu(frame);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(10,10,10,10);
-
         int i=0;
-        for (JButton btn : guestMenu.getPulsantiCentro()) {
+        for (JButton btn : guestMenu.getPulsanti()) {
             btn.setFocusPainted(false);
             btn.setPreferredSize(buttonDimension);
             btn.setFont(buttonFont);
-            gbc.gridx = 0;
-            gbc.gridy = i;
-            this.add(btn, gbc);
+            this.add(btn, new GridBagCostraintsHorizontal(0,i,1,1,insets));
             i++;
         }
     }

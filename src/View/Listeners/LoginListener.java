@@ -2,15 +2,20 @@ package View.Listeners;
 
 import Business.LoginResult;
 import Business.UtenteBusiness;
+import View.CatalogoPanel;
 import View.MainPage;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class LoginListener implements ActionListener {
 
-    public final static String ENTER_LOGIN_BTN = "enter_login_btn";
     public final static String LOGIN_BTN = "login_btn";
     public final static String LOGOUT_BTN = "logout_btn";
     public final static String REGISTER_BTN = "register_btn";
@@ -20,6 +25,8 @@ public class LoginListener implements ActionListener {
     public final static String TO_LOGIN_BTN = "to_login";
     public final static String BACK_BTN = "back_btn";
     public final static String BACK_GUEST_BTN = "back_guest_btn";
+    public final static String TO_PROFILE_BTN = "to_profile_btn";
+
 
 
     private JTextField usernameField;
@@ -43,7 +50,7 @@ public class LoginListener implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
-        if (ENTER_LOGIN_BTN.equals(action)) {
+        if (TO_LOGIN_BTN.equals(action)) {
             frame.mostraLogin();
         } else if(LOGIN_BTN.equals(action)){
             String username = usernameField.getText();
@@ -52,7 +59,7 @@ public class LoginListener implements ActionListener {
             System.out.println("Password: "+password);
             LoginResult result = UtenteBusiness.getInstance().login(username,password);
             if (LoginResult.Result.LOGIN_OK == result.getResult()){
-                System.out.println("Utente loggato");
+                frame.mostraMain();
             } else {
                 JOptionPane.showMessageDialog(frame,result.getMessage(), "Errore Login", JOptionPane.ERROR_MESSAGE);
             }
@@ -66,8 +73,19 @@ public class LoginListener implements ActionListener {
         } else if (CATALOGO_BTN.equals(action)) {
             //Visualizza catalogo Guest
             frame.mostraCatalogo();
-        } else if (BACK_GUEST_BTN.equals(action)){
+        } else if (BACK_BTN.equals(action)){
+            if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.ARTICOLO){
+                frame.mostraCatalogo();
+            } else if(frame.getPaginaCorrente() == MainPage.PaginaCorrente.CATALOGO){
+               frame.mostraMain();
+            }  else{
+                frame.mostraMain();
+            }
+        } else if (LOGOUT_BTN.equals(action)){
+            UtenteBusiness.closeSession();
             frame.mostraMain();
+        } else if (TO_PROFILE_BTN.equals(action)){
+
         }
     }
 }

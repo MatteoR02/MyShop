@@ -1,5 +1,6 @@
 package DAO;
 
+import Model.Collocazione;
 import Model.Magazzino;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface IMagazzinoDAO {
     List<Magazzino> loadAllMagazzini();
 
     List<Magazzino> loadMagazziniOfPuntoVendita(int idPuntoVendita);
+
+    Collocazione loadCollocazioneOfProdotto(int idProdotto);
 
     int addMagazzino(Magazzino magazzino);
     int updateMagazzino(Magazzino magazzino);

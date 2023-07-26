@@ -1,5 +1,7 @@
 package Model;
 
+import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.List;
 
 public class Recensione {
@@ -10,13 +12,15 @@ public class Recensione {
     private String titolo;
     private String testo;
     private Punteggio valutazione;
+    private Date data;
     private List<Foto> immagini;
     private int idCliente;
 
-    public Recensione(String titolo, String testo, Punteggio valutazione, List<Foto> immagini, int idCliente) {
+    public Recensione(String titolo, String testo, Punteggio valutazione, Date data, List<Foto> immagini, int idCliente) {
         this.titolo = titolo;
         this.testo = testo;
         this.valutazione = valutazione;
+        this.data = data;
         this.immagini = immagini;
         this.idCliente = idCliente;
     }
@@ -56,6 +60,14 @@ public class Recensione {
         this.valutazione = valutazione;
     }
 
+    public Date getData() {
+        return data;
+    }
+
+    public void setData(Date data) {
+        this.data = data;
+    }
+
     public List<Foto> getImmagini() {
         return immagini;
     }
@@ -70,5 +82,16 @@ public class Recensione {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    @Override
+    public String toString() {
+        return "Recensione{" +
+                "id=" + id +
+                ", titolo='" + titolo + '\'' +
+                ", testo='" + testo + '\'' +
+                ", valutazione=" + valutazione +
+                ", data=" + data +
+                '}';
     }
 }

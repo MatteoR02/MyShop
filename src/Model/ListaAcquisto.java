@@ -63,4 +63,13 @@ public class ListaAcquisto {
     public void setArticoli(Map<Articolo, Integer> articoli) {
         this.articoli = articoli;
     }
+
+    public boolean isPagato(){
+        return this.statoPagamento == StatoPagamentoType.PAGATO;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
 }

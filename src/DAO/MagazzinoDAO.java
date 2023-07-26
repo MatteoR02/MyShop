@@ -1,10 +1,7 @@
 package DAO;
 
 import DbInterface.command.*;
-import Model.Foto;
-import Model.Indirizzo;
-import Model.Magazzino;
-import Model.Produttore;
+import Model.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,6 +13,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
 
     private static MagazzinoDAO instance = new MagazzinoDAO();
     private Magazzino magazzino;
+    private Collocazione collocazione;
     private static ResultSet rs;
 
     public static int MAGAZZINO_DEFAULT_ID = 1;
@@ -23,6 +21,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
     private final ArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private MagazzinoDAO(){
+        collocazione = null;
         magazzino = null;
         rs = null;
     }
@@ -106,6 +105,40 @@ public class MagazzinoDAO implements IMagazzinoDAO{
                 magazzino.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 magazzini.add(magazzino);
             }return magazzini;
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public Collocazione loadCollocazioneOfProdotto(int idProdotto) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.magazzino_has_prodotto WHERE Prodotto_Articolo_idArticolo = '" + idProdotto + "';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+        int idMagazzino = 0;
+
+        try {
+            rs.next();
+            magazzino = new Magazzino();
+            collocazione = new Collocazione();
+            if (rs.getRow() == 1) {
+                idMagazzino = rs.getInt("Magazzino_idMagazzino");
+                collocazione.setQuantita(rs.getInt("quantita"));
+                collocazione.setCorsia(rs.getString("corsia"));
+                collocazione.setScaffale(rs.getInt("scaffale"));
+            }
+            collocazione.setMagazzino(loadMagazzino(idMagazzino));
+            return collocazione;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());

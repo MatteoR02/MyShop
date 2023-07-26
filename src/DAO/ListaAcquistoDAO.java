@@ -34,6 +34,30 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
     }
 
     @Override
+    public boolean isListaAcquisto(int idLista) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+
+        String sql = "SELECT count(*) AS count FROM myshop.listaacquisto WHERE idListaAcquisto='" + idLista + "';";
+
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                int count = rs.getInt("count");
+                return count == 1;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            readOp.close();
+        }
+    }
+
+    @Override
     public ListaAcquisto loadListaAcquisto(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.listaacquisto WHERE idListaAcquisto = '" + idLista + "';";
@@ -66,22 +90,21 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
     }
 
     @Override
-    public List<ListaAcquisto> loadAllListaAcquisto() {
+    public ArrayList<ListaAcquisto> loadAllListaAcquisto() {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.listaacquisto;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<ListaAcquisto> listeAcquisto = new ArrayList<>();
+        ArrayList<Integer> idListe = new ArrayList<>();
         try {
             while(rs.next()) {
-                listaAcquisto = new ListaAcquisto();
-                listaAcquisto.setId(rs.getInt("idListaAcquisto"));
-                listaAcquisto.setNome(rs.getString("nome"));
-                listaAcquisto.setStatoPagamento(ListaAcquisto.StatoPagamentoType.valueOf(rs.getString("stato_pagamento")));
-                listaAcquisto.setDataPagamento(rs.getTimestamp("data_pagamento"));
-                listaAcquisto.setArticoli(getArticoliFromLista(rs.getInt("idListaAcquisto")));
-                listeAcquisto.add(listaAcquisto);
-            }return listeAcquisto;
+                idListe.add(rs.getInt("idListaAcquisto"));
+            }
+            for (int id : idListe   ) {
+                listeAcquisto.add(loadListaAcquisto(id));
+            }
+            return listeAcquisto;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());
@@ -107,12 +130,13 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    //sistemare data_pagamento
     @Override
     public int updateListaAcquisto(ListaAcquisto listaAcquisto) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sqlLista = "UPDATE `myshop`.`listaacquisto` SET `nome` = '" + listaAcquisto.getNome() +
-                "', stato_pagamento ='" + listaAcquisto.getStatoPagamento() + "', data_pagamento ='"+listaAcquisto.getDataPagamento()+
-                "' WHERE `idListaAcquisto` = '" + listaAcquisto.getId() +"';";
+                "', stato_pagamento ='" + listaAcquisto.getStatoPagamento() + "'"+
+                " WHERE `idListaAcquisto` = '" + listaAcquisto.getId() +"';";
 
         IDbOperation update = new WriteOperation(sqlLista);
         int rowCount = executor.executeOperation(update).getRowsAffected();
@@ -182,21 +206,22 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
     }
 
     @Override
-    public List<ListaAcquisto> getListeOfCliente(int idCliente) {
+    public ArrayList<ListaAcquisto> getListeOfCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.listaacquisto WHERE Cliente_Utente_idUtente = '" + idCliente + "';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<ListaAcquisto> listeAcquisto = new ArrayList<>();
+        ArrayList<Integer> idListe = new ArrayList<>();
         try {
             while(rs.next()) {
-                listaAcquisto = new ListaAcquisto();
-                listaAcquisto.setId(rs.getInt("idCategoria"));
-                listaAcquisto.setNome(rs.getString("nome"));
-                listaAcquisto.setStatoPagamento(ListaAcquisto.StatoPagamentoType.valueOf(rs.getString("stato_pagamento")));
-                listaAcquisto.setDataPagamento(rs.getTimestamp("data_pagamento"));
-                listeAcquisto.add(listaAcquisto);
-            }return listeAcquisto;
+                idListe.add(rs.getInt("idListaAcquisto"));
+            }
+            for (int id : idListe ) {
+                listeAcquisto.add(loadListaAcquisto(id));
+            }
+            return listeAcquisto;
+
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());

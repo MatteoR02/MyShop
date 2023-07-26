@@ -4,6 +4,7 @@ import DbInterface.command.*;
 import Model.Foto;
 import Model.Recensione;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +42,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
+                recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 return recensione;
             }
@@ -73,6 +75,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
+                recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensioni.add(recensione);
             } return recensioni;
@@ -105,6 +108,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
+                recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensioni.add(recensione);
             } return recensioni;
@@ -137,6 +141,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
+                recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensioni.add(recensione);
             } return recensioni;
@@ -181,7 +186,7 @@ public class RecensioneDAO implements IRecensioneDAO{
     @Override
     public int addRecensione(Recensione recensione, int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.recensione (titolo, testo, valutazione, Cliente_Utente_idUtente, Articolo_idArticolo) VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO myshop.recensione (titolo, testo, valutazione, data, Cliente_Utente_idUtente, Articolo_idArticolo) VALUES (?,?,?,?,?,?);";
 
         IDbOperation addByteOp = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByteOp).getPreparedStatement();
@@ -192,8 +197,9 @@ public class RecensioneDAO implements IRecensioneDAO{
                 preparedStatement.setString(1, recensione.getTitolo());
                 preparedStatement.setString(2, recensione.getTesto());
                 preparedStatement.setString(3, recensione.getValutazione().toString());
-                preparedStatement.setInt(4, recensione.getIdCliente());
-                preparedStatement.setInt(5, idArticolo);
+                preparedStatement.setDate(4, (Date) recensione.getData());
+                preparedStatement.setInt(5, recensione.getIdCliente());
+                preparedStatement.setInt(6, idArticolo);
                 rowCountRecensione = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 for ( Foto foto : recensione.getImmagini()) {
@@ -212,7 +218,7 @@ public class RecensioneDAO implements IRecensioneDAO{
     @Override
     public int updateRecensione(Recensione recensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "UPDATE myshop.recensione SET titolo = ?, testo = ?, valutazione = ?, Cliente_Utente_idUtente = ? WHERE idRecensione = ?;";
+        String sql = "UPDATE myshop.recensione SET titolo = ?, testo = ?, valutazione = ?, data = ?, Cliente_Utente_idUtente = ? WHERE idRecensione = ?;";
 
         IDbOperation addByte = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
@@ -222,8 +228,9 @@ public class RecensioneDAO implements IRecensioneDAO{
                 preparedStatement.setString(1, recensione.getTitolo());
                 preparedStatement.setString(2, recensione.getTesto());
                 preparedStatement.setString(3, recensione.getValutazione().toString());
-                preparedStatement.setInt(4, recensione.getIdCliente());
-                preparedStatement.setInt(5, recensione.getId());
+                preparedStatement.setDate(4, (Date)recensione.getData());
+                preparedStatement.setInt(5, recensione.getIdCliente());
+                preparedStatement.setInt(6, recensione.getId());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 return rowCount;

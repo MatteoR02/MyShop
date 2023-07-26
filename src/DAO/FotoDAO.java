@@ -121,11 +121,15 @@ public class FotoDAO implements IFotoDAO{
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Foto> fotos = new ArrayList<>();
+        ArrayList<Integer> idFoto = new ArrayList<>();
         try {
             while(rs.next()) {
-                foto = loadFoto(rs.getInt("Foto_idFoto"));
-                fotos.add(foto);
-            }return fotos;
+                idFoto.add(rs.getInt("Foto_idFoto"));
+            }
+            for (int id : idFoto) {
+                fotos.add(loadFoto(id));
+            }
+            return fotos;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());
@@ -282,6 +286,35 @@ public class FotoDAO implements IFotoDAO{
             addByte.close();
         }
         return 0;
+    }
+
+    @Override
+    public Foto loadDefaultFoto() {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.foto WHERE idFoto = 1;";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                foto = new Foto();
+                foto.setId(rs.getInt("idFoto"));
+                foto.setImmagine(rs.getBlob("immagine"));
+                return foto;
+            }
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package Model;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Persona {
@@ -8,9 +9,9 @@ public class Persona {
     private String cognome;
     private String email;
     private String telefono;
-    private Timestamp dataNascita;
+    private Date dataNascita;
 
-    public Persona(String nome, String cognome, String email, String telefono, Timestamp dataNascita) {
+    public Persona(String nome, String cognome, String email, String telefono, Date dataNascita) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -53,11 +54,11 @@ public class Persona {
         this.telefono = telefono;
     }
 
-    public Timestamp getDataNascita() {
+    public Date getDataNascita() {
         return dataNascita;
     }
 
-    public void setDataNascita(Timestamp dataNascita) {
+    public void setDataNascita(Date dataNascita) {
         this.dataNascita = dataNascita;
     }
 

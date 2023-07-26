@@ -18,12 +18,15 @@ public interface IUtenteDAO {
 
     Cliente loadCliente(String username);
     ArrayList<Cliente> loadAllClienti();
+    ArrayList<Cliente> loadAllClientiOfPV(int idPV);
     int addCliente(Cliente cliente);
     int removeCliente(String username);
     int updateCliente(Cliente cliente);
     boolean checkCredentials(String username, String password);
     int blockCliente(String username);
+    int unlockCliente(String username);
     boolean isBlocked(String username);
+    int changeClienteStatus(String username, Cliente.StatoUtenteType stato);
 
     Manager loadManager(String username);
     Manager loadManager(int idManager);
@@ -39,5 +42,8 @@ public interface IUtenteDAO {
     int addAdmin(Admin admin);
     int removeAdmin(String username);
     int updateAdmin(Admin admin);
+
+    int findIdByUsername(String username);
+    String findUsernameByID(int id);
 
 }

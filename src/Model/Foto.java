@@ -29,4 +29,11 @@ public class Foto {
     public void setImmagine(Blob immagine) {
         this.immagine = immagine;
     }
+
+    @Override
+    public String toString() {
+        return "Foto{" +
+                "immagine=" + immagine +
+                '}';
+    }
 }
