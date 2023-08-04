@@ -17,7 +17,7 @@ public class ClienteCompCatalogoMenu extends Menu{
 
         JButton viewArtBtn = new JButton("Visualizza");
         viewArtBtn.setActionCommand(CatalogoListener.VIEW_ART_BTN);
-        JButton addBtn = new JButton("Aggiungi");
+        JButton addBtn = new JButton("Aggiungi alla lista");
         addBtn.setActionCommand(CatalogoListener.TO_ADD_BTN);
 
         CatalogoListener catalogoListener = new CatalogoListener(frame, comp);

@@ -17,6 +17,7 @@ public interface IUtenteDAO {
     boolean isAdmin(String username);
 
     Cliente loadCliente(String username);
+    Cliente loadCliente(int idCliente);
     ArrayList<Cliente> loadAllClienti();
     ArrayList<Cliente> loadAllClientiOfPV(int idPV);
     int addCliente(Cliente cliente);

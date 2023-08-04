@@ -63,8 +63,10 @@ public class ListaTablePanel extends JPanel {
             costoTotale+= art.getPrezzo()*lista.getArticoli().get(art);
         }
 
+        String costoTotaleFormattato = String.format("%.2f", costoTotale);
+
         JLabel statoLista = new JLabel("Stato lista: " + lista.getStatoPagamento());
-        JLabel prezzoLista = new JLabel("Costo totale: " + costoTotale );
+        JLabel prezzoLista = new JLabel("Costo totale: " + costoTotaleFormattato + " €");
 
         JLabel suggerimento = new JLabel("Per modificare la quantità degli articoli nella lista basta cliccare due volte sul campo 'Quantita'");
 
@@ -92,7 +94,7 @@ public class ListaTablePanel extends JPanel {
         rimuoviArticoloBtn.setActionCommand(ClienteListener.REMOVE_FROM_LISTA);
         rimuoviArticoloBtn.addActionListener(clienteListener);
 
-        JButton aggiornaQuantitaBtn = new JButton("Aggiorna quantita'");
+        JButton aggiornaQuantitaBtn = new JButton("Aggiorna quantità");
         aggiornaQuantitaBtn.setActionCommand(ClienteListener.UPDATE_QUANTITY);
         aggiornaQuantitaBtn.addActionListener(clienteListener);
 
@@ -100,8 +102,8 @@ public class ListaTablePanel extends JPanel {
         eliminaListaBtn.setActionCommand(ClienteListener.REMOVE_LISTA);
         eliminaListaBtn.addActionListener(clienteListener);
 
-        JButton pagaListaBtn = new JButton("Paga lista");
-        pagaListaBtn.setActionCommand(ClienteListener.PAY_LIST);
+        JButton pagaListaBtn = new JButton("Stampa lista");
+        pagaListaBtn.setActionCommand(ClienteListener.PRINT_LIST);
         pagaListaBtn.addActionListener(clienteListener);
 
         pulsantiAzioneTabella.add(rimuoviArticoloBtn);

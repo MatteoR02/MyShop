@@ -13,7 +13,7 @@ import java.util.List;
 
 public class MessaggioDAO implements IMessaggioDAO{
 
-    private static MessaggioDAO instance = new MessaggioDAO();
+    private static final MessaggioDAO instance = new MessaggioDAO();
     private Messaggio messaggio;
     private static ResultSet rs;
 

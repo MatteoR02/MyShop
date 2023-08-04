@@ -1,13 +1,11 @@
 package DAO;
 
-import DbInterface.IDbConnection;
 import DbInterface.command.*;
 import Model.*;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,17 +19,16 @@ public class ArticoloDAO implements IArticoloDAO {
     private ProdottoComposito prodottoComposito;
     private static ResultSet rs;
 
-    private final IProduttoreDAO produttoreDAO = ProduttoreDAO.getInstance();
-    private final ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
-    private final IFotoDAO fotoDAO = FotoDAO.getInstance();
-    private final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
-    private final MagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
-    private final ListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
+    private static final IProduttoreDAO produttoreDAO = ProduttoreDAO.getInstance();
+    private static final ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
+    private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
+    private static final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
+    private static final IMagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
+    private static final IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
 
     public static int ARTICOLO_DEFAULT_ID = 1;
 
     private ArticoloDAO() {
-        articolo = null;
         rs = null;
     }
 
@@ -359,40 +356,40 @@ public class ArticoloDAO implements IArticoloDAO {
 
         IDbOperation add = new WriteByteOperation(sqlArticolo);
         int rowCount = 0;
-            try {
-                PreparedStatement statement = executor.executeOperation(add).getPreparedStatement();
+        try {
+            PreparedStatement statement = executor.executeOperation(add).getPreparedStatement();
 
-                int idGenProdComp = -1;
-                try {
-                    rowCount = statement.executeUpdate(); //aggiungo articolo
-                    try (ResultSet generatedID = statement.getGeneratedKeys()) {
-                        if (generatedID.next()) {
-                            idGenProdComp = generatedID.getInt(1);
-                        }
+            int idGenProdComp = -1;
+            try {
+                rowCount = statement.executeUpdate(); //aggiungo articolo
+                try (ResultSet generatedID = statement.getGeneratedKeys()) {
+                    if (generatedID.next()) {
+                        idGenProdComp = generatedID.getInt(1);
                     }
-                    statement.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
                 }
                 statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            statement.close();
 
-                String sqlProdotto = "INSERT INTO `myshop`.`prodotto` (`Articolo_idArticolo`) VALUES " +
-                        "('" + idGenProdComp + "');";
-                add = new WriteOperation(sqlProdotto);
+            String sqlProdotto = "INSERT INTO `myshop`.`prodotto` (`Articolo_idArticolo`) VALUES " +
+                    "('" + idGenProdComp + "');";
+            add = new WriteOperation(sqlProdotto);
+            rowCount += executor.executeOperation(add).getRowsAffected();
+
+            for (int idProdotto : idProdotti) {
+                String sqlProdComp = "INSERT INTO `myshop`.`prodotto_has_prodotto` (`Prodotto_Articolo_idArticolo`, `Prodotto_Articolo_idArticolo1`) VALUES " +
+                        "('" + idGenProdComp + "', '"+ idProdotto +"');";
+                add = new WriteOperation(sqlProdComp);
                 rowCount += executor.executeOperation(add).getRowsAffected();
-
-                for (int idProdotto : idProdotti) {
-                    String sqlProdComp = "INSERT INTO `myshop`.`prodotto_has_prodotto` (`Prodotto_Articolo_idArticolo`, `Prodotto_Articolo_idArticolo1`) VALUES " +
-                            "('" + idGenProdComp + "', '"+ idProdotto +"');";
-                    add = new WriteOperation(sqlProdComp);
-                    rowCount += executor.executeOperation(add).getRowsAffected();
-                }
+            }
 
         } catch (SQLException e) {
-        e.printStackTrace();
-         } finally {
-        add.close();
-    }
+            e.printStackTrace();
+        } finally {
+            add.close();
+        }
         return rowCount;
     }
 
@@ -737,17 +734,23 @@ public class ArticoloDAO implements IArticoloDAO {
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         HashMap<Articolo, Integer> articoliInLista = new HashMap<>();
+        HashMap<Integer,Integer> idArticoliQuant = new HashMap<>();
         try {
             while(rs.next()) {
-                if (isProdotto(rs.getInt("Articolo_idArticolo"))){
-                    articoliInLista.put(loadProdotto(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
-                } else if (isProdottoComposito(rs.getInt("Articolo_idArticolo"))){
-                    articoliInLista.put(loadProdottoComposito(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
-                } else if (isServizio(rs.getInt("Articolo_idArticolo"))) {
-                    articoliInLista.put(loadServizio(rs.getInt("Articolo_idArticolo")), rs.getInt("quantita"));
+                idArticoliQuant.put(rs.getInt("Articolo_idArticolo"),rs.getInt("quantita"));
+            }
+            for (int id : idArticoliQuant.keySet()) {
+                if (isProdotto(id)){
+                    articoliInLista.put(loadProdotto(id),idArticoliQuant.get(id));
+                } else if (isProdottoComposito(id)){
+                    articoliInLista.put(loadProdottoComposito(id),idArticoliQuant.get(id));
+                } else if (isServizio(id)) {
+                    articoliInLista.put(loadServizio(id), idArticoliQuant.get(id));
                 }
-            }return articoliInLista;
-        } catch (SQLException e) {
+            }
+            return articoliInLista;
+        }
+        catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());
             System.out.println("SQLState: " + e.getSQLState());

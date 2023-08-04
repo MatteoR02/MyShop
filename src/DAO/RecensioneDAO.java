@@ -13,11 +13,12 @@ import java.util.List;
 
 public class RecensioneDAO implements IRecensioneDAO{
 
-    private static RecensioneDAO instance = new RecensioneDAO();
+    private static final RecensioneDAO instance = new RecensioneDAO();
     private Recensione recensione;
     private static ResultSet rs;
 
-    private final IFotoDAO fotoDAO = FotoDAO.getInstance();
+    private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
+    private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
     private RecensioneDAO(){
         recensione = null;
@@ -44,6 +45,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
+                recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
                 return recensione;
             }
         } catch (SQLException e) {
@@ -77,6 +79,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
+                recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
                 recensioni.add(recensione);
             } return recensioni;
         } catch (SQLException e) {
@@ -100,17 +103,23 @@ public class RecensioneDAO implements IRecensioneDAO{
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Recensione> recensioni = new ArrayList<>();
+        ArrayList<Integer> idRec = new ArrayList<>();
 
         try {
             while(rs.next()) {
-                recensione = new Recensione();
+                idRec.add(rs.getInt("idRecensione"));
+                /*recensione = new Recensione();
                 recensione.setId(rs.getInt("idRecensione"));
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
-                recensioni.add(recensione);
+                recensione.setCliente(utenteDAO.loadCliente(rs.getInt("Cliente_Utente_idUtente")));
+                recensioni.add(recensione);*/
+            }
+            for (int id : idRec) {
+                recensioni.add(loadRecensione(id));
             } return recensioni;
         } catch (SQLException e) {
             // handle any errors
@@ -143,6 +152,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
+                recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
                 recensioni.add(recensione);
             } return recensioni;
         } catch (SQLException e) {

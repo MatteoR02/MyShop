@@ -31,7 +31,7 @@ public class UtenteDAOTest {
     @Test
     public void checkCredentials(){
         IUtenteDAO utenteDAO = UtenteDAO.getInstance();
-        Assert.assertTrue(utenteDAO.checkCredentials("ale5","fede5"));
+        Assert.assertTrue(utenteDAO.checkCredentials("cliente","cliente"));
     }
 
     @Test

@@ -11,13 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProduttoreDAO implements IProduttoreDAO{
-    private static ProduttoreDAO instance = new ProduttoreDAO();
+    private static final ProduttoreDAO instance = new ProduttoreDAO();
     private Produttore produttore;
     private static ResultSet rs;
 
     public static int PRODUTTORE_DEFAULT_ID = 1;
 
-    private final ArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private ProduttoreDAO(){
         produttore = null;

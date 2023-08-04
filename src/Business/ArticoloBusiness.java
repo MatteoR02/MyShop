@@ -22,6 +22,8 @@ public class ArticoloBusiness {
     private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
     private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     private static final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
+    public enum TipoArticolo{PRODOTTO, PRODOTTO_COMPOSITO, SERVIZIO, NOT_ARTICLE}
+
 
     public static ExecuteResult<Articolo> getAllArticoli(){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
@@ -101,22 +103,22 @@ public class ArticoloBusiness {
 
     public static ExecuteResult<Articolo> getArticolo(int id){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
-        if(articoloCheckType(id) == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+        if(articoloCheckType(id) == TipoArticolo.SERVIZIO){
             result.setSingleObject(articoloDAO.loadServizio(id));
             result.setMessage("Servizio caricato!");
             result.setResult(ExecuteResult.ResultStatement.OK);
-        }else if(articoloCheckType(id) == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO){
+        }else if(articoloCheckType(id) == TipoArticolo.PRODOTTO){
             result.setSingleObject(articoloDAO.loadProdotto(id));
             result.setMessage("Prodotto!");
             result.setResult(ExecuteResult.ResultStatement.OK);
         }
-        if(articoloCheckType(id) == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(articoloCheckType(id) == TipoArticolo.PRODOTTO_COMPOSITO){
             result.reset();
             result.setSingleObject(articoloDAO.loadProdottoComposito(id));
             result.setMessage("Prodotto composito caricato!");
             result.setResult(ExecuteResult.ResultStatement.OK);
         }
-        if(articoloCheckType(id) != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && articoloCheckType(id) != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && articoloCheckType(id) != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(articoloCheckType(id) != TipoArticolo.SERVIZIO && articoloCheckType(id) != TipoArticolo.PRODOTTO && articoloCheckType(id) != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setMessage("Non è stato passato l'id di un articolo!");
         }
@@ -133,23 +135,23 @@ public class ArticoloBusiness {
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
-        NotWorking_ArticoloBusiness.TipoArticolo check = articoloCheckType(articolo.getId());
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO){
+        TipoArticolo check = articoloCheckType(articolo.getId());
+        if(check == TipoArticolo.PRODOTTO){
             Prodotto p = (Prodotto) articolo;
             articoloDAO.updateProdotto(p);
             result.setMessage("prodotto aggiornato!");
         }
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+        if(check == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
             articoloDAO.updateServizio(s);
             result.setMessage("Servizio aggiornato!");
         }
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(check == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito p = (ProdottoComposito) articolo;
             articoloDAO.updateProdotto(p);
             result.setMessage("Servizio aggiornato!");
         }
-        if(check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && check != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(check != TipoArticolo.PRODOTTO && check != TipoArticolo.SERVIZIO && check != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
@@ -162,8 +164,8 @@ public class ArticoloBusiness {
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
-        NotWorking_ArticoloBusiness.TipoArticolo check = articoloCheckType(articolo.getId());
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO){
+        TipoArticolo check = articoloCheckType(articolo.getId());
+        if(check == TipoArticolo.PRODOTTO){
             Prodotto p = (Prodotto) articolo;
             for (File file :imgFiles) {
                 Foto foto = new Foto();
@@ -173,17 +175,17 @@ public class ArticoloBusiness {
             articoloDAO.updateProdotto(p);
             result.setMessage("prodotto aggiornato!");
         }
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+        if(check == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
             articoloDAO.updateServizio(s);
             result.setMessage("Servizio aggiornato!");
         }
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(check == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito p = (ProdottoComposito) articolo;
             articoloDAO.updateProdotto(p);
             result.setMessage("Servizio aggiornato!");
         }
-        if(check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && check != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(check != TipoArticolo.PRODOTTO && check != TipoArticolo.SERVIZIO && check != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
@@ -191,27 +193,27 @@ public class ArticoloBusiness {
         return result;
     }
 
-    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, NotWorking_ArticoloBusiness.TipoArticolo tipoArticolo){
+    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO){
+        if(tipoArticolo == TipoArticolo.PRODOTTO){
             Prodotto p = (Prodotto) articolo;
             articolo.setId(articoloDAO.addProdotto(p));
             result.setMessage("prodotto aggiunto!");
         }
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+        if(tipoArticolo == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
             articoloDAO.addServizio(s);
             result.setMessage("Servizio aggiunto!");
         }
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(tipoArticolo == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito pc = (ProdottoComposito) articolo;
             articolo.setId(articoloDAO.addProdotto(pc));
             result.setMessage("Servizio aggiunto!");
         }
-        if(tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(tipoArticolo != TipoArticolo.PRODOTTO && tipoArticolo != TipoArticolo.SERVIZIO && tipoArticolo != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
@@ -223,12 +225,12 @@ public class ArticoloBusiness {
         return result;
     }
 
-    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, NotWorking_ArticoloBusiness.TipoArticolo tipoArticolo, ArrayList<File> imgFiles){
+    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo, ArrayList<File> imgFiles){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO){
+        if(tipoArticolo == TipoArticolo.PRODOTTO){
             Prodotto p = articoloDAO.loadProdotto(articoloDAO.addProdotto(articolo));
             for (File i:imgFiles) {
                 Foto foto = new Foto();
@@ -241,17 +243,17 @@ public class ArticoloBusiness {
             result.setMessage("prodotto aggiunto!");
 
         }
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+        if(tipoArticolo == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
             articoloDAO.addServizio(s);
             result.setMessage("Servizio aggiunto!");
         }
-        if(tipoArticolo == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(tipoArticolo == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito pc = (ProdottoComposito) articolo;
             articoloDAO.addProdotto(pc);
             result.setMessage("Servizio aggiunto!");
         }
-        if(tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && tipoArticolo != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(tipoArticolo != TipoArticolo.PRODOTTO && tipoArticolo != TipoArticolo.SERVIZIO && tipoArticolo != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
@@ -268,13 +270,13 @@ public class ArticoloBusiness {
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
-        NotWorking_ArticoloBusiness.TipoArticolo check = articoloCheckType(idArticolo);
-        if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO || check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO || check == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
-            if(check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO || check == NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        TipoArticolo check = articoloCheckType(idArticolo);
+        if(check == TipoArticolo.PRODOTTO || check == TipoArticolo.PRODOTTO_COMPOSITO || check == TipoArticolo.SERVIZIO){
+            if(check == TipoArticolo.PRODOTTO || check == TipoArticolo.PRODOTTO_COMPOSITO){
                 articoloDAO.removeProdotto(idArticolo);
                 result.setMessage("prodotto rimosso dal catalogo!");
             }
-            if(check == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+            if(check == TipoArticolo.SERVIZIO){
                 articoloDAO.removeServizio(idArticolo);
                 result.setMessage("Servizio rimosso dal catalogo!");
             }
@@ -285,7 +287,7 @@ public class ArticoloBusiness {
         }
 
 
-        if(check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO && check != NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO && check != NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+        if(check != TipoArticolo.PRODOTTO && check != TipoArticolo.SERVIZIO && check != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage("Id inserito non corrispondente ad un articolo!");
@@ -294,11 +296,11 @@ public class ArticoloBusiness {
     }
 
 
-    public static NotWorking_ArticoloBusiness.TipoArticolo articoloCheckType(int idArticolo){
-        if(articoloDAO.isProdottoComposito(idArticolo)) return NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO;
-        if(articoloDAO.isProdotto(idArticolo) || articoloDAO.isSottoProdotto(idArticolo)) return NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO;
-        if(articoloDAO.isServizio(idArticolo)) return NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO;
-        else return NotWorking_ArticoloBusiness.TipoArticolo.NOT_ARTICLE;
+    public static TipoArticolo articoloCheckType(int idArticolo){
+        if(articoloDAO.isProdottoComposito(idArticolo)) return TipoArticolo.PRODOTTO_COMPOSITO;
+        if(articoloDAO.isProdotto(idArticolo) || articoloDAO.isSottoProdotto(idArticolo)) return TipoArticolo.PRODOTTO;
+        if(articoloDAO.isServizio(idArticolo)) return TipoArticolo.SERVIZIO;
+        else return TipoArticolo.NOT_ARTICLE;
     }
 
     public static boolean isUndefined(String string){

@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ListaAcquisto {
 
-    public enum StatoPagamentoType{PAGATO, DA_PAGARE};
+    public enum StatoPagamentoType{PAGATO, DA_PAGARE}
 
     private int id;
     private String nome;

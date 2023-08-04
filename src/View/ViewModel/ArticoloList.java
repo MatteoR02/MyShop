@@ -25,9 +25,11 @@ public class ArticoloList extends JPanel {
         Font categoriaFont = new Font("Arial", Font.ITALIC, 18);
         Font labelFont = new Font("Arial", Font.PLAIN, 20);
 
+        String prezzoFormattato = String.format("%.2f", componente.getPrezzo());
+
         Insets insets = new Insets(5,10,5,10);
         JLabel nome = new JLabel(componente.getNomeArticolo());
-        JLabel prezzo = new JLabel(componente.getPrezzo() +"€",SwingConstants.RIGHT);
+        JLabel prezzo = new JLabel(prezzoFormattato +"€",SwingConstants.RIGHT);
         JLabel categoria = new JLabel(componente.getNomeCategoria());
         categoria.setFont(categoriaFont);
         nome.setFont(labelFont);

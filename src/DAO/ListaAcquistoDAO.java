@@ -1,6 +1,5 @@
 package DAO;
 
-import DbInterface.IDbConnection;
 import DbInterface.command.DbOperationExecutor;
 import DbInterface.command.IDbOperation;
 import DbInterface.command.ReadOperation;
@@ -11,17 +10,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 
 public class ListaAcquistoDAO implements IListaAcquistoDAO {
 
-    private static ListaAcquistoDAO instance = new ListaAcquistoDAO();
+    private static final ListaAcquistoDAO instance = new ListaAcquistoDAO();
     private ListaAcquisto listaAcquisto;
     private static ResultSet rs;
 
 
-    private final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
 
 
     private ListaAcquistoDAO() {
@@ -176,21 +175,29 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
 
     @Override
     public HashMap<Articolo, Integer> getArticoliFromLista(int idLista) {
+
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.listaacquisto_has_articolo WHERE ListaAcquisto_idListaAcquisto ='"+ idLista +"';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         HashMap<Articolo, Integer> articoliInLista = new HashMap<>();
+        HashMap<Integer,Integer> idArticoliQuant = new HashMap<>();
+
         try {
             while(rs.next()) {
-                if (articoloDAO.isProdotto(rs.getInt("Articolo_idArticolo"))){
-                    articoliInLista.put(articoloDAO.loadProdotto(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
-                } else if (articoloDAO.isProdottoComposito(rs.getInt("Articolo_idArticolo"))){
-                    articoliInLista.put(articoloDAO.loadProdottoComposito(rs.getInt("Articolo_idArticolo")),rs.getInt("quantita"));
-                } else if (articoloDAO.isServizio(rs.getInt("Articolo_idArticolo"))) {
-                    articoliInLista.put(articoloDAO.loadServizio(rs.getInt("Articolo_idArticolo")), rs.getInt("quantita"));
+                idArticoliQuant.put(rs.getInt("Articolo_idArticolo"),rs.getInt("quantita"));
+            }
+            System.out.println(idArticoliQuant);
+            for (int id : idArticoliQuant.keySet()) {
+                if (articoloDAO.isProdotto(id)){
+                    articoliInLista.put(articoloDAO.loadProdotto(id),idArticoliQuant.get(id));
+                } else if (articoloDAO.isProdottoComposito(id)){
+                    articoliInLista.put(articoloDAO.loadProdottoComposito(id),idArticoliQuant.get(id));
+                } else if (articoloDAO.isServizio(id)) {
+                    articoliInLista.put(articoloDAO.loadServizio(id), idArticoliQuant.get(id));
                 }
-            }return articoliInLista;
+            }
+            return articoliInLista;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());

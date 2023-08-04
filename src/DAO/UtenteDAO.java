@@ -19,10 +19,10 @@ public class UtenteDAO implements IUtenteDAO{
 
     public static int CLIENTE_DEFAULT_ID = 1;
 
-    private final IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
-    private final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
-    private final IMessaggioDAO messaggioDAO = MessaggioDAO.getInstance();
-    private final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
+    private static final IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
+    private static final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
+    private static final IMessaggioDAO messaggioDAO = MessaggioDAO.getInstance();
+    private static final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
 
     private UtenteDAO(){
         utente = null;
@@ -278,6 +278,45 @@ public class UtenteDAO implements IUtenteDAO{
     public Cliente loadCliente(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.utente as U INNER JOIN myshop.cliente as C on U.idUtente = C.Utente_idUtente WHERE U.username='" + username + "';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                cliente = new Cliente();
+                cliente.setId(rs.getInt("idUtente"));
+                cliente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
+                cliente.setUsername(rs.getString("username"));
+                cliente.setPassword(rs.getString("password"));
+                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                cliente.setProfessione(Cliente.ProfessioneType.valueOf(rs.getString("professione")));
+                cliente.setDataAbilitazione(rs.getDate("data_abilitazione"));
+                cliente.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(rs.getString("canale_preferito")));
+                cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
+                cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
+                cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
+                cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
+                return cliente;
+            }
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public Cliente loadCliente(int idCliente) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.utente as U INNER JOIN myshop.cliente as C on U.idUtente = C.Utente_idUtente WHERE U.idUtente='" + idCliente + "';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 

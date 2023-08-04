@@ -10,5 +10,9 @@
     <orderEntry type="library" name="weicoder.fork.mysql.connector.java.jdk11" level="project" />
     <orderEntry type="library" name="junit" level="project" />
     <orderEntry type="library" name="luuuis.jcalendar.tz" level="project" />
+    <orderEntry type="library" name="commons-logging-1.2" level="project" />
+    <orderEntry type="library" name="pdfbox-app-2.0.29" level="project" />
+    <orderEntry type="library" name="javax.mail" level="project" />
+    <orderEntry type="library" name="sun.activation.javax" level="project" />
   </component>
 </module>

@@ -13,6 +13,8 @@ public class ArticoloDAOTest {
     private IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
     private ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
     private IProduttoreDAO produttoreDAO = ProduttoreDAO.getInstance();
+    private IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
+    private IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
     private Prodotto prodotto;
     private ProdottoComposito prodottoComposito;
     private Categoria categoria;
@@ -21,7 +23,7 @@ public class ArticoloDAOTest {
 
     @Before
     public void setUp(){
-        categoria = categoriaDAO.loadCategoria(3);
+        /*categoria = categoriaDAO.loadCategoria(3);
         produttore = produttoreDAO.loadProduttore(1);
 
         prodottoComposito = new ProdottoComposito();
@@ -69,7 +71,7 @@ public class ArticoloDAOTest {
         servizio = new Servizio();
         servizio.setCategoria(categoria);
         servizio.setNome("ToDeleteS");
-        servizio.setPrezzo(999F);
+        servizio.setPrezzo(999F);*/
 
     }
 
@@ -106,6 +108,19 @@ public class ArticoloDAOTest {
         System.out.println(articoloDAO.loadAllArticoliFromPuntoVendita(2));
     }
 
+    @Test
+    public void loadAllRecOfArticoloTest(){
+        System.out.println(recensioneDAO.loadRecensioniOfArticolo(8));
+        //System.out.println(recensioneDAO.loadRecensioniOfCliente(6));
+    }
+
+    @Test
+    public void getAllArticoliOfLista(){
+       //System.out.println(listaAcquistoDAO.getArticoliFromLista(3));
+        //System.out.println(articoloDAO);
+        //System.out.println(listaAcquistoDAO);
+        System.out.println(produttoreDAO.loadAllProduttori());
+    }
 
 
 }

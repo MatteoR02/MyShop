@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class TestProdottoDAO {
     public static void main(String[] args) {
-        System.out.println("Stampo tutti i prodotti che ho nel database");
+        /*System.out.println("Stampo tutti i prodotti che ho nel database");
         ArticoloDAO articoloDAO = ArticoloDAO.getInstance();
         ArrayList<Articolo> prodotti = articoloDAO.loadAllProdotti();
         for (Articolo prodotto : prodotti){
@@ -17,7 +17,7 @@ public class TestProdottoDAO {
 
         System.out.println("Stampo prodotto composito");
         ProdottoComposito prodottoComposito = articoloDAO.loadProdottoComposito(11);
-        System.out.println(prodottoComposito);
+        System.out.println(prodottoComposito);*/
 
 
         /*System.out.println("Stampo tutti i produttori che ho nel database");

@@ -2,17 +2,11 @@ package View.Listeners;
 
 import Business.LoginResult;
 import Business.UtenteBusiness;
-import View.CatalogoPanel;
 import View.MainPage;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class LoginListener implements ActionListener {
 

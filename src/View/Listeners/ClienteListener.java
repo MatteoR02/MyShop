@@ -1,6 +1,9 @@
 package View.Listeners;
 
 import Business.*;
+import Business.Bridge.Documento;
+import Business.Bridge.DocumentoListaAcquisto;
+import Business.Bridge.PdfBoxAPI;
 import Model.Articolo;
 import Model.Cliente;
 import Model.ListaAcquisto;
@@ -19,7 +22,7 @@ public class ClienteListener implements ActionListener {
     public final static String TO_LISTE_BTN = "to_liste_btn";
     public final static String REMOVE_FROM_LISTA = "remove_from_lista";
     public final static String UPDATE_QUANTITY = "update_quantity";
-    public final static String PAY_LIST = "pay_list";
+    public final static String PRINT_LIST = "print_list";
     public final static String CREATE_NEW_LISTA = "create_new_lista";
     public final static String REMOVE_LISTA = "remove_lista";
     public final static String TO_CREATE_NEW_LISTA = "to_create_new_lista";
@@ -91,7 +94,9 @@ public class ClienteListener implements ActionListener {
             panel.repaint();
             panel.revalidate();
 
-        } else if(PAY_LIST.equals(action)){
+        } else if(PRINT_LIST.equals(action)){
+            Documento listaPDF = new DocumentoListaAcquisto(lista, new PdfBoxAPI());
+            listaPDF.invia(((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER)).getPersona().getEmail());
 
         } else if (REMOVE_FROM_LISTA.equals(action)){
             Map<RigaArticoloLista, Integer> mapArticoloLista = new HashMap<>();

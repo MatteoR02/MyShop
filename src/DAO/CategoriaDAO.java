@@ -19,7 +19,7 @@ public class CategoriaDAO implements ICategoriaDAO {
 
     public static int CATEGORIA_DEFAULT_ID = 1;
 
-    private final ArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private CategoriaDAO() {
         categoria = null;

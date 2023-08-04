@@ -34,11 +34,13 @@ public class ListaTableModel extends AbstractTableModel {
 
         RigaArticoloLista riga = righe.get(rowIndex);
 
+        String prezzoFormattato = String.format("%.2f", riga.getPrezzo());
+
         switch (columnIndex) {
             case 0: return riga.getIdArticolo();
             case 1: return riga.getNome();
             case 2: return riga.getQuantita();
-            case 3: return riga.getPrezzo();
+            case 3: return prezzoFormattato + " €";
             case 4: return riga.getCategoria();
             case 5: return riga.getProduttore();
             case 6: return riga.getSelezionato();
@@ -85,7 +87,7 @@ public class ListaTableModel extends AbstractTableModel {
         switch (columnIndex) {
             case 0: return "ID Prodotto";
             case 1: return "Nome";
-            case 2: return "Quantita'";
+            case 2: return "Quantità";
             case 3: return "Prezzo";
             case 4: return "Categoria";
             case 5: return "Produttore";

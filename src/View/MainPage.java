@@ -31,7 +31,7 @@ public class MainPage extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
 
-        ArticoloBusiness.getAllArticoli();
+
 
         ImageIcon icon = new ImageIcon("resources/appIcon.png");
         Image iconImage = icon.getImage();
@@ -74,6 +74,10 @@ public class MainPage extends JFrame {
     public void mostraCatalogo(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
+
+        if((SessionManager.getSession().get(SessionManager.ALL_ARTICOLI))==null){
+            ArticoloBusiness.getAllArticoli();
+        }
 
         paginaCorrente = PaginaCorrente.CATALOGO;
         CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this);

@@ -1,15 +1,18 @@
 package View;
 
 
+import Model.Recensione;
 import View.ViewModel.ComponenteCatalogo;
+import View.ViewModel.RecensioneList;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class InfoArticoloPanel extends JPanel {
 
     public InfoArticoloPanel(MainPage frame, ComponenteCatalogo comp){
-        this.setLayout(new BorderLayout());
+        this.setLayout(new GridLayout(2,1,5,5));
         Color sfondo = Color.WHITE;
         this.setBackground(sfondo);
         Font buttonFont = new Font("Arial", Font.PLAIN, 20);
@@ -18,6 +21,8 @@ public class InfoArticoloPanel extends JPanel {
 
 
         JPanel panelArticolo = new JPanel(new GridBagLayout());
+        JPanel panelRecensioni = new JPanel(new BorderLayout());
+
 
         ImageIcon imageIcon = comp.getImmagini().get(0);
 
@@ -26,8 +31,7 @@ public class InfoArticoloPanel extends JPanel {
         imageIcon = new ImageIcon(newimg);
         JLabel immagine = new JLabel(imageIcon);
 
-
-        JLabel titolo = new JLabel(comp.getTipoArticolo().toString());
+        //JLabel vuoto = new JLabel("");
 
         JLabel nomeArticolo = new JLabel(comp.getNomeArticolo());
         JLabel prezzo = new JLabel(comp.getPrezzo() +"€");
@@ -42,7 +46,7 @@ public class InfoArticoloPanel extends JPanel {
         backImageBtn.setPreferredSize(new Dimension(80,30));
 
 
-        //GridBagCostraintsHorizontal gbcTitolo = new GridBagCostraintsHorizontal(0,0,5,5,insets);
+        //GridBagCostraintsHorizontal gbcVuoto = new GridBagCostraintsHorizontal(4,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
 
         GridBagCostraintsHorizontal gbcImmagine = new GridBagCostraintsHorizontal(0,1,4,4,insets,0,0,GridBagConstraints.FIRST_LINE_START);
 
@@ -64,7 +68,7 @@ public class InfoArticoloPanel extends JPanel {
 
         GridBagCostraintsHorizontal gbcTitolo = new GridBagCostraintsHorizontal(0,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
 
-        //panelArticolo.add(titolo, gbcTitolo);
+        //panelArticolo.add(vuoto, gbcVuoto);
         panelArticolo.add(immagine,gbcImmagine);
         panelArticolo.add(nomeArticolo,gbcNomeArticolo);
         panelArticolo.add(prezzo,gbcPrezzo);
@@ -83,10 +87,26 @@ public class InfoArticoloPanel extends JPanel {
             }
         }
 
-        this.add(panelArticolo, BorderLayout.CENTER);
+        this.add(panelArticolo);
 
+        JPanel recensioniScrollPanel = new JPanel(new GridLayout(0,1,10,10));
 
+        ArrayList<Recensione> recensioni = (ArrayList<Recensione>) comp.getRecensioni();
+        for (Recensione rec: recensioni   ) {
+            RecensioneList recensioneList = new RecensioneList(rec,frame);
+            recensioniScrollPanel.add(recensioneList);
+        }
 
+        JScrollPane scrollPane = new JScrollPane(recensioniScrollPanel);
+        scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        panelRecensioni.add(scrollPane,BorderLayout.CENTER);
+
+        JLabel textRecensioni = new JLabel("Recensioni");
+        textRecensioni.setFont(new Font("Arial", Font.BOLD, 26));
+
+        panelRecensioni.add(textRecensioni,BorderLayout.NORTH);
+
+        this.add(panelRecensioni);
 
     }
 }

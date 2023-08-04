@@ -11,14 +11,14 @@ import java.util.List;
 
 public class MagazzinoDAO implements IMagazzinoDAO{
 
-    private static MagazzinoDAO instance = new MagazzinoDAO();
+    private static final MagazzinoDAO instance = new MagazzinoDAO();
     private Magazzino magazzino;
     private Collocazione collocazione;
     private static ResultSet rs;
 
     public static int MAGAZZINO_DEFAULT_ID = 1;
 
-    private final ArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private MagazzinoDAO(){
         collocazione = null;

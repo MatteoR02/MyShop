@@ -15,14 +15,14 @@ import java.util.List;
 
 public class PuntoVenditaDAO implements IPuntoVenditaDAO{
 
-    private static PuntoVenditaDAO instance = new PuntoVenditaDAO();
+    private static final PuntoVenditaDAO instance = new PuntoVenditaDAO();
     private PuntoVendita puntoVendita;
     private static ResultSet rs;
 
     public static int PUNTOVENDITA_DEFAULT_ID = 1;
 
-    private final IMagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
-    private final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IMagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
+    private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
     private PuntoVenditaDAO(){
         puntoVendita = null;
