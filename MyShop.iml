@@ -14,5 +14,6 @@
     <orderEntry type="library" name="pdfbox-app-2.0.29" level="project" />
     <orderEntry type="library" name="javax.mail" level="project" />
     <orderEntry type="library" name="sun.activation.javax" level="project" />
+    <orderEntry type="library" name="miglayout" level="project" />
   </component>
 </module>

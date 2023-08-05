@@ -187,7 +187,6 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
             while(rs.next()) {
                 idArticoliQuant.put(rs.getInt("Articolo_idArticolo"),rs.getInt("quantita"));
             }
-            System.out.println(idArticoliQuant);
             for (int id : idArticoliQuant.keySet()) {
                 if (articoloDAO.isProdotto(id)){
                     articoliInLista.put(articoloDAO.loadProdotto(id),idArticoliQuant.get(id));

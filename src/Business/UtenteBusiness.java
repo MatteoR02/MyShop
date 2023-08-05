@@ -204,6 +204,18 @@ public class UtenteBusiness {
         return flag;
     }
 
+    public static ExecuteResult<String> getClienteByID(int idCliente){
+        ExecuteResult<String> executeResult = new ExecuteResult<>();
+        String username = utenteDAO.findUsernameByID(idCliente);
+        if (checkRole(username) == TipoUtente.CLIENTE){
+            executeResult.setSingleObject(username);
+            executeResult.setResult(ExecuteResult.ResultStatement.OK);
+        } else {
+            executeResult.setResult(ExecuteResult.ResultStatement.NOT_OK);
+        }
+        return executeResult;
+    }
+
 
     public static TipoUtente checkRole(String username){
         if (utenteDAO.isAdmin(username)) {

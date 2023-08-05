@@ -97,8 +97,13 @@ public class InfoArticoloPanel extends JPanel {
             recensioniScrollPanel.add(recensioneList);
         }
 
+        for (int i = 0; i<4; i++) {
+            recensioniScrollPanel.add(new JPanel());
+        }
+
         JScrollPane scrollPane = new JScrollPane(recensioniScrollPanel);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panelRecensioni.add(scrollPane,BorderLayout.CENTER);
 
         JLabel textRecensioni = new JLabel("Recensioni");
