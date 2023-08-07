@@ -9,12 +9,13 @@ import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
 
 public class RecensioneList extends JPanel {
 
     public RecensioneList(Recensione recensione, MainPage frame){
         //this.setLayout(new GridBagLayout());
-        this.setLayout(new MigLayout("", "[] []push []", "[] [] [grow]"));
+        this.setLayout(new MigLayout("", "[]push []push []", "[] [] [grow]"));
         this.setBackground(Color.WHITE);
         this.setBorder(BorderFactory.createLineBorder(Color.black));
         Font titoloFont = new Font("Arial", Font.BOLD, 24);
@@ -45,6 +46,19 @@ public class RecensioneList extends JPanel {
         userIcon = new ImageIcon(userNewImg);
         JLabel userImm = new JLabel(userIcon);
 
+        JLabel data = new JLabel();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        if (recensione.getData() != null){
+            data = new JLabel(sdf.format(recensione.getData()) + " ", SwingConstants.RIGHT);
+            data.setFont(testoFont);
+
+        }
+
+        JButton modificaBtn = new JButton("Modifica");
+        JButton eliminaBtn = new JButton("Elimina");
+
 /*
         GridBagCostraintsHorizontal gbcUserImm = new GridBagCostraintsHorizontal(0,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
         GridBagCostraintsHorizontal gbcCliente = new GridBagCostraintsHorizontal(1,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
@@ -58,8 +72,9 @@ public class RecensioneList extends JPanel {
         this.add(valutazioneIMM, gbcValutazioneImm);
         this.add(testo,gbcTesto);*/
 
-        this.add(userImm, "cell 0 0");
-        this.add(cliente, "cell 0 0, split 2, wrap");
+        this.add(userImm, "cell 0 0, split 2");
+        this.add(cliente, "cell 0 0, wrap");
+        this.add(data, "cell 2 0, wrap");
         this.add(titolo, "cell 0 1");
         this.add(valutazioneIMM, "cell 2 1, gapleft push, wrap");
         this.add(testo, "span, growx");

@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import static Business.NotWorking_ArticoloBusiness.hasNoFoto;
-import static Business.NotWorking_ArticoloBusiness.setDefaultFoto;
+import static Business.ArticoloBusiness.hasNoFoto;
+import static Business.ArticoloBusiness.setDefaultFoto;
 
 public class ListaAcquistoBusiness {
 
@@ -159,12 +159,12 @@ public class ListaAcquistoBusiness {
                         idArticoli.add(art.getId());
                     }
                         if (!listaAcquisto.getArticoli().containsKey(articolo)) {
-                            if(NotWorking_ArticoloBusiness.articoloCheckType(articolo.getId()) == NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO) quantita=1;
+                            if(ArticoloBusiness.articoloCheckType(articolo.getId()) == ArticoloBusiness.TipoArticolo.SERVIZIO) quantita=1;
                             listaAcquisto.getArticoli().put(articolo,quantita);
                             result.setMessage("Articolo '" + articolo.getNome() + "' aggiunto alla lista '" + listaAcquisto.getNome() +"'");
                             result.setResult(ExecuteResult.ResultStatement.OK);
                             listaAcquistoDAO.insertArticoloInLista(listaAcquisto.getId(),articolo.getId(),quantita);
-                        } else if (NotWorking_ArticoloBusiness.articoloCheckType(articolo.getId())== NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO){
+                        } else if (ArticoloBusiness.articoloCheckType(articolo.getId())== ArticoloBusiness.TipoArticolo.SERVIZIO){
                                 if (quantita < 0 ){
                                     listaAcquistoDAO.removeArticoloInLista(listaAcquisto.getId(),articolo.getId());
                                     listaAcquisto.getArticoli().remove(articolo);

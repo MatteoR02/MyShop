@@ -1,6 +1,6 @@
 package View;
 
-import Business.NotWorking_ArticoloBusiness;
+import Business.ArticoloBusiness;
 import Business.SessionManager;
 import Model.Articolo;
 import Model.Prodotto;
@@ -32,22 +32,22 @@ public class CatalogoPanel extends JPanel {
         if ( ((JPanel) SessionManager.getSession().get(SessionManager.CATALOGO_VIEW)).getComponents().length==0   ){
 
             for (Articolo articolo : articoli ) {
-                if(!NotWorking_ArticoloBusiness.isUndefined(articolo.getNome())){
+                if(!ArticoloBusiness.isUndefined(articolo.getNome())){
                     ComponenteCatalogo componenteCatalogo = new ComponenteCatalogo();
                     componenteCatalogo.setId(articolo.getId());
                     componenteCatalogo.setNomeArticolo(articolo.getNome());
                     componenteCatalogo.setPrezzo(articolo.getPrezzo());
                     componenteCatalogo.setNomeCategoria(articolo.getCategoria().getNome());
-                    componenteCatalogo.setDefaultImmagine(NotWorking_ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
+                    componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
                     componenteCatalogo.setNomeProduttore("MyShop");
                     componenteCatalogo.setRecensioni(articolo.getRecensioni());
                     if (articolo instanceof Prodotto){
-                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO);
+                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO);
                         componenteCatalogo.setNomeProduttore(((Prodotto) articolo).getProduttore().getNome());
                     } else if (articolo instanceof ProdottoComposito){
-                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
+                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
                     } else if (articolo instanceof Servizio){
-                        componenteCatalogo.setTipoArticolo(NotWorking_ArticoloBusiness.TipoArticolo.SERVIZIO);
+                        componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.SERVIZIO);
                     }
 
                     componenti.add(componenteCatalogo);

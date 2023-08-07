@@ -6,6 +6,8 @@ import java.util.List;
 
 public interface IRecensioneDAO {
 
+    boolean isRecensione(int idRecensione);
+
     Recensione loadRecensione(int idRecensione);
     List<Recensione> loadAllRecensioni();
     List<Recensione> loadRecensioniOfArticolo(int idArticolo);

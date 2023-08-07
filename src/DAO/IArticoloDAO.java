@@ -30,6 +30,8 @@ public interface IArticoloDAO {
 
     ArrayList<Articolo> loadAllArticoliFromPuntoVendita(int idPuntoVendita);
 
+    //boolean isArticoloBoughtFromCliente(int idArticolo, int idCliente);
+
     int setFKCategoriaToDefault(int idCategoria);
     int setFKMagazzinoToDefault(int idMagazzino);
     int setFKProduttoreToDefault(int idProduttore);

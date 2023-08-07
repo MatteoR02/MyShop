@@ -29,6 +29,29 @@ public class RecensioneDAO implements IRecensioneDAO{
     }
 
     @Override
+    public boolean isRecensione(int idRecensione) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+
+        String sql = "SELECT count(*) AS count FROM myshop.recensione WHERE idRecensione ='" + idRecensione + "';";
+
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                int count = rs.getInt("count");
+                return count == 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            readOp.close();
+        }
+        return false;
+    }
+
+    @Override
     public Recensione loadRecensione(int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.recensione WHERE idRecensione = '" + idRecensione + "';";
@@ -103,24 +126,20 @@ public class RecensioneDAO implements IRecensioneDAO{
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Recensione> recensioni = new ArrayList<>();
-        ArrayList<Integer> idRec = new ArrayList<>();
 
         try {
             while(rs.next()) {
-                idRec.add(rs.getInt("idRecensione"));
-                /*recensione = new Recensione();
+                recensione = new Recensione();
                 recensione.setId(rs.getInt("idRecensione"));
                 recensione.setTitolo(rs.getString("titolo"));
                 recensione.setTesto(rs.getString("testo"));
                 recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
-                recensione.setCliente(utenteDAO.loadCliente(rs.getInt("Cliente_Utente_idUtente")));
-                recensioni.add(recensione);*/
+                recensione.setIdCliente((rs.getInt("Cliente_Utente_idUtente")));
+                recensioni.add(recensione);
             }
-            for (int id : idRec) {
-                recensioni.add(loadRecensione(id));
-            } return recensioni;
+            return recensioni;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());
@@ -212,8 +231,10 @@ public class RecensioneDAO implements IRecensioneDAO{
                 preparedStatement.setInt(6, idArticolo);
                 rowCountRecensione = preparedStatement.executeUpdate();
                 preparedStatement.close();
-                for ( Foto foto : recensione.getImmagini()) {
-                    rowCountFotoRecensione += fotoDAO.addFotoToRecensione(foto, recensione.getId());
+                if (recensione.getImmagini()!= null){
+                    for ( Foto foto : recensione.getImmagini()) {
+                        rowCountFotoRecensione += fotoDAO.addFotoToRecensione(foto, recensione.getId());
+                    }
                 }
                 return rowCountRecensione + rowCountFotoRecensione;
             }

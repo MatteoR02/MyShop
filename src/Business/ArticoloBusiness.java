@@ -295,6 +295,41 @@ public class ArticoloBusiness {
         return result;
     }
 
+    public static ExecuteResult<Boolean> isArticoloBoughtFrom(int idArticolo, int idCliente){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+
+        Cliente c = utenteDAO.loadCliente(idCliente);
+        Articolo a = new Articolo();
+
+        if (articoloCheckType(idArticolo) == TipoArticolo.PRODOTTO){
+            a = articoloDAO.loadProdotto(idArticolo);
+        } else if (articoloCheckType(idArticolo) == TipoArticolo.PRODOTTO_COMPOSITO){
+            a = articoloDAO.loadProdottoComposito(idArticolo);
+        } else if (articoloCheckType(idArticolo) == TipoArticolo.SERVIZIO){
+            a = articoloDAO.loadServizio(idArticolo);
+        } else {
+            result.setSingleObject(false);
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("C'è stato un problema nel trovare l'articolo");
+            return result;
+        }
+
+        ArrayList<ListaAcquisto> listeCliente = (ArrayList<ListaAcquisto>) c.getListeAcquisto();
+
+        for (ListaAcquisto lista : listeCliente) {
+            if (lista.getArticoli().containsKey(a) && lista.getStatoPagamento() == ListaAcquisto.StatoPagamentoType.PAGATO){
+                result.setSingleObject(true);
+                result.setResult(ExecuteResult.ResultStatement.OK);
+                result.setMessage("L'articolo "+ a.getNome()+ " è stato acquistato dal cliente " + c.getUsername());
+                return result;
+            }
+        }
+        result.setSingleObject(false);
+        result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
+        result.setMessage("L'articolo "+ a.getNome()+ " NON è stato acquistato dal cliente " + c.getUsername());
+        return result;
+    }
+
 
     public static TipoArticolo articoloCheckType(int idArticolo){
         if(articoloDAO.isProdottoComposito(idArticolo)) return TipoArticolo.PRODOTTO_COMPOSITO;

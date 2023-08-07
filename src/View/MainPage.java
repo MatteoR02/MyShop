@@ -142,10 +142,10 @@ public class MainPage extends JFrame {
         validate();
     }
 
-    public void mostraArticolo(ComponenteCatalogo comp){
+    public void mostraArticolo(ComponenteCatalogo comp, boolean ordinato, ArrayList<Recensione> recensioni){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new InfoArticoloPanel(this, comp));
+        centro.add(new InfoArticoloPanel(this, comp, ordinato, recensioni));
         paginaCorrente = PaginaCorrente.ARTICOLO;
         repaint();
         validate();

@@ -47,13 +47,12 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
                 int count = rs.getInt("count");
                 return count == 1;
             }
-            return false;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         } finally {
             readOp.close();
         }
+        return false;
     }
 
     @Override

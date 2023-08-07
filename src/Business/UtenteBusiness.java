@@ -95,7 +95,7 @@ public class UtenteBusiness {
     public static boolean uploadFoto(File img, int idArticolo){
         try {
             Foto foto = new Foto();
-            foto.setImmagine(NotWorking_ArticoloBusiness.imgToBlob(img));
+            foto.setImmagine(ArticoloBusiness.imgToBlob(img));
             FotoDAO.getInstance().addFotoToArticolo(foto,idArticolo);
             return true;
         } catch (Exception e) {
@@ -141,7 +141,7 @@ public class UtenteBusiness {
             ArrayList<Cliente> clienti = utenteDAO.loadAllClientiOfPV(id);
 
             result.setObject(clienti);
-            if(NotWorking_ArticoloBusiness.isUndefined(result.getObjectFromArray(0).getUsername())){
+            if(ArticoloBusiness.isUndefined(result.getObjectFromArray(0).getUsername())){
                 result.removeFromArray(0);
             }
             result.setMessage("L'id inserito corrisponde ad un punto vendita.");
@@ -173,7 +173,7 @@ public class UtenteBusiness {
         Cliente cliente = utenteDAO.loadCliente(utenteDAO.findUsernameByID(idCliente));
         if(checkRole(cliente.getUsername()) == TipoUtente.CLIENTE){
             if (cliente.getStato() == Cliente.StatoUtenteType.ABILITATO){
-                if(!NotWorking_ArticoloBusiness.isUndefined(cliente.getUsername())){
+                if(!ArticoloBusiness.isUndefined(cliente.getUsername())){
                     utenteDAO.blockCliente(cliente.getUsername());
                     flag = true;
                 }
@@ -191,7 +191,7 @@ public class UtenteBusiness {
         Cliente cliente = utenteDAO.loadCliente(utenteDAO.findUsernameByID(idCliente));
         if(checkRole(cliente.getUsername()) == TipoUtente.CLIENTE){
             if (!(cliente.getStato() == statoCliente)){
-                if(!NotWorking_ArticoloBusiness.isUndefined(cliente.getUsername())){
+                if(!ArticoloBusiness.isUndefined(cliente.getUsername())){
                     utenteDAO.changeClienteStatus(cliente.getUsername(), statoCliente);
                     flag = true;
                 }
