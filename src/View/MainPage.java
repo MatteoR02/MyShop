@@ -71,7 +71,7 @@ public class MainPage extends JFrame {
         this.setVisible(true);
     }
 
-    public void mostraCatalogo(){
+    public void mostraCatalogo(boolean ordinato){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
 
@@ -80,7 +80,7 @@ public class MainPage extends JFrame {
         }
 
         paginaCorrente = PaginaCorrente.CATALOGO;
-        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this);
+        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this, ordinato);
         centro.add(catalogoPanel);
         repaint();
         validate();

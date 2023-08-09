@@ -17,6 +17,9 @@ public class ManagerListener implements ActionListener {
     public final static String GESTISCI_CLIENTI_BTN = "gestisci_clienti_btn";
     public final static String BLOCK_CLIENTE = "block_cliente";
     public final static String UNLOCK_CLIENTE = "unlock_cliente";
+    public final static String RISPONDI_RECENSIONE = "rispondi_recensione";
+    public final static String REMOVE_RECENSIONE = "remove_recensione";
+    public final static String GESTISCI_QUANTITA = "gestisci quantità";
    // public final static String
    // public final static String
 
@@ -42,7 +45,7 @@ public class ManagerListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         if (GESTISCI_ART_BTN.equals(action)) {
-            frame.mostraCatalogo();
+            frame.mostraCatalogo(false);
         } else if(GESTISCI_CLIENTI_BTN.equals(action)){
             frame.mostraClientiTable();
         } else if(BLOCK_CLIENTE.equals(action)){

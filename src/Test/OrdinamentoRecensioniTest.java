@@ -1,9 +1,9 @@
 package Test;
 
-import Business.Strategy.IOrdinamentoRecensioneStrategy;
-import Business.Strategy.OrdinamentoRecensioni;
-import Business.Strategy.RecensioniMiglioriStrategy;
-import Business.Strategy.RecensioniRecentiStrategy;
+import Business.Strategy.OrdinamentoRecensioni.IOrdinamentoRecensioneStrategy;
+import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
+import Business.Strategy.OrdinamentoRecensioni.RecensioniMiglioriStrategy;
+import Business.Strategy.OrdinamentoRecensioni.RecensioniRecentiStrategy;
 import Model.Recensione;
 import org.junit.After;
 import org.junit.Assert;
@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 

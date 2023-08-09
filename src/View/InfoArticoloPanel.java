@@ -3,8 +3,14 @@ package View;
 
 import Business.ExecuteResult;
 import Business.RecensioneBusiness;
-import Business.Strategy.OrdinamentoRecensioni;
+import Business.SessionManager;
+import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
+import Model.Cliente;
+import Model.Manager;
 import Model.Recensione;
+import Model.Utente;
+import View.Decorator.*;
+import View.Decorator.Menu;
 import View.Listeners.CatalogoListener;
 import View.ViewModel.ComponenteCatalogo;
 import View.ViewModel.RecensioneList;
@@ -51,40 +57,6 @@ public class InfoArticoloPanel extends JPanel {
         nextImageBtn.setFocusPainted(false);
         backImageBtn.setFocusPainted(false);
 
-
-        //GridBagCostraintsHorizontal gbcVuoto = new GridBagCostraintsHorizontal(4,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-       /* GridBagCostraintsHorizontal gbcImmagine = new GridBagCostraintsHorizontal(0,1,4,4,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcNomeArticolo = new GridBagCostraintsHorizontal(4,1,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcPrezzo = new GridBagCostraintsHorizontal(4,2,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcNomeCategoria = new GridBagCostraintsHorizontal(4,3,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcNomeProduttore = new GridBagCostraintsHorizontal(4,4,1,1,insets,1,0,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcNextImageBtn = new GridBagCostraintsHorizontal(3,5,1,1,insets,0,1,GridBagConstraints.FIRST_LINE_START);
-        gbcNextImageBtn.ipadx = 60;
-
-        GridBagCostraintsHorizontal gbcBackImageBtn = new GridBagCostraintsHorizontal(0,5,1,1,insets,0,1,GridBagConstraints.FIRST_LINE_START);
-        gbcBackImageBtn.ipadx = 60;
-
-        //GridBagCostraintsHorizontal gbcBtn = new GridBagCostraintsHorizontal(1,5,1,1,insets,0,1,GridBagConstraints.FIRST_LINE_START);
-
-        GridBagCostraintsHorizontal gbcTitolo = new GridBagCostraintsHorizontal(0,0,1,1,insets,0,0,GridBagConstraints.FIRST_LINE_START);
-
-        //panelInfo.add(vuoto, gbcVuoto);
-        panelInfo.add(immagine,gbcImmagine);
-        panelInfo.add(nomeArticolo,gbcNomeArticolo);
-        panelInfo.add(prezzo,gbcPrezzo);
-        panelInfo.add(nomeCategoria,gbcNomeCategoria);
-        panelInfo.add(nomeProduttore,gbcNomeProduttore);
-        //panelInfo.add(new JLabel(""), gbcVuoto);
-        panelInfo.add(backImageBtn, gbcBackImageBtn);
-        panelInfo.add(nextImageBtn, gbcNextImageBtn);
-       // panelInfo.add(new JButton("Button"),gbcBtn);*/
-
         panelInfo.add(immagine, "cell 0 0 4 5");
         panelInfo.add(nomeArticolo, "cell 4 0, wrap");
         panelInfo.add(prezzo, " cell 4 1, wrap");
@@ -107,22 +79,25 @@ public class InfoArticoloPanel extends JPanel {
         JPanel panelBottoni = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         panelBottoni.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
-        JButton addToListaBtn = new JButton("Aggiungi alla lista");
-        JButton recensisciBtn = new JButton("Lascia una recensione");
+        Utente u = (Utente) (SessionManager.getSession().get(SessionManager.LOGGED_USER));
+            if (u instanceof Cliente || u == null) {
 
-        addToListaBtn.setFocusPainted(false);
-        recensisciBtn.setFocusPainted(false);
+                    Menu clienteInfoArticoloMenu = new ClienteInfoArticoloMenu(frame, comp);
 
-        panelBottoni.add(addToListaBtn);
-        panelBottoni.add(recensisciBtn);
+                    for (JButton button : clienteInfoArticoloMenu.getPulsanti()   ) {
+                        button.setFocusPainted(false);
+                        panelBottoni.add(button);
+                    }
+            } if (u instanceof Manager){
+                Manager m = (Manager) u;
+                Menu managerInfoArticoloMenu = new ManagerInfoArticoloMenu(frame,comp);
 
-        CatalogoListener catalogoListener = new CatalogoListener(frame, comp);
+                for (JButton button : managerInfoArticoloMenu.getPulsanti()   ) {
+                    button.setFocusPainted(false);
+                    panelBottoni.add(button);
+                }
+            }
 
-        addToListaBtn.setActionCommand(CatalogoListener.TO_ADD_BTN);
-        addToListaBtn.addActionListener(catalogoListener);
-
-        recensisciBtn.setActionCommand(CatalogoListener.TO_ADD_RECENSIONE);
-        recensisciBtn.addActionListener(catalogoListener);
 
         panelArticolo.add(panelBottoni, BorderLayout.SOUTH);
 
@@ -135,12 +110,12 @@ public class InfoArticoloPanel extends JPanel {
         if (!ordinato){
             ArrayList<Recensione> recensioni = resultRec.getObject();
             for (Recensione rec: recensioni) {
-                RecensioneList recensioneList = new RecensioneList(rec,frame);
+                RecensioneList recensioneList = new RecensioneList(rec, comp, frame);
                 recensioniScrollPanel.add(recensioneList);
             }
         } else {
             for (Recensione rec : listaRecensioni) {
-                RecensioneList recensioneList = new RecensioneList(rec, frame);
+                RecensioneList recensioneList = new RecensioneList(rec, comp, frame);
                 recensioniScrollPanel.add(recensioneList);
             }
         }
@@ -171,7 +146,7 @@ public class InfoArticoloPanel extends JPanel {
         ordinaBtn.setActionCommand(CatalogoListener.SORT_RECENSIONI);
         ordinaBtn.addActionListener(catalogoListenerSort);
 
-        //ordinaBtn.setActionCommand();
+        ordinaBtn.setFocusPainted(false);
 
         panelNordRecensioni.add(textRecensioni,"cell 0 0");
         panelNordRecensioni.add(ordinamento, "cell 1 0");

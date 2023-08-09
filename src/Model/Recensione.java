@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Recensione {
 
-    public enum Punteggio{ECCELLENTE, BUONO, MEDIOCRE, SCARSO, ORRIBILE};
+    public enum Punteggio{ECCELLENTE, BUONO, MEDIOCRE, SCARSO, ORRIBILE}
 
     private int id;
     private String titolo;
@@ -82,6 +82,22 @@ public class Recensione {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public int punteggioToInteger(Punteggio punteggio){
+        int voto = 0;
+        switch (valutazione){
+            case ORRIBILE -> voto = 1;
+            case SCARSO -> voto = 2;
+            case MEDIOCRE -> voto = 3;
+            case BUONO -> voto = 4;
+            case ECCELLENTE -> voto = 5;
+        }
+        return voto;
+    }
+
+    public int getPunteggioInInteger(){
+        return punteggioToInteger(this.valutazione);
     }
 
     @Override

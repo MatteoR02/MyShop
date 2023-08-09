@@ -1,10 +1,11 @@
 package View.Listeners;
 
 import Business.*;
-import Business.Strategy.IOrdinamentoRecensioneStrategy;
-import Business.Strategy.OrdinamentoRecensioni;
-import Business.Strategy.RecensioniMiglioriStrategy;
-import Business.Strategy.RecensioniRecentiStrategy;
+import Business.Strategy.OrdinamentoArticoli.*;
+import Business.Strategy.OrdinamentoRecensioni.IOrdinamentoRecensioneStrategy;
+import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
+import Business.Strategy.OrdinamentoRecensioni.RecensioniMiglioriStrategy;
+import Business.Strategy.OrdinamentoRecensioni.RecensioniRecentiStrategy;
 import Model.Articolo;
 import Model.Cliente;
 import Model.ListaAcquisto;
@@ -19,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class CatalogoListener implements ActionListener {
 
@@ -27,7 +29,10 @@ public class CatalogoListener implements ActionListener {
     public final static String ADD_TO_LISTA_BTN = "add_to_lista_btn";
     public final static String TO_ADD_RECENSIONE = "to_add_recensione";
     public final static String ADD_RECENSIONE = "add_recensione";
+    public final static String DELETE_RECENSIONE = "delete_recensione";
+    public final static String MODIFY_RECENSIONE = "modify_recensione";
     public final static String SORT_RECENSIONI = "sort_recensioni";
+    public final static String SORT_CATALOGO = "sort_catalogo";
 
 
 
@@ -39,16 +44,27 @@ public class CatalogoListener implements ActionListener {
     private JTextField fieldTitolo;
     private JTextArea fieldTesto;
     private JSlider sliderValutazione;
-    private ArrayList<Recensione> recensioni;
+    private ArrayList<Recensione> listaRecensioni;
     private JComboBox ordinamentoStrategy;
+    private Recensione recensione;
 
     public CatalogoListener(MainPage frame) {
         this.frame = frame;
     }
 
-    public CatalogoListener(ArrayList<Recensione> recensioni, JComboBox ordinamentoStrategy, ComponenteCatalogo comp) {
+    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, Recensione recensione){
+        this.frame = frame;
         this.comp = comp;
-        this.recensioni = recensioni;
+        this.recensione = recensione;
+    }
+
+    public CatalogoListener(JComboBox ordinamentoStrategy){
+        this.ordinamentoStrategy = ordinamentoStrategy;
+    }
+
+    public CatalogoListener(ArrayList<Recensione> listaRecensioni, JComboBox ordinamentoStrategy, ComponenteCatalogo comp) {
+        this.comp = comp;
+        this.listaRecensioni = listaRecensioni;
         this.ordinamentoStrategy = ordinamentoStrategy;
     }
 
@@ -80,7 +96,6 @@ public class CatalogoListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         if (VIEW_ART_BTN.equals(action)) {
-            System.out.println("Hai visualizzato l'articolo");
             frame.mostraArticolo(comp, false, null);
         } else if (TO_ADD_BTN.equals(action)) {
             Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
@@ -106,6 +121,8 @@ public class CatalogoListener implements ActionListener {
             Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
             if (c == null) {
                 JOptionPane.showMessageDialog(frame, "Devi prima effettuare l'accesso", "Accesso non effettuato", JOptionPane.ERROR_MESSAGE);
+            } else if (!ArticoloBusiness.isArticoloBoughtFrom(comp.getId(), c.getId()).getSingleObject()){
+                JOptionPane.showMessageDialog(frame, "Non puoi recensire un articolo che non hai acquistato", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else {
                 AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp);
             }
@@ -125,7 +142,7 @@ public class CatalogoListener implements ActionListener {
                 frame.mostraArticolo(comp, false, null);
             }
         } else if (SORT_RECENSIONI.equals(action)){
-            OrdinamentoRecensioni ordinamentoRecensioni = new OrdinamentoRecensioni(recensioni);
+            OrdinamentoRecensioni ordinamentoRecensioni = new OrdinamentoRecensioni(listaRecensioni);
             IOrdinamentoRecensioneStrategy strategy = new RecensioniRecentiStrategy();
             OrdinamentoRecensioni.Ordinamento ordinamento = (OrdinamentoRecensioni.Ordinamento) ordinamentoStrategy.getSelectedItem();
             switch (ordinamento){
@@ -135,7 +152,29 @@ public class CatalogoListener implements ActionListener {
             ordinamentoRecensioni.setOrdinamentoRecensioneStrategy(strategy);
             ordinamentoRecensioni.ordina();
 
-            frame.mostraArticolo(comp, true, recensioni);
+            frame.mostraArticolo(comp, true, listaRecensioni);
+
+        } else if (SORT_CATALOGO.equals(action)){
+            OrdinamentoArticoli ordinamentoArticoli = new OrdinamentoArticoli((List<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI));
+            IOrdinamentoArticoliStrategy strategy = new ArticoliPiuVotatiStrategy();
+            OrdinamentoArticoli.Ordinamento ordinamento = (OrdinamentoArticoli.Ordinamento) ordinamentoStrategy.getSelectedItem();
+            switch (ordinamento) {
+                case PIU_VOTATI -> strategy = new ArticoliPiuVotatiStrategy();
+                case PREZZO_PIU_ALTO -> strategy = new ArticoliPrezzoAltoStrategy();
+                case PREZZO_PIU_BASSO -> strategy = new ArticoliPrezzoBassoStrategy();
+                case ORDINE_ALFABETICO -> strategy = new ArticoliOrdineAlfabeticoStrategy();
+            }
+            ordinamentoArticoli.setOrdinamentoArticoliStrategy(strategy);
+            ordinamentoArticoli.ordina();
+
+            frame.mostraCatalogo(true);
+        } else if (DELETE_RECENSIONE.equals(action)){
+            int input = JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare la recensione?", "Eliminare recensione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (input==0){
+                ExecuteResult<Boolean> result = RecensioneBusiness.removeRecensione(recensione.getId());
+                JOptionPane.showMessageDialog(frame,"Recensione eliminata", "Recensione eliminata", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraArticolo(comp, false, null);
+            }
         }
 
     }

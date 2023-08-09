@@ -66,10 +66,10 @@ public class LoginListener implements ActionListener {
             frame.mostraRegister();
         } else if (CATALOGO_BTN.equals(action)) {
             //Visualizza catalogo Guest
-            frame.mostraCatalogo();
+            frame.mostraCatalogo(false);
         } else if (BACK_BTN.equals(action)){
             if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.ARTICOLO){
-                frame.mostraCatalogo();
+                frame.mostraCatalogo(false);
             } else if(frame.getPaginaCorrente() == MainPage.PaginaCorrente.CATALOGO){
                frame.mostraMain();
             }  else{

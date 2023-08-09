@@ -22,21 +22,14 @@ public class GuestMenu extends Menu {
         JButton registerBtn = new JButton("Registrati");
         registerBtn.setActionCommand(LoginListener.REGISTER_BTN);
 
-
-
         LoginListener loginListener = new LoginListener(frame);
         sfogliaCatBtn.addActionListener(loginListener);
         loginBtn.addActionListener(loginListener);
         registerBtn.addActionListener(loginListener);
 
-
-
-
         pulsanti.add(sfogliaCatBtn);
         pulsanti.add(loginBtn);
         pulsanti.add(registerBtn);
-
-
 
     }
 }

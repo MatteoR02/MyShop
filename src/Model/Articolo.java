@@ -78,6 +78,21 @@ public class Articolo {
         this.categoria = categoria;
     }
 
+    public int getPunteggioTotale(){
+        int punteggioTotale = 0;
+        for (Recensione rec: recensioni  ) {
+            punteggioTotale += rec.getPunteggioInInteger();
+        }
+        return punteggioTotale;
+    }
+
+    public Float getMediaRecensioni(){
+        if (recensioni.isEmpty()) return 0.0f;
+        if (this.getPunteggioTotale() == 0) return 0.0f;
+        Float media = 1.0f * this.getPunteggioTotale() / recensioni.toArray().length;
+        return media;
+    }
+
 
     @Override
     public boolean equals(Object o) {
