@@ -38,7 +38,7 @@ public class ListaTablePanel extends JPanel {
             riga.setSelezionato(false);
 
             if(entry.getKey() instanceof Prodotto){
-                riga.setProduttore(((Prodotto) entry.getKey()).getProduttore().getNome());
+                riga.setProduttore(((Prodotto) entry.getKey()).getErogatore().getNome());
             }
             righe.add(riga);
         }

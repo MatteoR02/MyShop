@@ -8,21 +8,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComponenteCatalogo {
-    private int id;
+    private int idArticolo;
     private String nomeArticolo;
+    private String descrizioneArticolo;
     private float prezzo;
     private String nomeCategoria;
-    private String nomeProduttore;
+    private String nomeErogatore;
     private ArticoloBusiness.TipoArticolo tipoArticolo;
     private List<ImageIcon> immagini = new ArrayList<>();
     private List<Recensione> recensioni = new ArrayList<>();
 
-    public int getId() {
-        return id;
+    public int getIdArticolo() {
+        return idArticolo;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdArticolo(int idArticolo) {
+        this.idArticolo = idArticolo;
     }
 
     public String getNomeArticolo() {
@@ -31,6 +32,14 @@ public class ComponenteCatalogo {
 
     public void setNomeArticolo(String nomeArticolo) {
         this.nomeArticolo = nomeArticolo;
+    }
+
+    public String getDescrizioneArticolo() {
+        return descrizioneArticolo;
+    }
+
+    public void setDescrizioneArticolo(String descrizioneArticolo) {
+        this.descrizioneArticolo = descrizioneArticolo;
     }
 
     public float getPrezzo() {
@@ -62,12 +71,12 @@ public class ComponenteCatalogo {
         immagini.set(0, immagine);
     }
 
-    public String getNomeProduttore() {
-        return nomeProduttore;
+    public String getNomeErogatore() {
+        return nomeErogatore;
     }
 
-    public void setNomeProduttore(String nomeProduttore) {
-        this.nomeProduttore = nomeProduttore;
+    public void setNomeErogatore(String nomeErogatore) {
+        this.nomeErogatore = nomeErogatore;
     }
 
     public List<Recensione> getRecensioni() {

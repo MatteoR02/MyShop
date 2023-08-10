@@ -1,12 +1,8 @@
 package View;
 
 import Business.ArticoloBusiness;
-import Business.SessionManager;
 import Business.Strategy.OrdinamentoArticoli.OrdinamentoArticoli;
-import Model.Articolo;
-import Model.Prodotto;
-import Model.ProdottoComposito;
-import Model.Servizio;
+import Model.*;
 import View.Listeners.CatalogoListener;
 import View.ViewModel.*;
 import net.miginfocom.swing.MigLayout;
@@ -69,16 +65,24 @@ public class CatalogoPanel extends JPanel {
         for (Articolo articolo : articoli ) {
             if(!ArticoloBusiness.isUndefined(articolo.getNome())){
                 ComponenteCatalogo componenteCatalogo = new ComponenteCatalogo();
-                componenteCatalogo.setId(articolo.getId());
+                componenteCatalogo.setIdArticolo(articolo.getId());
                 componenteCatalogo.setNomeArticolo(articolo.getNome());
+                componenteCatalogo.setDescrizioneArticolo(articolo.getDescrizione());
                 componenteCatalogo.setPrezzo(articolo.getPrezzo());
                 componenteCatalogo.setNomeCategoria(articolo.getCategoria().getNome());
                 componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
-                componenteCatalogo.setNomeProduttore("MyShop");
+                componenteCatalogo.setNomeErogatore(articolo.getErogatore().getNome());
                 componenteCatalogo.setRecensioni(articolo.getRecensioni());
+
+                ArrayList<ImageIcon> imageIcons = new ArrayList<>();
+
+                for (Foto foto: articolo.getImmagini()  ) {
+                    imageIcons.add(ArticoloBusiness.blobToImage(foto.getImmagine()));
+                }
+                componenteCatalogo.setImmagini(imageIcons);
+
                 if (articolo instanceof Prodotto){
                     componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO);
-                    componenteCatalogo.setNomeProduttore(((Prodotto) articolo).getProduttore().getNome());
                 } else if (articolo instanceof ProdottoComposito){
                     componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
                 } else if (articolo instanceof Servizio){
@@ -99,7 +103,7 @@ public class CatalogoPanel extends JPanel {
 
         JPanel panelSud = new JPanel(new MigLayout("", "[]push [] []", "[]"));
 
-        OrdinamentoArticoli.Ordinamento[] ordinamentoStrategies = {OrdinamentoArticoli.Ordinamento.PREZZO_PIU_ALTO, OrdinamentoArticoli.Ordinamento.PREZZO_PIU_BASSO, OrdinamentoArticoli.Ordinamento.PIU_VOTATI, OrdinamentoArticoli.Ordinamento.ORDINE_ALFABETICO};
+        OrdinamentoArticoli.Ordinamento[] ordinamentoStrategies = {OrdinamentoArticoli.Ordinamento.PREZZO_PIU_ALTO, OrdinamentoArticoli.Ordinamento.PREZZO_PIU_BASSO, OrdinamentoArticoli.Ordinamento.PIU_VOTATI, OrdinamentoArticoli.Ordinamento.ORDINE_ALFABETICO, OrdinamentoArticoli.Ordinamento.TIPOLOGIA};
         JComboBox ordinamento = new JComboBox(ordinamentoStrategies);
 
         JButton ordinaBtn = new JButton("Ordina articoli");

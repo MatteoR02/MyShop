@@ -90,7 +90,7 @@ public class ListaTableModel extends AbstractTableModel {
             case 2: return "Quantità";
             case 3: return "Prezzo";
             case 4: return "Categoria";
-            case 5: return "Produttore";
+            case 5: return "Erogatore";
         }
         return null;
     }

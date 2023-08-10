@@ -21,9 +21,9 @@ public class TestProdottoDAO {
 
 
         /*System.out.println("Stampo tutti i produttori che ho nel database");
-        ProduttoreDAO produttoreDAO = ProduttoreDAO.getInstance();
-        ArrayList<Produttore> produttori = produttoreDAO.loadAllProduttori();
-        for (Produttore produttore : produttori){
+        ErogatoreDAO produttoreDAO = ErogatoreDAO.getInstance();
+        ArrayList<Erogatore> produttori = produttoreDAO.loadAllProduttori();
+        for (Erogatore produttore : produttori){
             System.out.println(produttore);
         }
 

@@ -5,13 +5,11 @@ import java.util.List;
 
 public class ProdottoComposito extends Articolo implements IProdotto{
 
-    private Collocazione collocazione;
 
     private final List<IProdotto> sottoProdotti = new ArrayList<IProdotto>();
 
-    public ProdottoComposito(String nome, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria, Collocazione collocazione) {
-        super(nome, prezzo, recensioni, immagini, categoria);
-        this.collocazione = collocazione;
+    public ProdottoComposito(String nome, String descrizione, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria,  Erogatore erogatore) {
+        super(nome, descrizione, prezzo, recensioni, immagini, categoria, erogatore);
     }
 
     public ProdottoComposito() {
@@ -42,10 +40,7 @@ public class ProdottoComposito extends Articolo implements IProdotto{
         }
         return p;
     }
-    @Override
-    public Produttore getProduttore(){
-        return null;
-    }
+
 
     public List<IProdotto> getSottoProdotti() {
         return sottoProdotti;
@@ -60,7 +55,6 @@ public class ProdottoComposito extends Articolo implements IProdotto{
                 ", recensioni=" + recensioni +
                 ", immagini=" + immagini +
                 ", categoria=" + categoria +
-                ", collocazione=" + collocazione +
                 ", sottoProdotti=" + sottoProdotti +
                 '}';
     }

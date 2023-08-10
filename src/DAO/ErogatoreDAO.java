@@ -1,6 +1,5 @@
 package DAO;
 
-import DbInterface.IDbConnection;
 import DbInterface.command.*;
 import Model.*;
 
@@ -8,41 +7,40 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class ProduttoreDAO implements IProduttoreDAO{
-    private static final ProduttoreDAO instance = new ProduttoreDAO();
-    private Produttore produttore;
+public class ErogatoreDAO implements IErogatoreDAO {
+    private static final ErogatoreDAO instance = new ErogatoreDAO();
+    private Erogatore erogatore;
     private static ResultSet rs;
 
     public static int PRODUTTORE_DEFAULT_ID = 1;
 
     private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
 
-    private ProduttoreDAO(){
-        produttore = null;
+    private ErogatoreDAO(){
+        erogatore = null;
         rs = null;
     }
-    public static ProduttoreDAO getInstance() {
+    public static ErogatoreDAO getInstance() {
         return instance;
     }
 
     @Override
-    public Produttore loadProduttore(int idProduttore) {
+    public Erogatore loadErogatore(int idErogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.produttore WHERE idProduttore = '" + idProduttore + "';";
+        String sql = "SELECT * FROM myshop.erogatore WHERE idErogatore = '" + idErogatore + "';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 
         try {
             rs.next();
             if (rs.getRow() == 1) {
-                produttore = new Produttore();
-                produttore.setId(rs.getInt("idProduttore"));
-                produttore.setNome(rs.getString("nome"));
-                produttore.setSitoWeb(rs.getString("sito_web"));
-                produttore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
-                return produttore;
+                erogatore = new Erogatore();
+                erogatore.setId(rs.getInt("idErogatore"));
+                erogatore.setNome(rs.getString("nome"));
+                erogatore.setSitoWeb(rs.getString("sito_web"));
+                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                return erogatore;
             }
         } catch (SQLException e) {
             // handle any errors
@@ -59,21 +57,21 @@ public class ProduttoreDAO implements IProduttoreDAO{
     }
 
     @Override
-    public ArrayList<Produttore> loadAllProduttori() {
+    public ArrayList<Erogatore> loadAllErogatori() {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.produttore WHERE idProduttore;";
+        String sql = "SELECT * FROM myshop.erogatore WHERE idProduttore;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
-        ArrayList<Produttore> produttori = new ArrayList<>();
+        ArrayList<Erogatore> produttori = new ArrayList<>();
 
         try {
             while(rs.next()){
-                produttore = new Produttore();
-                produttore.setId(rs.getInt("idProduttore"));
-                produttore.setNome(rs.getString("nome"));
-                produttore.setSitoWeb(rs.getString("sito_web"));
-                produttore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
-                produttori.add(produttore);
+                erogatore = new Erogatore();
+                erogatore.setId(rs.getInt("idProduttore"));
+                erogatore.setNome(rs.getString("nome"));
+                erogatore.setSitoWeb(rs.getString("sito_web"));
+                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                produttori.add(erogatore);
             }return produttori;
         } catch (SQLException e) {
             // handle any errors
@@ -90,22 +88,22 @@ public class ProduttoreDAO implements IProduttoreDAO{
     }
 
     @Override
-    public int addProduttore(Produttore produttore) {
+    public int addErogatore(Erogatore erogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.produttore (nome, sito_web, nazione, citta, cap, via, civico) VALUES (?,?,?,?,?,?,?);";
+        String sql = "INSERT INTO myshop.erogatore (nome, sito_web, nazione, citta, cap, via, civico) VALUES (?,?,?,?,?,?,?);";
 
         IDbOperation addByte = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
         int rowCount;
         try{
             if(preparedStatement!=null) {
-                preparedStatement.setString(1, produttore.getNome());
-                preparedStatement.setString(2, produttore.getSitoWeb());
-                preparedStatement.setString(3,produttore.getIndirizzo().getNazione());
-                preparedStatement.setString(4,produttore.getIndirizzo().getCitta());
-                preparedStatement.setString(5,produttore.getIndirizzo().getCap());
-                preparedStatement.setString(6,produttore.getIndirizzo().getVia());
-                preparedStatement.setInt(7, produttore.getIndirizzo().getCivico());
+                preparedStatement.setString(1, erogatore.getNome());
+                preparedStatement.setString(2, erogatore.getSitoWeb());
+                preparedStatement.setString(3, erogatore.getIndirizzo().getNazione());
+                preparedStatement.setString(4, erogatore.getIndirizzo().getCitta());
+                preparedStatement.setString(5, erogatore.getIndirizzo().getCap());
+                preparedStatement.setString(6, erogatore.getIndirizzo().getVia());
+                preparedStatement.setInt(7, erogatore.getIndirizzo().getCivico());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 return rowCount;
@@ -119,23 +117,23 @@ public class ProduttoreDAO implements IProduttoreDAO{
     }
 
     @Override
-    public int updateProduttore(Produttore produttore) {
+    public int updateErogatore(Erogatore erogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "UPDATE myshop.produttore SET nome = ?, sito_web = ?, nazione = ?, citta = ?, cap = ?, via = ?, civico = ? WHERE idProduttore = ?;";
+        String sql = "UPDATE myshop.erogatore SET nome = ?, sito_web = ?, nazione = ?, citta = ?, cap = ?, via = ?, civico = ? WHERE idProduttore = ?;";
 
         IDbOperation addByte = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
         int rowCount;
         try{
             if(preparedStatement!=null) {
-                preparedStatement.setString(1, produttore.getNome());
-                preparedStatement.setString(2, produttore.getSitoWeb());
-                preparedStatement.setString(3, produttore.getIndirizzo().getNazione());
-                preparedStatement.setString(4, produttore.getIndirizzo().getCitta());
-                preparedStatement.setString(5, produttore.getIndirizzo().getCap());
-                preparedStatement.setString(6, produttore.getIndirizzo().getVia());
-                preparedStatement.setInt(7, produttore.getIndirizzo().getCivico());
-                preparedStatement.setInt(8, produttore.getId());
+                preparedStatement.setString(1, erogatore.getNome());
+                preparedStatement.setString(2, erogatore.getSitoWeb());
+                preparedStatement.setString(3, erogatore.getIndirizzo().getNazione());
+                preparedStatement.setString(4, erogatore.getIndirizzo().getCitta());
+                preparedStatement.setString(5, erogatore.getIndirizzo().getCap());
+                preparedStatement.setString(6, erogatore.getIndirizzo().getVia());
+                preparedStatement.setInt(7, erogatore.getIndirizzo().getCivico());
+                preparedStatement.setInt(8, erogatore.getId());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 return rowCount;
@@ -149,12 +147,12 @@ public class ProduttoreDAO implements IProduttoreDAO{
     }
 
     @Override
-    public int removeProduttore(int idProduttore) {
+    public int removeErogatore(int idErogatore) {
 
-        articoloDAO.setFKProduttoreToDefault(idProduttore);
+        articoloDAO.setFKProduttoreToDefault(idErogatore);
 
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "DELETE FROM myshop.produttore WHERE idProduttore = '" + idProduttore + "';";
+        String sql = "DELETE FROM myshop.erogatore WHERE idErogatore = '" + idErogatore + "';";
         IDbOperation remove = new WriteOperation(sql);
         int rowCount = executor.executeOperation(remove).getRowsAffected();
         remove.close();

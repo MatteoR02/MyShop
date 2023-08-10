@@ -33,6 +33,8 @@ public class CatalogoListener implements ActionListener {
     public final static String MODIFY_RECENSIONE = "modify_recensione";
     public final static String SORT_RECENSIONI = "sort_recensioni";
     public final static String SORT_CATALOGO = "sort_catalogo";
+    public final static String NEXT_FOTO = "next_foto";
+    public final static String BACK_FOTO = "back_foto";
 
 
 
@@ -47,9 +49,16 @@ public class CatalogoListener implements ActionListener {
     private ArrayList<Recensione> listaRecensioni;
     private JComboBox ordinamentoStrategy;
     private Recensione recensione;
+    private JLabel label;
 
     public CatalogoListener(MainPage frame) {
         this.frame = frame;
+    }
+
+    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, JLabel label){
+        this.frame = frame;
+        this.comp = comp;
+        this.label = label;
     }
 
     public CatalogoListener(MainPage frame, ComponenteCatalogo comp, Recensione recensione){
@@ -106,7 +115,7 @@ public class CatalogoListener implements ActionListener {
                 AddToListaDialog addToListaDialog = new AddToListaDialog(frame, "Aggiungi alla lista", comp);
             }
         } else if (ADD_TO_LISTA_BTN.equals(action)){
-            Articolo art = ArticoloBusiness.getArticolo(comp.getId()).getSingleObject();
+            Articolo art = ArticoloBusiness.getArticolo(comp.getIdArticolo()).getSingleObject();
             ListaAcquisto ls = (ListaAcquisto) listeBox.getSelectedItem();
             int quantita = (Integer) quantitaSpinner.getValue();
             assert ls != null;
@@ -121,7 +130,7 @@ public class CatalogoListener implements ActionListener {
             Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
             if (c == null) {
                 JOptionPane.showMessageDialog(frame, "Devi prima effettuare l'accesso", "Accesso non effettuato", JOptionPane.ERROR_MESSAGE);
-            } else if (!ArticoloBusiness.isArticoloBoughtFrom(comp.getId(), c.getId()).getSingleObject()){
+            } else if (!ArticoloBusiness.isArticoloBoughtFrom(comp.getIdArticolo(), c.getId()).getSingleObject()){
                 JOptionPane.showMessageDialog(frame, "Non puoi recensire un articolo che non hai acquistato", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else {
                 AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp);
@@ -131,7 +140,7 @@ public class CatalogoListener implements ActionListener {
             Date dataAttuale = new java.sql.Date(System.currentTimeMillis());
             Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
             Recensione newRec = new Recensione(fieldTitolo.getText(), fieldTesto.getText(), valutazione, dataAttuale, null, c.getId());
-            ExecuteResult<Boolean> result = RecensioneBusiness.addRecensione(newRec, comp.getId());
+            ExecuteResult<Boolean> result = RecensioneBusiness.addRecensione(newRec, comp.getIdArticolo());
             if (result.getResult() == ExecuteResult.ResultStatement.OK_WITH_WARNINGS){
                 JOptionPane.showMessageDialog(dialog, "Hai già lasciato una recensione per questo articolo", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){
@@ -163,6 +172,7 @@ public class CatalogoListener implements ActionListener {
                 case PREZZO_PIU_ALTO -> strategy = new ArticoliPrezzoAltoStrategy();
                 case PREZZO_PIU_BASSO -> strategy = new ArticoliPrezzoBassoStrategy();
                 case ORDINE_ALFABETICO -> strategy = new ArticoliOrdineAlfabeticoStrategy();
+                case TIPOLOGIA -> strategy = new ArticoliTipologiaStrategy();
             }
             ordinamentoArticoli.setOrdinamentoArticoliStrategy(strategy);
             ordinamentoArticoli.ordina();
@@ -175,7 +185,38 @@ public class CatalogoListener implements ActionListener {
                 JOptionPane.showMessageDialog(frame,"Recensione eliminata", "Recensione eliminata", JOptionPane.INFORMATION_MESSAGE);
                 frame.mostraArticolo(comp, false, null);
             }
-        }
+        } else if (NEXT_FOTO.equals(action)){
 
+            int index = Integer.parseInt(label.getName());
+            ImageIcon currentIcon;
+
+            if (index + 1 < comp.getImmagini().toArray().length){
+                currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(index+1), 250,250);
+                index++;
+                label.setName(index + "");
+                label.setIcon(currentIcon);
+            } else  {
+                currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(0), 250,250);
+                index = 0;
+                label.setName(index + "");
+                label.setIcon(currentIcon);
+            }
+        } else if (BACK_FOTO.equals(action)){
+
+            int index = Integer.parseInt(label.getName());
+            ImageIcon currentIcon;
+
+            if (index - 1 > 0){
+                currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(index-1), 250,250);
+                index--;
+                label.setName(index + "");
+                label.setIcon(currentIcon);
+            } else  {
+                currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(comp.getImmagini().toArray().length-1), 250,250);
+                index = comp.getImmagini().toArray().length-1;
+                label.setName(index + "");
+                label.setIcon(currentIcon);
+            }
+        }
     }
 }

@@ -5,12 +5,11 @@ import java.util.List;
 public class Prodotto extends Articolo implements IProdotto{
 
     private Collocazione collocazione;
-    private Produttore produttore;
 
-    public Prodotto(String nome, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria, Collocazione collocazione, Produttore produttore) {
-        super(nome, prezzo, recensioni, immagini, categoria);
+    public Prodotto(String nome, String descrizione, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria, Collocazione collocazione, Erogatore erogatore) {
+        super(nome, descrizione, prezzo, recensioni, immagini, categoria, erogatore);
         this.collocazione = collocazione;
-        this.produttore = produttore;
+        this.erogatore = erogatore;
     }
 
     public Prodotto() {
@@ -25,13 +24,6 @@ public class Prodotto extends Articolo implements IProdotto{
         this.collocazione = collocazione;
     }
 
-    public Produttore getProduttore() {
-        return produttore;
-    }
-
-    public void setProduttore(Produttore produttore) {
-        this.produttore = produttore;
-    }
 
     @Override
     public String toString() {

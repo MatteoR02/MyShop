@@ -18,7 +18,7 @@ public interface IArticoloDAO {
     int addProdotto(Articolo prodotto);
     int updateProdotto(Articolo prodotto);
     int removeProdotto(int idProdotto);
-    int createComposition(List<Integer> idProdotti, String nomeComp, int idCategoria);
+    int createComposition(List<Integer> idProdotti, String nomeComp,String descrizione, int idCategoria);
 
     HashMap<Articolo, Integer> getArticoliFromLista(int idLista);
 

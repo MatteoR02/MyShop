@@ -2,6 +2,7 @@ package View;
 
 
 import Business.ExecuteResult;
+import Business.FotoBusiness;
 import Business.RecensioneBusiness;
 import Business.SessionManager;
 import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
@@ -38,31 +39,38 @@ public class InfoArticoloPanel extends JPanel {
 
         ImageIcon imageIcon = comp.getImmagini().get(0);
 
-        Image image = imageIcon.getImage(); // La trasformo in un Image
-        Image newimg = image.getScaledInstance(250, 250,  java.awt.Image.SCALE_SMOOTH); // La dimensiono in modo smooth
-        imageIcon = new ImageIcon(newimg);
-        JLabel immagine = new JLabel(imageIcon);
+        imageIcon = FotoBusiness.scaleImageIcon(imageIcon, 250, 250);
 
-        //JLabel vuoto = new JLabel("");
+        JLabel immagine = new JLabel(imageIcon);
+        immagine.setName("0");
+
 
         JLabel nomeArticolo = new JLabel(comp.getNomeArticolo());
         JLabel prezzo = new JLabel(comp.getPrezzo() +"€");
         JLabel nomeCategoria = new JLabel("Categoria: " + comp.getNomeCategoria());
-        JLabel nomeProduttore = new JLabel("Produttore: " + comp.getNomeProduttore());
+        JLabel nomeProduttore = new JLabel("Erogatore: " + comp.getNomeErogatore());
 
-        //JLabel infoArticolo = new JLabel("<html>Qua puoi trovare maggiori informazioni sull'articolo. <br> <em>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ut enim nisi. Nunc sit amet dolor odio. Nunc at nibh luctus, vulputate ante id, auctor enim. Vivamus ultricies volutpat massa, id sollicitudin tellus.</em> </html>");
+        JLabel descrizioneArticolo = new JLabel("<html>Maggiori informazioni sull'articolo: <br> " + comp.getDescrizioneArticolo() + " </html>");
 
-        JButton nextImageBtn = new JButton("Avanti");
-        JButton backImageBtn = new JButton("Indietro");
+
+        JButton nextImageBtn = new JButton("Foto ->");
+        JButton backImageBtn = new JButton("<- Foto");
         nextImageBtn.setFocusPainted(false);
         backImageBtn.setFocusPainted(false);
+
+        CatalogoListener catalogoListenerFoto = new CatalogoListener(frame, comp, immagine);
+        nextImageBtn.setActionCommand(CatalogoListener.NEXT_FOTO);
+        backImageBtn.setActionCommand(CatalogoListener.BACK_FOTO);
+
+        nextImageBtn.addActionListener(catalogoListenerFoto);
+        backImageBtn.addActionListener(catalogoListenerFoto);
 
         panelInfo.add(immagine, "cell 0 0 4 5");
         panelInfo.add(nomeArticolo, "cell 4 0, wrap");
         panelInfo.add(prezzo, " cell 4 1, wrap");
         panelInfo.add(nomeCategoria, "cell 4 2, wrap");
         panelInfo.add(nomeProduttore, "cell 4 3, wrap");
-        //panelInfo.add(infoArticolo, "cell 4 4, wrap");
+        panelInfo.add(descrizioneArticolo, "cell 4 4, wrap");
         panelInfo.add(backImageBtn, "cell 0 5");
         panelInfo.add(nextImageBtn, "cell 3 5, gapleft push");
 
@@ -106,7 +114,7 @@ public class InfoArticoloPanel extends JPanel {
         JPanel recensioniScrollPanel = new JPanel(new GridLayout(0,1,10,10));
 
         //ArrayList<Recensione> recensioni = (ArrayList<Recensione>) comp.getRecensioni();
-        ExecuteResult<Recensione> resultRec = RecensioneBusiness.loadRecensioni(comp.getId());
+        ExecuteResult<Recensione> resultRec = RecensioneBusiness.loadRecensioni(comp.getIdArticolo());
         if (!ordinato){
             ArrayList<Recensione> recensioni = resultRec.getObject();
             for (Recensione rec: recensioni) {

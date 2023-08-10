@@ -8,17 +8,21 @@ public class Articolo {
 
     protected int id;
     protected String nome;
+    protected String descrizione;
     protected Float prezzo;
     protected List<Recensione> recensioni;
     protected List<Foto> immagini;
     protected Categoria categoria;
+    protected Erogatore erogatore;
 
-    public Articolo(String nome, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria) {
+    public Articolo(String nome, String descrizione, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria, Erogatore erogatore) {
         this.nome = nome;
+        this.descrizione = descrizione;
         this.prezzo = prezzo;
         this.recensioni = recensioni;
         this.immagini = immagini;
         this.categoria = categoria;
+        this.erogatore = erogatore;
     }
 
     public Articolo() {
@@ -76,6 +80,22 @@ public class Articolo {
 
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
+    }
+
+    public String getDescrizione() {
+        return descrizione;
+    }
+
+    public void setDescrizione(String descrizione) {
+        this.descrizione = descrizione;
+    }
+
+    public Erogatore getErogatore() {
+        return erogatore;
+    }
+
+    public void setErogatore(Erogatore erogatore) {
+        this.erogatore = erogatore;
     }
 
     public int getPunteggioTotale(){

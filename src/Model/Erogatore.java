@@ -1,19 +1,19 @@
 package Model;
 
-public class Produttore {
+public class Erogatore {
 
     private int id;
     private String nome;
     private String sitoWeb;
     private Indirizzo indirizzo;
 
-    public Produttore(String nome, String sitoWeb, Indirizzo indirizzo) {
+    public Erogatore(String nome, String sitoWeb, Indirizzo indirizzo) {
         this.nome = nome;
         this.sitoWeb = sitoWeb;
         this.indirizzo = indirizzo;
     }
 
-    public Produttore(){
+    public Erogatore(){
     }
 
     public int getId() {
@@ -50,7 +50,7 @@ public class Produttore {
 
     @Override
     public String toString() {
-        return "Produttore{" +
+        return "Erogatore{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", sitoWeb='" + sitoWeb + '\'' +

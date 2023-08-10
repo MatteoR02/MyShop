@@ -1,6 +1,7 @@
 package View.ViewModel;
 
 
+import Business.FotoBusiness;
 import Business.SessionManager;
 import Model.Cliente;
 import Model.Utente;
@@ -11,6 +12,8 @@ import View.GridBagCostraintsHorizontal;
 import View.MainPage;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
 
 import java.awt.*;
 
@@ -35,6 +38,10 @@ public class ArticoloList extends JPanel {
         nome.setFont(labelFont);
         prezzo.setFont(labelFont);
 
+        Border titledBorder = BorderFactory.createTitledBorder(componente.getTipoArticolo().toString());
+
+        this.setBorder(titledBorder);
+        ((javax.swing.border.TitledBorder) this.getBorder()).setTitleFont(labelFont);
 
         Menu compCatalogoMenu;
 
@@ -45,28 +52,17 @@ public class ArticoloList extends JPanel {
             compCatalogoMenu = new GuestCompCatalogoMenu(frame, componente);
         }
 
-       // JButton visualizza = new JButton("Visualizza");
-
-       // visualizza.setFocusPainted(false);
         ImageIcon imageIcon = componente.getImmagini().get(0);
 
-        Image image = imageIcon.getImage(); // La trasformo in un Image
-        Image newimg = image.getScaledInstance(200, 200,  java.awt.Image.SCALE_SMOOTH); // La dimensiono in modo smooth
-        imageIcon = new ImageIcon(newimg);
-        JLabel immagine = new JLabel(imageIcon);
+        imageIcon = FotoBusiness.scaleImageIcon(imageIcon, 200, 200);
 
-        //TODO inserire try catch per caricare l'immagine
-        /*ImageIcon imageIcon = new ImageIcon("resources/sedia.png"); // Carico l'immagine in un ImageIcon
-        Image image = imageIcon.getImage(); // La trasformo in un Image
-        Image newimg = image.getScaledInstance(120, 120,  java.awt.Image.SCALE_SMOOTH); // La dimensiono in modo smooth
-        imageIcon = new ImageIcon(newimg);
-        JLabel immagine = new JLabel(imageIcon);*/
+        JLabel immagine = new JLabel(imageIcon);
 
         this.add(immagine,new GridBagCostraintsHorizontal(0,0,2,2,insets));
         this.add(nome,new GridBagCostraintsHorizontal(0,2,1,1,insets));
         this.add(prezzo,new GridBagCostraintsHorizontal(1,2,1,1,insets));
         this.add(categoria,new GridBagCostraintsHorizontal(0,3,1,1,insets));
-        //this.add(visualizza,new GridBagCostraintsHorizontal(0,3,2,1,insets));
+
         int i=0;
         for ( JButton btn : compCatalogoMenu.getPulsanti() ) {
             btn.setFocusPainted(false);

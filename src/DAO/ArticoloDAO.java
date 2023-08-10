@@ -19,7 +19,7 @@ public class ArticoloDAO implements IArticoloDAO {
     private ProdottoComposito prodottoComposito;
     private static ResultSet rs;
 
-    private static final IProduttoreDAO produttoreDAO = ProduttoreDAO.getInstance();
+    private static final IErogatoreDAO erogatoreDAO = ErogatoreDAO.getInstance();
     private static final ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
     private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     private static final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
@@ -98,8 +98,9 @@ public class ArticoloDAO implements IArticoloDAO {
                 prodotto = new Prodotto();
                 prodotto.setId(rs.getInt("idArticolo"));
                 prodotto.setNome(rs.getString("nome"));
+                prodotto.setDescrizione(rs.getString("descrizione"));
                 prodotto.setPrezzo(rs.getFloat("prezzo"));
-                prodotto.setProduttore(produttoreDAO.loadProduttore(rs.getInt("Produttore_idProduttore")));
+                prodotto.setErogatore(erogatoreDAO.loadErogatore(rs.getInt("Erogatore_idErogatore")));
                 prodotto.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
                 prodotto.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
                 prodotto.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
@@ -172,9 +173,11 @@ public class ArticoloDAO implements IArticoloDAO {
                 prodottoComposito.setId(rs.getInt("idArticolo"));
                 prodottoComposito.setNome(rs.getString("nome"));
                 prodottoComposito.setPrezzo(rs.getFloat("prezzo"));
+                prodottoComposito.setDescrizione(rs.getString("descrizione"));
                 prodottoComposito.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
                 prodottoComposito.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
                 prodottoComposito.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
+                prodottoComposito.setErogatore(erogatoreDAO.loadErogatore(rs.getInt("Erogatore_idErogatore")));
                 idProdotti.add(rs.getInt("Prodotto_Articolo_idArticolo1"));
             }
             for (int idProdotto : idProdotti) {
@@ -253,8 +256,8 @@ public class ArticoloDAO implements IArticoloDAO {
     public int addProdotto(Articolo prodotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
 
-        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `prezzo`, `Categoria_idCategoria`) VALUES " +
-                "('" + prodotto.getNome() + "', '" + prodotto.getPrezzo() + "', '"+ prodotto.getCategoria().getId()+"');";
+        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`,`descrizione`, `prezzo`, `Categoria_idCategoria`) VALUES " +
+                "('" + prodotto.getNome() + "', '" + prodotto.getDescrizione() + "' '" + prodotto.getPrezzo() + "', '"+ prodotto.getCategoria().getId()+"');";
 
         IDbOperation add = new WriteByteOperation(sqlArticolo);
 
@@ -321,9 +324,9 @@ public class ArticoloDAO implements IArticoloDAO {
                 }
                 statement.close();
 
-                String sqlProdotto = "INSERT INTO myshop.prodotto (Articolo_idArticolo, Produttore_idProduttore)" +
+                String sqlProdotto = "INSERT INTO myshop.prodotto (Articolo_idArticolo)" +
                         "VALUES " +
-                        "('" + idGen + "', '" + prod.getProduttore().getId() +"');";
+                        "('" + idGen + "');";
                 add = new WriteOperation(sqlProdotto);
                 rowCount += executor.executeOperation(add).getRowsAffected();
 
@@ -343,7 +346,7 @@ public class ArticoloDAO implements IArticoloDAO {
     }
 
     @Override
-    public int createComposition(List<Integer> idProdotti, String nomeComp, int idCategoria){
+    public int createComposition(List<Integer> idProdotti, String nomeComp, String descrizioneComp, int idCategoria){
         DbOperationExecutor executor = new DbOperationExecutor();
 
         ProdottoComposito prodComp = new ProdottoComposito();
@@ -351,8 +354,8 @@ public class ArticoloDAO implements IArticoloDAO {
             prodComp.addSottoProdotti(loadProdotto(idProdotto));
         }
 
-        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `prezzo`, `Categoria_idCategoria`) VALUES " +
-                "('" + nomeComp + "', '" + prodComp.getPrezzo() + "', '"+ idCategoria+"');";
+        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `descrizione`, `prezzo`, `Categoria_idCategoria`) VALUES " +
+                "('" + nomeComp + "', '"+ descrizioneComp +"', '" + prodComp.getPrezzo() + "', '"+ idCategoria+"');";
 
         IDbOperation add = new WriteByteOperation(sqlArticolo);
         int rowCount = 0;
@@ -400,28 +403,30 @@ public class ArticoloDAO implements IArticoloDAO {
 
         if (!isProdottoComposito(prodotto.getId())){
             //Se è un prodotto normale le uniche cose da aggiornare sono in articolo e in collocazione
-            String sqlArticolo = "UPDATE myshop.articolo SET nome=? , prezzo=?, Categoria_idCategoria=? WHERE idArticolo=?;";
-            String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
+            String sqlArticolo = "UPDATE myshop.articolo SET nome=? , descrizione=?, prezzo=?, Categoria_idCategoria=? Erogatore_idErogatore = ? WHERE idArticolo=?;";
+           // String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
             String sqlCollocazione = "UPDATE myshop.magazzino_has_prodotto SET Magazzino_idMagazzino=?, quantita=?, corsia=?, scaffale=? WHERE Prodotto_Articolo_idArticolo=?;";
 
             IDbOperation writeOpArt = new WriteByteOperation(sqlArticolo);
-            IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
+            //IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
             IDbOperation writeOpColl = new WriteByteOperation(sqlCollocazione);
 
             try {
                 PreparedStatement articoloStmt = executor.executeOperation(writeOpArt).getPreparedStatement();
                 articoloStmt.setString(1, prodotto.getNome());
-                articoloStmt.setFloat(2, prodotto.getPrezzo());
-                articoloStmt.setInt(3, prodotto.getCategoria().getId());
-                articoloStmt.setInt(4, prodotto.getId());
+                articoloStmt.setString(2, prodotto.getDescrizione());
+                articoloStmt.setFloat(3, prodotto.getPrezzo());
+                articoloStmt.setInt(4, prodotto.getCategoria().getId());
+                articoloStmt.setInt(5, prodotto.getErogatore().getId());
+                articoloStmt.setInt(6, prodotto.getId());
                 rowCount = articoloStmt.executeUpdate() ;
                 articoloStmt.close();
 
-                PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
-                prodottoStmt.setInt(1, ((Prodotto)prodotto).getProduttore().getId() );
+               /* PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
+                prodottoStmt.setInt(1, ((Prodotto)prodotto).getErogatore().getId() );
                 prodottoStmt.setInt(2, prodotto.getId());
                 rowCount += prodottoStmt.executeUpdate() ;
-                prodottoStmt.close();
+                prodottoStmt.close();*/
 
                 PreparedStatement collStmt = executor.executeOperation(writeOpColl).getPreparedStatement();
                 collStmt.setInt(1, ((Prodotto) prodotto).getCollocazione().getQuantita());
@@ -438,32 +443,34 @@ public class ArticoloDAO implements IArticoloDAO {
                 e.printStackTrace();
             }finally {
                 writeOpArt.close();
-                writeOpProd.close();
+                //writeOpProd.close();
                 writeOpColl.close();
             }
             return 0;
 
         } else if (isProdottoComposito(prodotto.getId())){
 
-            String sqlArticolo = "UPDATE articolo SET nome=? , prezzo=?, Categoria_idCategoria=? WHERE idArticolo=?;";
-            String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
+            String sqlArticolo = "UPDATE articolo SET nome=? , descrizione=?, prezzo=?, Categoria_idCategoria=?, Erogatore_idErogatore=? WHERE idArticolo=?;";
+           // String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
             IDbOperation writeOpArt = new WriteByteOperation(sqlArticolo);
-            IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
+            //IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
 
             try {
                 PreparedStatement articoloStmt = executor.executeOperation(writeOpArt).getPreparedStatement();
                 articoloStmt.setString(1, prodotto.getNome());
-                articoloStmt.setFloat(2, prodotto.getPrezzo());
-                articoloStmt.setInt(3, prodotto.getCategoria().getId());
-                articoloStmt.setInt(4, prodotto.getId());
+                articoloStmt.setString(2, prodotto.getDescrizione());
+                articoloStmt.setFloat(3, prodotto.getPrezzo());
+                articoloStmt.setInt(4, prodotto.getCategoria().getId());
+                articoloStmt.setInt(5, prodotto.getErogatore().getId());
+                articoloStmt.setInt(6, prodotto.getId());
                 rowCount = articoloStmt.executeUpdate();
                 articoloStmt.close();
 
-                PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
-                prodottoStmt.setInt(1, ((Prodotto)prodotto).getProduttore().getId() );
+               /* PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
+                prodottoStmt.setInt(1, ((Prodotto)prodotto).getErogatore().getId() );
                 prodottoStmt.setInt(2, prodotto.getId());
                 rowCount += prodottoStmt.executeUpdate() ;
-                prodottoStmt.close();
+                prodottoStmt.close();*/
 
                 //Modifico ricorsivamente anche gli eventuali sotto articoli. Se un sotto articolo viene rimosso va chiamato il remove non da qui
                 for (IProdotto p: ((ProdottoComposito)prodotto).getSottoProdotti()) {
@@ -474,7 +481,7 @@ public class ArticoloDAO implements IArticoloDAO {
                 e.printStackTrace();
             }finally {
                 writeOpArt.close();
-                writeOpProd.close();
+                //writeOpProd.close();
             }
             return rowCount;
         }
@@ -548,10 +555,12 @@ public class ArticoloDAO implements IArticoloDAO {
                 servizio = new Servizio();
                 servizio.setId(rs.getInt("idArticolo"));
                 servizio.setNome(rs.getString("nome"));
+                servizio.setDescrizione(rs.getString("descrizione"));
                 servizio.setPrezzo(rs.getFloat("prezzo"));
                 servizio.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
                 servizio.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
                 servizio.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
+                servizio.setErogatore(erogatoreDAO.loadErogatore(rs.getInt("Erogatore_idErogatore")));
                 return servizio;
             }
         } catch (SQLException e) {
@@ -581,10 +590,12 @@ public class ArticoloDAO implements IArticoloDAO {
                 servizio = new Servizio();
                 servizio.setId(rs.getInt("idArticolo"));
                 servizio.setNome(rs.getString("nome"));
+                servizio.setDescrizione(rs.getString("descrizione"));
                 servizio.setPrezzo(rs.getFloat("prezzo"));
                 servizio.setCategoria(categoriaDAO.loadCategoria(rs.getInt("Categoria_idCategoria")));
                 servizio.setImmagini(fotoDAO.loadAllFotoOfArticolo(rs.getInt("idArticolo")));
                 servizio.setRecensioni(recensioneDAO.loadRecensioniOfArticolo(rs.getInt("idArticolo")));
+                servizio.setErogatore(erogatoreDAO.loadErogatore(rs.getInt("Erogatore_idErogatore")));
                 servizi.add(servizio);
             }
             return servizi;
@@ -606,8 +617,8 @@ public class ArticoloDAO implements IArticoloDAO {
     public int addServizio(Servizio servizio) {
         DbOperationExecutor executor = new DbOperationExecutor();
 
-        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `prezzo`, `Categoria_idCategoria`) VALUES " +
-                "('" + servizio.getNome() + "', '" + servizio.getPrezzo() + "', '"+ servizio.getCategoria().getId()+"');";
+        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `descrizione`, `prezzo`, `Categoria_idCategoria` , `Erogatore_idErogatore `) VALUES " +
+                "('" + servizio.getNome() + "', '"+ servizio.getDescrizione() + "', '" + servizio.getPrezzo() + "', '"+ servizio.getCategoria().getId()+"', '" + servizio.getErogatore().getId() +"');";
 
         IDbOperation add = new WriteByteOperation(sqlArticolo);
 
@@ -646,8 +657,10 @@ public class ArticoloDAO implements IArticoloDAO {
     public int updateServizio(Servizio servizio) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sqlUpdateArticolo = "UPDATE `myshop`.`articolo` SET `nome` = '" + servizio.getNome() +
+                "', `descrizione` = '" + servizio.getDescrizione() +
                 "', `prezzo` = '" + servizio.getPrezzo() +
                 "', `Categoria_idCategoria` = '" + servizio.getCategoria().getId() +
+                "', `Erogatore_idErogatore` = '" + servizio.getErogatore().getId() +
                 "' WHERE `idArticolo` = '" + servizio.getId() + "';";
 
         /*String sqlUpdateServizio = "UPDATE `myshop`.`cliente` SET `professione` = '" + cliente.getProfessione() +
@@ -787,10 +800,10 @@ public class ArticoloDAO implements IArticoloDAO {
     }
 
     @Override
-    public int setFKProduttoreToDefault(int idProduttore) {
+    public int setFKProduttoreToDefault(int idErogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "UPDATE myshop.prodotto SET Produttore_idProduttore = '" + ProduttoreDAO.PRODUTTORE_DEFAULT_ID +
-                "' WHERE `Produttore_idProduttore` = '" + idProduttore + "';";
+        String sql = "UPDATE myshop.prodotto SET Erogatore_idErogatore = '" + ErogatoreDAO.PRODUTTORE_DEFAULT_ID +
+                "' WHERE `Erogatore_idErogatore` = '" + idErogatore + "';";
         IDbOperation update = new WriteOperation(sql);
         int rowCount = executor.executeOperation(update).getRowsAffected();
         update.close();

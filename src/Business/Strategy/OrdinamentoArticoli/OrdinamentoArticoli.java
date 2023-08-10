@@ -9,7 +9,7 @@ public class OrdinamentoArticoli {
 
     private List<Articolo> listaArticoli;
     private IOrdinamentoArticoliStrategy ordinamentoArticoliStrategy;
-    public enum Ordinamento{PREZZO_PIU_ALTO, PREZZO_PIU_BASSO, PIU_VOTATI, ORDINE_ALFABETICO}
+    public enum Ordinamento{PREZZO_PIU_ALTO, PREZZO_PIU_BASSO, PIU_VOTATI, ORDINE_ALFABETICO, TIPOLOGIA}
 
     public OrdinamentoArticoli(List<Articolo> listaArticoli){
         this.listaArticoli = listaArticoli;
