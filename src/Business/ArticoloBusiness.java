@@ -330,6 +330,18 @@ public class ArticoloBusiness {
         return result;
     }
 
+    public static ArrayList<Articolo> sottoProdottiToArticoli(ProdottoComposito prodottoComposito){
+        ArrayList<Articolo> articoli = new ArrayList<>();
+        for (IProdotto iProd : prodottoComposito.getSottoProdotti()) {
+            if (iProd instanceof Prodotto){
+                articoli.add((Prodotto) iProd);
+            } else if (iProd instanceof ProdottoComposito){
+                articoli.add((ProdottoComposito) iProd);
+            }
+        }
+        return articoli;
+    }
+
 
     public static TipoArticolo articoloCheckType(int idArticolo){
         if(articoloDAO.isProdottoComposito(idArticolo)) return TipoArticolo.PRODOTTO_COMPOSITO;

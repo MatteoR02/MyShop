@@ -14,6 +14,7 @@ public class ComponenteCatalogo {
     private float prezzo;
     private String nomeCategoria;
     private String nomeErogatore;
+    private float mediaRecensioni;
     private ArticoloBusiness.TipoArticolo tipoArticolo;
     private List<ImageIcon> immagini = new ArrayList<>();
     private List<Recensione> recensioni = new ArrayList<>();
@@ -93,5 +94,13 @@ public class ComponenteCatalogo {
 
     public void setTipoArticolo(ArticoloBusiness.TipoArticolo tipoArticolo) {
         this.tipoArticolo = tipoArticolo;
+    }
+
+    public float getMediaRecensioni() {
+        return mediaRecensioni;
+    }
+
+    public void setMediaRecensioni(float mediaRecensioni) {
+        this.mediaRecensioni = mediaRecensioni;
     }
 }

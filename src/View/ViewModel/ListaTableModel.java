@@ -22,7 +22,7 @@ public class ListaTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 7;
+        return 8;
     }
 
     public List<RigaArticoloLista> getRighe() {
@@ -35,6 +35,13 @@ public class ListaTableModel extends AbstractTableModel {
         RigaArticoloLista riga = righe.get(rowIndex);
 
         String prezzoFormattato = String.format("%.2f", riga.getPrezzo());
+        String disponibilitaFormattato = "";
+
+        if (riga.isDisponibile()){
+            disponibilitaFormattato = "Si";
+        } else {
+            disponibilitaFormattato = "No";
+        }
 
         switch (columnIndex) {
             case 0: return riga.getIdArticolo();
@@ -42,8 +49,9 @@ public class ListaTableModel extends AbstractTableModel {
             case 2: return riga.getQuantita();
             case 3: return prezzoFormattato + " €";
             case 4: return riga.getCategoria();
-            case 5: return riga.getProduttore();
-            case 6: return riga.getSelezionato();
+            case 5: return riga.getErogatore();
+            case 6: return disponibilitaFormattato;
+            case 7: return riga.getSelezionato();
         }
 
         return null;
@@ -71,7 +79,7 @@ public class ListaTableModel extends AbstractTableModel {
         switch (columnIndex) {
             case 2: riga.setQuantita(Integer.parseInt(value.toString()));
             case 3: riga.setPrezzo(prezzoAggiornato);
-            case 6: riga.setSelezionato(Boolean.parseBoolean(value.toString()));
+            case 7: riga.setSelezionato(Boolean.parseBoolean(value.toString()));
         }
 
 
@@ -79,7 +87,7 @@ public class ListaTableModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 2 || columnIndex ==6;
+        return columnIndex == 2 || columnIndex ==7;
     }
 
     @Override
@@ -91,13 +99,15 @@ public class ListaTableModel extends AbstractTableModel {
             case 3: return "Prezzo";
             case 4: return "Categoria";
             case 5: return "Erogatore";
+            case 6: return "Disponibile in magazzino";
+            case 7: return "Selezionato";
         }
         return null;
     }
 
     @Override
     public Class getColumnClass(int columnIndex){
-        if(columnIndex == 6){
+        if(columnIndex == 7){
             return Boolean.class;
         }
         return Object.class;

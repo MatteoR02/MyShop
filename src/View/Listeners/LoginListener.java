@@ -49,8 +49,6 @@ public class LoginListener implements ActionListener {
         } else if(LOGIN_BTN.equals(action)){
             String username = usernameField.getText();
             String password = new String(passwordField.getPassword());
-            System.out.println("Username: "+username);
-            System.out.println("Password: "+password);
             LoginResult result = UtenteBusiness.getInstance().login(username,password);
             if (LoginResult.Result.LOGIN_OK == result.getResult()){
                 frame.mostraMain();
@@ -66,13 +64,16 @@ public class LoginListener implements ActionListener {
             frame.mostraRegister();
         } else if (CATALOGO_BTN.equals(action)) {
             //Visualizza catalogo Guest
-            frame.mostraCatalogo(false);
+            frame.mostraCatalogo();
         } else if (BACK_BTN.equals(action)){
-            if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.ARTICOLO){
-                frame.mostraCatalogo(false);
-            } else if(frame.getPaginaCorrente() == MainPage.PaginaCorrente.CATALOGO){
+            MainPage.PaginaCorrente paginaCorrente = frame.getPaginaCorrente();
+            if (paginaCorrente == MainPage.PaginaCorrente.ARTICOLO){
+                frame.mostraCatalogo();
+            } else if(paginaCorrente == MainPage.PaginaCorrente.CATALOGO){
                frame.mostraMain();
-            }  else{
+            } else if (paginaCorrente == MainPage.PaginaCorrente.SOTTOPRODOTTI){
+                frame.mostraCatalogo();
+            } else{
                 frame.mostraMain();
             }
         } else if (LOGOUT_BTN.equals(action)){

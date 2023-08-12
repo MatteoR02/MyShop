@@ -1,6 +1,7 @@
 package Model;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,6 +67,20 @@ public class ListaAcquisto {
 
     public boolean isPagato(){
         return this.statoPagamento == StatoPagamentoType.PAGATO;
+    }
+
+    public boolean isProdottoDisponibile(IProdotto prod) {
+        if (prod instanceof Prodotto) {
+            if (getArticoli().containsKey(prod)) {
+                return getArticoli().get(prod) <= ((Prodotto) prod).getCollocazione().getQuantita();
+            }
+        } else if (prod instanceof ProdottoComposito) {
+            ArrayList<Boolean> disponibilita = new ArrayList<>();
+            for (IProdotto iProd: ((ProdottoComposito) prod).getSottoProdotti() ) {
+                disponibilita.add(iProd.isDisponibile());
+            } return !disponibilita.contains(false);
+        }
+        return false;
     }
 
     @Override

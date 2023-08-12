@@ -6,4 +6,5 @@ public interface IProdotto {
     public String getNome();
     public Float getPrezzo();
     public Categoria getCategoria();
+    public boolean isDisponibile();
 }

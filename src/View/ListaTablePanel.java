@@ -1,6 +1,7 @@
 package View;
 
 import Model.Articolo;
+import Model.IProdotto;
 import Model.ListaAcquisto;
 import Model.Prodotto;
 import View.Listeners.ClienteListener;
@@ -34,12 +35,11 @@ public class ListaTablePanel extends JPanel {
             riga.setQuantita(entry.getValue());
             riga.setPrezzo(entry.getKey().getPrezzo() * entry.getValue());
             riga.setCategoria(entry.getKey().getCategoria().getNome());
-            riga.setProduttore("MyShop");
-            riga.setSelezionato(false);
-
-            if(entry.getKey() instanceof Prodotto){
-                riga.setProduttore(((Prodotto) entry.getKey()).getErogatore().getNome());
+            riga.setErogatore(entry.getKey().getErogatore().getNome());
+            if (entry.getKey() instanceof IProdotto){
+                riga.setDisponibile(lista.isProdottoDisponibile((IProdotto) entry.getKey()));
             }
+            riga.setSelezionato(false);
             righe.add(riga);
         }
 

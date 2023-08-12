@@ -187,10 +187,10 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
                 idArticoliQuant.put(rs.getInt("Articolo_idArticolo"),rs.getInt("quantita"));
             }
             for (int id : idArticoliQuant.keySet()) {
-                if (articoloDAO.isProdotto(id)){
-                    articoliInLista.put(articoloDAO.loadProdotto(id),idArticoliQuant.get(id));
-                } else if (articoloDAO.isProdottoComposito(id)){
+                if (articoloDAO.isProdottoComposito(id)){
                     articoliInLista.put(articoloDAO.loadProdottoComposito(id),idArticoliQuant.get(id));
+                } else if (articoloDAO.isProdotto(id)){
+                    articoliInLista.put(articoloDAO.loadProdotto(id),idArticoliQuant.get(id));
                 } else if (articoloDAO.isServizio(id)) {
                     articoliInLista.put(articoloDAO.loadServizio(id), idArticoliQuant.get(id));
                 }

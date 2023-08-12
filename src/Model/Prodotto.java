@@ -33,4 +33,9 @@ public class Prodotto extends Articolo implements IProdotto{
                 ", immagini=" + immagini +
                 '}';
     }
+
+    @Override
+    public boolean isDisponibile() {
+        return getCollocazione().getQuantita() > 0;
+    }
 }

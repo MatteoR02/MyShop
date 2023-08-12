@@ -1,10 +1,7 @@
 package Business;
 
 import DAO.*;
-import Model.Articolo;
-import Model.Cliente;
-import Model.ListaAcquisto;
-import Model.Servizio;
+import Model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -226,6 +223,20 @@ public class ListaAcquistoBusiness {
         //result.setSingleObject(true);
         return result;
 
+    }
+
+    public static ExecuteResult<Boolean> checkDisponibilita(Prodotto prodotto, ListaAcquisto listaAcquisto){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+        for (Articolo art:listaAcquisto.getArticoli().keySet()  ) {
+            if(art instanceof Prodotto){
+                if (prodotto.getId() == art.getId()){
+                    result.setSingleObject(listaAcquisto.getArticoli().get(art) < prodotto.getCollocazione().getQuantita());
+                    result.setResult(ExecuteResult.ResultStatement.OK);
+                    result.setMessage("Prodotto disponibile");
+                }
+            }
+        }
+        return result;
     }
 
 }

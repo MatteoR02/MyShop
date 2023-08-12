@@ -1,10 +1,7 @@
 package View;
 
 
-import Business.ExecuteResult;
-import Business.FotoBusiness;
-import Business.RecensioneBusiness;
-import Business.SessionManager;
+import Business.*;
 import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
 import Model.Cliente;
 import Model.Manager;
@@ -33,7 +30,7 @@ public class InfoArticoloPanel extends JPanel {
 
 
         JPanel panelArticolo = new JPanel(new BorderLayout());
-        JPanel panelInfo = new JPanel(new MigLayout("insets 15","[] [] [] []20 []","[]10 []10 []10 []5 []"));
+        JPanel panelInfo = new JPanel(new MigLayout("insets 15","[]28 [] [] []20 []","[]10 []10 []10 []5 []"));
         JPanel panelRecensioni = new JPanel(new BorderLayout());
 
 
@@ -52,13 +49,14 @@ public class InfoArticoloPanel extends JPanel {
 
         JLabel descrizioneArticolo = new JLabel("<html>Maggiori informazioni sull'articolo: <br> " + comp.getDescrizioneArticolo() + " </html>");
 
+        JLabel labelIndexFoto = new JLabel("1/" + comp.getImmagini().toArray().length, SwingConstants.CENTER);
 
         JButton nextImageBtn = new JButton("Foto ->");
         JButton backImageBtn = new JButton("<- Foto");
         nextImageBtn.setFocusPainted(false);
         backImageBtn.setFocusPainted(false);
 
-        CatalogoListener catalogoListenerFoto = new CatalogoListener(frame, comp, immagine);
+        CatalogoListener catalogoListenerFoto = new CatalogoListener(frame, comp, immagine, labelIndexFoto);
         nextImageBtn.setActionCommand(CatalogoListener.NEXT_FOTO);
         backImageBtn.setActionCommand(CatalogoListener.BACK_FOTO);
 
@@ -72,6 +70,7 @@ public class InfoArticoloPanel extends JPanel {
         panelInfo.add(nomeProduttore, "cell 4 3, wrap");
         panelInfo.add(descrizioneArticolo, "cell 4 4, wrap");
         panelInfo.add(backImageBtn, "cell 0 5");
+        panelInfo.add(labelIndexFoto, "cell 2 5");
         panelInfo.add(nextImageBtn, "cell 3 5, gapleft push");
 
         Font font = new Font("Arial", Font.PLAIN, 22);
@@ -88,23 +87,32 @@ public class InfoArticoloPanel extends JPanel {
         panelBottoni.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
 
         Utente u = (Utente) (SessionManager.getSession().get(SessionManager.LOGGED_USER));
-            if (u instanceof Cliente || u == null) {
+        if (u instanceof Cliente || u == null) {
 
-                    Menu clienteInfoArticoloMenu = new ClienteInfoArticoloMenu(frame, comp);
+            Menu clienteInfoArticoloMenu = new ClienteInfoArticoloMenu(frame, comp);
 
-                    for (JButton button : clienteInfoArticoloMenu.getPulsanti()   ) {
-                        button.setFocusPainted(false);
-                        panelBottoni.add(button);
-                    }
-            } if (u instanceof Manager){
-                Manager m = (Manager) u;
-                Menu managerInfoArticoloMenu = new ManagerInfoArticoloMenu(frame,comp);
-
-                for (JButton button : managerInfoArticoloMenu.getPulsanti()   ) {
-                    button.setFocusPainted(false);
-                    panelBottoni.add(button);
-                }
+            for (JButton button : clienteInfoArticoloMenu.getPulsanti()   ) {
+                button.setFocusPainted(false);
+                panelBottoni.add(button);
             }
+        } if (u instanceof Manager){
+            Manager m = (Manager) u;
+            Menu managerInfoArticoloMenu = new ManagerInfoArticoloMenu(frame,comp);
+            for (JButton button : managerInfoArticoloMenu.getPulsanti()   ) {
+                button.setFocusPainted(false);
+                panelBottoni.add(button);
+            }
+        }
+
+        if (comp.getTipoArticolo() == ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
+            JButton visualizzaSPBtn = new JButton("Visualizza sottoprodotti");
+            visualizzaSPBtn.setFocusPainted(false);
+
+            CatalogoListener catalogoListenerSP = new CatalogoListener(frame, comp);
+            visualizzaSPBtn.setActionCommand(CatalogoListener.VIEW_SOTTOPRODOTTI);
+            visualizzaSPBtn.addActionListener(catalogoListenerSP);
+            panelBottoni.add(visualizzaSPBtn);
+        }
 
 
         panelArticolo.add(panelBottoni, BorderLayout.SOUTH);

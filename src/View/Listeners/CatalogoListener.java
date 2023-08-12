@@ -6,10 +6,7 @@ import Business.Strategy.OrdinamentoRecensioni.IOrdinamentoRecensioneStrategy;
 import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
 import Business.Strategy.OrdinamentoRecensioni.RecensioniMiglioriStrategy;
 import Business.Strategy.OrdinamentoRecensioni.RecensioniRecentiStrategy;
-import Model.Articolo;
-import Model.Cliente;
-import Model.ListaAcquisto;
-import Model.Recensione;
+import Model.*;
 import View.MainPage;
 import View.ViewModel.AddRecensioneDialog;
 import View.ViewModel.AddToListaDialog;
@@ -25,6 +22,7 @@ import java.util.List;
 public class CatalogoListener implements ActionListener {
 
     public final static String VIEW_ART_BTN = "view_art_btn";
+    public final static String VIEW_SOTTOPRODOTTI = "view_sottoprodotti";
     public final static String TO_ADD_BTN = "to_add_btn";
     public final static String ADD_TO_LISTA_BTN = "add_to_lista_btn";
     public final static String TO_ADD_RECENSIONE = "to_add_recensione";
@@ -49,16 +47,18 @@ public class CatalogoListener implements ActionListener {
     private ArrayList<Recensione> listaRecensioni;
     private JComboBox ordinamentoStrategy;
     private Recensione recensione;
-    private JLabel label;
+    private JLabel labelImm;
+    private JLabel labelIndex;
 
     public CatalogoListener(MainPage frame) {
         this.frame = frame;
     }
 
-    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, JLabel label){
+    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, JLabel labelImm, JLabel labelIndex){
         this.frame = frame;
         this.comp = comp;
-        this.label = label;
+        this.labelImm = labelImm;
+        this.labelIndex = labelIndex;
     }
 
     public CatalogoListener(MainPage frame, ComponenteCatalogo comp, Recensione recensione){
@@ -106,6 +106,9 @@ public class CatalogoListener implements ActionListener {
         String action = e.getActionCommand();
         if (VIEW_ART_BTN.equals(action)) {
             frame.mostraArticolo(comp, false, null);
+        } else if (VIEW_SOTTOPRODOTTI.equals(action)){
+            ProdottoComposito pd = (ProdottoComposito) ArticoloBusiness.getArticolo(comp.getIdArticolo()).getSingleObject();
+            frame.mostraSottoProdotti(pd);
         } else if (TO_ADD_BTN.equals(action)) {
             Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
             if (c == null){
@@ -177,7 +180,7 @@ public class CatalogoListener implements ActionListener {
             ordinamentoArticoli.setOrdinamentoArticoliStrategy(strategy);
             ordinamentoArticoli.ordina();
 
-            frame.mostraCatalogo(true);
+            frame.mostraCatalogo();
         } else if (DELETE_RECENSIONE.equals(action)){
             int input = JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare la recensione?", "Eliminare recensione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
             if (input==0){
@@ -187,36 +190,43 @@ public class CatalogoListener implements ActionListener {
             }
         } else if (NEXT_FOTO.equals(action)){
 
-            int index = Integer.parseInt(label.getName());
+            int index = Integer.parseInt(labelImm.getName());
             ImageIcon currentIcon;
 
             if (index + 1 < comp.getImmagini().toArray().length){
                 currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(index+1), 250,250);
                 index++;
-                label.setName(index + "");
-                label.setIcon(currentIcon);
-            } else  {
+                labelImm.setName(index + "");
+                labelImm.setIcon(currentIcon);
+                labelIndex.setText("" + (index + 1) +"/"+comp.getImmagini().toArray().length);
+            }/* else  {
                 currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(0), 250,250);
                 index = 0;
-                label.setName(index + "");
-                label.setIcon(currentIcon);
-            }
+                labelImm.setName(index + "");
+                labelImm.setIcon(currentIcon);
+                labelIndex.setText("" + 1 +"/"+comp.getImmagini().toArray().length);
+
+            }*/
         } else if (BACK_FOTO.equals(action)){
 
-            int index = Integer.parseInt(label.getName());
+            int index = Integer.parseInt(labelImm.getName());
             ImageIcon currentIcon;
 
-            if (index - 1 > 0){
+            if (index - 1 >= 0){
                 currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(index-1), 250,250);
                 index--;
-                label.setName(index + "");
-                label.setIcon(currentIcon);
-            } else  {
+                labelImm.setName(index + "");
+                labelImm.setIcon(currentIcon);
+                labelIndex.setText("" + (index + 1) +"/"+comp.getImmagini().toArray().length);
+
+            } /*else  {
                 currentIcon = FotoBusiness.scaleImageIcon(comp.getImmagini().get(comp.getImmagini().toArray().length-1), 250,250);
                 index = comp.getImmagini().toArray().length-1;
-                label.setName(index + "");
-                label.setIcon(currentIcon);
-            }
+                labelImm.setName(index + "");
+                labelImm.setIcon(currentIcon);
+                labelIndex.setText("" + 1 +"/"+comp.getImmagini().toArray().length);
+
+            }*/
         }
     }
 }

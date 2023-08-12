@@ -7,7 +7,8 @@ public class RigaArticoloLista {
     private int quantita;
     private float prezzo;
     private String categoria;
-    private String produttore;
+    private String erogatore;
+    private boolean disponibile;
     private boolean selezionato;
 
     public int getIdArticolo() {
@@ -50,12 +51,20 @@ public class RigaArticoloLista {
         this.categoria = categoria;
     }
 
-    public String getProduttore() {
-        return produttore;
+    public String getErogatore() {
+        return erogatore;
     }
 
-    public void setProduttore(String produttore) {
-        this.produttore = produttore;
+    public void setErogatore(String erogatore) {
+        this.erogatore = erogatore;
+    }
+
+    public boolean isDisponibile() {
+        return disponibile;
+    }
+
+    public void setDisponibile(boolean disponibile) {
+        this.disponibile = disponibile;
     }
 
     public boolean getSelezionato() {

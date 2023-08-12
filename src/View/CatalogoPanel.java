@@ -17,7 +17,7 @@ public class CatalogoPanel extends JPanel {
     private List<Articolo> articoli;
     private MainPage frame;
 
-    public CatalogoPanel(ArrayList<Articolo> articoli, MainPage frame, boolean ordinato) {
+    public CatalogoPanel(ArrayList<Articolo> articoli, MainPage frame, boolean isProdCom) {
 
         this.articoli=articoli;
         ArrayList<ComponenteCatalogo> componenti = new ArrayList<>();
@@ -73,6 +73,7 @@ public class CatalogoPanel extends JPanel {
                 componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
                 componenteCatalogo.setNomeErogatore(articolo.getErogatore().getNome());
                 componenteCatalogo.setRecensioni(articolo.getRecensioni());
+                componenteCatalogo.setMediaRecensioni(articolo.getMediaRecensioni());
 
                 ArrayList<ImageIcon> imageIcons = new ArrayList<>();
 
@@ -96,6 +97,11 @@ public class CatalogoPanel extends JPanel {
             ArticoloList articoloList = new ArticoloList(componenteCatalogo,frame);
             centro.add(articoloList);
         }
+
+        for (int i = 0; i<3; i++){
+            centro.add(new JPanel());
+        }
+
 
         JScrollPane scrollPane = new JScrollPane(centro);
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);

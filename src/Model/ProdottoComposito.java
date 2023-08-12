@@ -47,6 +47,18 @@ public class ProdottoComposito extends Articolo implements IProdotto{
     }
 
     @Override
+    public boolean isDisponibile(){
+        ArrayList<Boolean> disponibilita = new ArrayList<>();
+        for (IProdotto iProd: getSottoProdotti() ) {
+            if (iProd instanceof Prodotto){
+                disponibilita.add(((Prodotto)iProd).isDisponibile());
+            } else {
+                disponibilita.add(isDisponibile());
+            }
+        } return !disponibilita.contains(false);
+    }
+
+    @Override
     public String toString() {
         return "ProdottoComposito{" +
                 "id=" + id +

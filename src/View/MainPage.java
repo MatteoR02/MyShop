@@ -21,7 +21,7 @@ public class MainPage extends JFrame {
     private JPanel sud = new JPanel();
     private JPanel main = new JPanel();
 
-    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, LISTE, ARTICOLO}
+    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, SOTTOPRODOTTI, LISTE, ARTICOLO}
 
     private PaginaCorrente paginaCorrente;
 
@@ -71,7 +71,7 @@ public class MainPage extends JFrame {
         this.setVisible(true);
     }
 
-    public void mostraCatalogo(boolean ordinato){
+    public void mostraCatalogo(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
 
@@ -80,7 +80,20 @@ public class MainPage extends JFrame {
         }
 
         paginaCorrente = PaginaCorrente.CATALOGO;
-        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this, ordinato);
+        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this, false);
+        centro.add(catalogoPanel);
+        repaint();
+        validate();
+    }
+
+    public void mostraSottoProdotti(ProdottoComposito prodottoComposito){
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+
+        ArrayList<Articolo> sottoProdotti = ArticoloBusiness.sottoProdottiToArticoli(prodottoComposito);
+
+        paginaCorrente = PaginaCorrente.SOTTOPRODOTTI;
+        CatalogoPanel catalogoPanel = new CatalogoPanel(sottoProdotti,this, true);
         centro.add(catalogoPanel);
         repaint();
         validate();

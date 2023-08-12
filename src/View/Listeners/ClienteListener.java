@@ -6,6 +6,7 @@ import Business.Bridge.DocumentoListaAcquisto;
 import Business.Bridge.PdfBoxAPI;
 import Model.Articolo;
 import Model.Cliente;
+import Model.IProdotto;
 import Model.ListaAcquisto;
 import View.MainPage;
 import View.ViewModel.*;
@@ -88,6 +89,8 @@ public class ClienteListener implements ActionListener {
                 RigaArticoloLista riga = righeLista.get(i);
                 Articolo art = ArticoloBusiness.getArticolo(riga.getIdArticolo()).getSingleObject();
                 result = ListaAcquistoBusiness.addOrRemoveToLista(art, lista, riga.getQuantita(),(Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
+                lista.getArticoli().replace(art,riga.getQuantita());
+                tModel.getRighe().get(i).setDisponibile(lista.isProdottoDisponibile((IProdotto) art));
             }
             JOptionPane.showMessageDialog(frame,"Le quantita' degli articoli nella lista sono state aggiornate", "Quantità modificata", JOptionPane.INFORMATION_MESSAGE);
             tModel.fireTableDataChanged();
