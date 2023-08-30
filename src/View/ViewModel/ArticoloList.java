@@ -33,7 +33,7 @@ public class ArticoloList extends JPanel {
         Font labelFont = new Font("Arial", Font.PLAIN, 20);
 
         String prezzoFormattato = String.format("%.2f", componente.getPrezzo());
-        String mediaFormattato = String.format("%.2f", componente.getMediaRecensioni());
+        String mediaFormattato = String.format(" %.1f", componente.getMediaRecensioni());
 
         Insets insets = new Insets(5,10,5,10);
         JLabel nome = new JLabel(componente.getNomeArticolo());
@@ -52,7 +52,7 @@ public class ArticoloList extends JPanel {
         visualizzaSPBtn.setActionCommand(CatalogoListener.VIEW_SOTTOPRODOTTI);
         visualizzaSPBtn.addActionListener(catalogoListenerSP);
 
-        Border titledBorder = BorderFactory.createTitledBorder(componente.getTipoArticolo().toString());
+        Border titledBorder = BorderFactory.createTitledBorder(ArticoloBusiness.tipoArticoloToString(componente.getTipoArticolo()));
 
         this.setBorder(titledBorder);
         ((javax.swing.border.TitledBorder) this.getBorder()).setTitleFont(labelFont);

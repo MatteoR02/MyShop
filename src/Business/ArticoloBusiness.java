@@ -22,6 +22,7 @@ public class ArticoloBusiness {
     private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
     private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     private static final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
+    private static final ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
     public enum TipoArticolo{PRODOTTO, PRODOTTO_COMPOSITO, SERVIZIO, NOT_ARTICLE}
 
 
@@ -342,6 +343,34 @@ public class ArticoloBusiness {
         return articoli;
     }
 
+    public static ArrayList<Articolo> getArticoliOfCategoria(ArrayList<Articolo> articoli, Categoria categoria){
+        ArrayList<Articolo> listArticoli = new ArrayList<>();
+        for (Articolo art : articoli) {
+            if (art.getCategoria().getId() == categoria.getId()){
+                listArticoli.add(art);
+            }
+        }
+        if (categoria.getId() == -1){
+            return articoli;
+        }
+        return listArticoli;
+    }
+
+    public static ExecuteResult<Categoria> getAllCategorie(){
+        ExecuteResult<Categoria> result = new ExecuteResult<>();
+        ArrayList<Categoria> categorie = (ArrayList<Categoria>) categoriaDAO.loadAllCategorie();
+        categorie.removeIf(cat -> isUndefined(cat.getNome()));
+        result.setObject(categorie);
+        return result;
+    }
+
+    public static Categoria createTuttoCategoria(){
+        Categoria tutto = new Categoria();
+        tutto.setId(-1);
+        tutto.setNome("Tutte le categoria");
+        return tutto;
+    }
+
 
     public static TipoArticolo articoloCheckType(int idArticolo){
         if(articoloDAO.isProdottoComposito(idArticolo)) return TipoArticolo.PRODOTTO_COMPOSITO;
@@ -397,6 +426,16 @@ public class ArticoloBusiness {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static String tipoArticoloToString(TipoArticolo tipoArticolo){
+        String tipo = "";
+        switch (tipoArticolo){
+            case PRODOTTO -> tipo = "Prodotto";
+            case PRODOTTO_COMPOSITO -> tipo = "Prodotto composito";
+            case SERVIZIO -> tipo = "Servizio";
+        }
+        return tipo;
     }
 
     public static boolean hasNoFoto(Articolo articolo){

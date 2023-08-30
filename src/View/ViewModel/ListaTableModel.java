@@ -93,7 +93,7 @@ public class ListaTableModel extends AbstractTableModel {
     @Override
     public String getColumnName(int columnIndex){
         switch (columnIndex) {
-            case 0: return "ID Prodotto";
+            case 0: return "ID Articolo";
             case 1: return "Nome";
             case 2: return "Quantità";
             case 3: return "Prezzo";

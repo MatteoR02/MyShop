@@ -107,12 +107,21 @@ public class CatalogoPanel extends JPanel {
         scrollPane.getVerticalScrollBar().setUnitIncrement(16);
         this.add(scrollPane,BorderLayout.CENTER);
 
-        JPanel panelSud = new JPanel(new MigLayout("", "[]push [] []", "[]"));
+        JPanel panelSud = new JPanel(new MigLayout("", "[]push [] [] [] []", "[]"));
 
         OrdinamentoArticoli.Ordinamento[] ordinamentoStrategies = {OrdinamentoArticoli.Ordinamento.PREZZO_PIU_ALTO, OrdinamentoArticoli.Ordinamento.PREZZO_PIU_BASSO, OrdinamentoArticoli.Ordinamento.PIU_VOTATI, OrdinamentoArticoli.Ordinamento.ORDINE_ALFABETICO, OrdinamentoArticoli.Ordinamento.TIPOLOGIA};
         JComboBox ordinamento = new JComboBox(ordinamentoStrategies);
 
+        ArrayList<Categoria> categorie = ArticoloBusiness.getAllCategorie().getObject();
+        categorie.set(0, ArticoloBusiness.createTuttoCategoria());
+
+        Categoria[] selCategoria = categorie.toArray(new Categoria[0]);
+        JComboBox selCategoriaBox = new JComboBox(selCategoria);
+
         JButton ordinaBtn = new JButton("Ordina articoli");
+        ordinaBtn.setFocusPainted(false);
+
+        JButton selCatBtn = new JButton("Seleziona categoria");
         ordinaBtn.setFocusPainted(false);
 
         CatalogoListener catalogoListenerSort = new CatalogoListener(ordinamento);
@@ -120,8 +129,17 @@ public class CatalogoPanel extends JPanel {
         ordinaBtn.setActionCommand(CatalogoListener.SORT_CATALOGO);
         ordinaBtn.addActionListener(catalogoListenerSort);
 
-        panelSud.add(ordinamento, "cell 1 0");
-        panelSud.add(ordinaBtn, "cell 2 0");
+        CatalogoListener catalogoListenerCategoria = new CatalogoListener(selCategoriaBox);
+        catalogoListenerCategoria.setFrame(frame);
+        selCatBtn.setActionCommand(CatalogoListener.SELECT_CATEGORIA);
+        selCatBtn.addActionListener(catalogoListenerCategoria);
+
+
+
+        panelSud.add(selCategoriaBox, "cell 1 0");
+        panelSud.add(selCatBtn, "cell 2 0");
+        panelSud.add(ordinamento, "cell 3 0");
+        panelSud.add(ordinaBtn, "cell 4 0");
 
         this.add(panelSud, BorderLayout.NORTH);
 

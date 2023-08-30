@@ -1,6 +1,7 @@
 package View;
 
 import Business.*;
+import DAO.PrenotazioneDAO;
 import Model.*;
 import View.Decorator.*;
 import View.Decorator.Menu;
@@ -71,7 +72,7 @@ public class MainPage extends JFrame {
         this.setVisible(true);
     }
 
-    public void mostraCatalogo(){
+    public void mostraCatalogo(ArrayList<Articolo> articoli, boolean flag){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
 
@@ -80,8 +81,14 @@ public class MainPage extends JFrame {
         }
 
         paginaCorrente = PaginaCorrente.CATALOGO;
-        CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this, false);
-        centro.add(catalogoPanel);
+
+        if (flag){
+            CatalogoPanel catalogoSelectedCatPanel = new CatalogoPanel(articoli, this, false);
+            centro.add(catalogoSelectedCatPanel);
+        } else {
+            CatalogoPanel catalogoPanel = new CatalogoPanel((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI),this, false);
+            centro.add(catalogoPanel);
+        }
         repaint();
         validate();
     }
@@ -99,6 +106,7 @@ public class MainPage extends JFrame {
         validate();
     }
 
+
     public void mostraLogin(){
         centro.removeAll();
         centro.setLayout(new GridBagLayout());
@@ -106,6 +114,7 @@ public class MainPage extends JFrame {
         repaint();
         validate();
     }
+
     public void mostraRegister(){
         centro.removeAll();
         centro.setLayout(new GridBagLayout());
@@ -160,6 +169,14 @@ public class MainPage extends JFrame {
         centro.setLayout(new BorderLayout());
         centro.add(new InfoArticoloPanel(this, comp, ordinato, recensioni));
         paginaCorrente = PaginaCorrente.ARTICOLO;
+        repaint();
+        validate();
+    }
+
+    public void mostraPrenotazioni(){
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new PrenotazioniClientePanel(this, PrenotazioneDAO.getInstance().loadPrenotazioniOfCliente(((Cliente) SessionManager.getSession().get(LOGGED_USER)).getId())));
         repaint();
         validate();
     }

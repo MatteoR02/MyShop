@@ -1,6 +1,7 @@
 package View;
 
 import Model.ListaAcquisto;
+import Model.Prenotazione;
 import View.Listeners.ClienteListener;
 
 import javax.swing.*;
@@ -9,49 +10,29 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class ListeAcquistoPanel extends JPanel {
+public class PrenotazioniClientePanel extends JPanel {
 
-    public ListeAcquistoPanel(MainPage frame, ArrayList<ListaAcquisto> liste){
+    public PrenotazioniClientePanel(MainPage frame, ArrayList<Prenotazione> prenotazioni){
         this.setLayout(new BorderLayout());
         Color sfondo = Color.WHITE;
         this.setBackground(sfondo);
         Font buttonFont = new Font("Arial", Font.PLAIN, 20);
         Dimension buttonDimension = new Dimension(200, 70);
 
-        JList<ListaAcquisto> list = new JList<>();
-        DefaultListModel<ListaAcquisto> model = new DefaultListModel<>();
+        JList<Prenotazione> list = new JList<>();
+        DefaultListModel<Prenotazione> model = new DefaultListModel<>();
 
         JPanel listaPanel = new JPanel(new BorderLayout());
         JPanel leftPanel = new JPanel(new BorderLayout());
 
         JPanel pulsantiPanel = new JPanel(new GridLayout(0,1, 5, 5));
 
-        ClienteListener clienteListener = new ClienteListener(frame);
-
-        JButton creaListaBtn = new JButton("Crea Lista");
-        creaListaBtn.setFocusPainted(false);
-        creaListaBtn.setActionCommand(ClienteListener.TO_CREATE_NEW_LISTA);
-        creaListaBtn.addActionListener(clienteListener);
-
-        JButton mostraListePagateBtn = new JButton("Mostra liste pagate");
-
-        ClienteListener clienteListenerListe = new ClienteListener(frame, model, liste, mostraListePagateBtn);
-
-        mostraListePagateBtn.setFocusPainted(false);
-        mostraListePagateBtn.setActionCommand(ClienteListener.MOSTRA_LISTE_PAGATE);
-        mostraListePagateBtn.addActionListener(clienteListenerListe);
-
-        pulsantiPanel.add(creaListaBtn);
-        pulsantiPanel.add(mostraListePagateBtn);
-
         JSplitPane splitPane = new JSplitPane();
 
         list.setModel(model);
 
-        for (ListaAcquisto lista: liste) {
-            if (lista.getStatoPagamento()!= ListaAcquisto.StatoPagamentoType.PAGATO){
-                model.addElement(lista);
-            }
+        for (Prenotazione prenotazione: prenotazioni) {
+                model.addElement(prenotazione);
         }
 
 
@@ -59,9 +40,9 @@ public class ListeAcquistoPanel extends JPanel {
                 @Override
                 public void valueChanged(ListSelectionEvent e) {
                     if(!e.getValueIsAdjusting()) {
-                        ListaAcquisto ls = list.getSelectedValue();
+                        Prenotazione pr = list.getSelectedValue();
                         listaPanel.removeAll();
-                        listaPanel.add(new ListaTablePanel((ls), frame));
+                        listaPanel.add(new PrenotazioniClienteTablePanel((pr), frame));
                         frame.repaint();
                         frame.validate();
                     }

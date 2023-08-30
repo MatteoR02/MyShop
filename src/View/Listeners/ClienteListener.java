@@ -28,7 +28,11 @@ public class ClienteListener implements ActionListener {
     public final static String REMOVE_LISTA = "remove_lista";
     public final static String TO_CREATE_NEW_LISTA = "to_create_new_lista";
     public final static String TO_PROFILE_BTN = "to_profile_btn";
-    //public final static String ;
+    public final static String MOSTRA_LISTE_PAGATE = "mostra_liste_pagate";
+    public final static String NASCONDI_LISTE_PAGATE = "nascondi_liste_pagate";
+    public final static String TO_PRENOTA_ARTICOLI = "to_prenota_articoli";
+    public final static String PRENOTA_ARTICOLI = "prenota_articoli";
+    public final static String TO_PRENOTAZIONI = "to_prenotazioni";
 
     private MainPage frame;
     private JTable table;
@@ -37,10 +41,28 @@ public class ClienteListener implements ActionListener {
     private ListaAcquisto lista;
     private JDialog dialog;
     private ComponenteCatalogo comp;
+    private DefaultListModel<ListaAcquisto> listModel;
+    private ArrayList<ListaAcquisto> liste;
+    private ArrayList<IProdotto> articoli;
+    private ArrayList<JSpinner> spinners;
+    private JButton button;
 
     public ClienteListener(JTextField newLista, JDialog dialog) {
         this.newLista = newLista;
         this.dialog = dialog;
+    }
+
+    public ClienteListener(JDialog dialog, ArrayList<IProdotto> articoli, ArrayList<JSpinner> spinners) {
+        this.dialog = dialog;
+        this.articoli = articoli;
+        this.spinners = spinners;
+    }
+
+    public ClienteListener(MainPage frame, DefaultListModel<ListaAcquisto> listModel, ArrayList<ListaAcquisto> liste, JButton button){
+        this.frame = frame;
+        this.listModel = listModel;
+        this.liste = liste;
+        this.button = button;
     }
 
     public ClienteListener(MainPage frame, JPanel panel, JTable table, ListaAcquisto lista) {
@@ -167,6 +189,74 @@ public class ClienteListener implements ActionListener {
             }
         } else if(TO_CREATE_NEW_LISTA.equals(action)){
             AddListaDialog addToListaDialog = new AddListaDialog(frame, "Aggiungi alla lista");
+        } else if (MOSTRA_LISTE_PAGATE.equals(action)){
+            for (ListaAcquisto listaAcq : liste) {
+                if (listaAcq.getStatoPagamento() == ListaAcquisto.StatoPagamentoType.PAGATO){
+                    listModel.addElement(listaAcq);
+                }
+            }
+            button.setActionCommand(NASCONDI_LISTE_PAGATE);
+            button.setText("Nascondi liste pagate");
+            frame.validate();
+            frame.repaint();
+        } else if (NASCONDI_LISTE_PAGATE.equals(action)){
+            for (ListaAcquisto listaAcq : liste) {
+                if (listaAcq.getStatoPagamento() == ListaAcquisto.StatoPagamentoType.PAGATO){
+                    listModel.removeElement(listaAcq);
+                }
+            }
+            button.setActionCommand(MOSTRA_LISTE_PAGATE);
+            button.setText("Mostra liste pagate");
+            frame.validate();
+            frame.repaint();
+        } else if (TO_PRENOTA_ARTICOLI.equals(action)){
+            ArrayList<IProdotto> articoli = new ArrayList<>();
+
+            ArrayList<RigaArticoloLista> righeArticoli = new ArrayList<>();
+            ListaTableModel tModel = (ListaTableModel) table.getModel();
+
+            for (int i=0; i < table.getRowCount(); i++) {
+                boolean check;
+                RigaArticoloLista rigaSelezionata = tModel.getRighe().get(i);
+                check = rigaSelezionata.getSelezionato();
+                if (check) {
+                    if (!righeArticoli.contains(rigaSelezionata)) {
+                        righeArticoli.add(rigaSelezionata);
+                    }
+                }
+            }
+            for (RigaArticoloLista riga: righeArticoli ) {
+                int idArticolo = riga.getIdArticolo();
+                if (ArticoloBusiness.articoloCheckType(riga.getIdArticolo()) == ArticoloBusiness.TipoArticolo.SERVIZIO){
+                    JOptionPane.showMessageDialog(dialog, "Non puoi prenotare un servizio", "Errore prenotazione", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    articoli.add((IProdotto) ArticoloBusiness.getArticolo(idArticolo).getSingleObject());
+                }
+            }
+
+            if (righeArticoli.isEmpty()){
+                JOptionPane.showMessageDialog(dialog, "Selezionare gli articoli da prenotare", "Errore prenotazione", JOptionPane.ERROR_MESSAGE);
+            } else if (!articoli.isEmpty()){
+                AddPrenotazioneDialog addPrenotazioneDialog = new AddPrenotazioneDialog(frame, "Prenota articoli", articoli);
+            }
+        } else if (PRENOTA_ARTICOLI.equals(action)){
+            HashMap<IProdotto, Integer> articoliQuant = new HashMap<>();
+            int i = 0;
+            for (IProdotto prod : articoli ) {
+                articoliQuant.put(prod, (Integer) spinners.get(i).getValue());
+                i++;
+            }
+            ExecuteResult<Boolean> result = UtenteBusiness.prenotaArticoli(articoliQuant);
+            if (result.getResult() == ExecuteResult.ResultStatement.OK){
+                JOptionPane.showMessageDialog(dialog,"Prenotazione effettuata con successo", "Prenotazione effettuata", JOptionPane.INFORMATION_MESSAGE);
+            } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){
+                JOptionPane.showMessageDialog(dialog, "Errore nella prenotazione", "Errore prenotazione", JOptionPane.ERROR_MESSAGE);
+            } else if ( result.getResult() == ExecuteResult.ResultStatement.OK_WITH_WARNINGS){
+                JOptionPane.showMessageDialog(dialog, "Uno dei prodotti selezionati è stato già prenotato", "Errore prenotazione", JOptionPane.ERROR_MESSAGE);
+            }
+            dialog.dispose();
+        } else if (TO_PRENOTAZIONI.equals(action)){
+            frame.mostraPrenotazioni();
         }
     }
 }

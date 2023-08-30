@@ -17,10 +17,9 @@ public class Email {
         //String to = address;
 
 
-        final String username = "myshopmatteo@gmail.com";//change accordingly
-        final String password = "idtryuqcrtadcpgb";//change accordingly
+        final String username = "myshopmatteo@gmail.com";
+        final String password = "idtryuqcrtadcpgb";
 
-        // Assuming you are sending email through relay.jangosmtp.net
         String host = "smtp.gmail.com";
 
         Properties props = new Properties();

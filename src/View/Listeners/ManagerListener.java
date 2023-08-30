@@ -45,7 +45,7 @@ public class ManagerListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
         if (GESTISCI_ART_BTN.equals(action)) {
-            frame.mostraCatalogo();
+            frame.mostraCatalogo(null, false);
         } else if(GESTISCI_CLIENTI_BTN.equals(action)){
             frame.mostraClientiTable();
         } else if(BLOCK_CLIENTE.equals(action)){

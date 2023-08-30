@@ -31,6 +31,7 @@ public class CatalogoListener implements ActionListener {
     public final static String MODIFY_RECENSIONE = "modify_recensione";
     public final static String SORT_RECENSIONI = "sort_recensioni";
     public final static String SORT_CATALOGO = "sort_catalogo";
+    public final static String SELECT_CATEGORIA = "select_categoria";
     public final static String NEXT_FOTO = "next_foto";
     public final static String BACK_FOTO = "back_foto";
 
@@ -45,7 +46,7 @@ public class CatalogoListener implements ActionListener {
     private JTextArea fieldTesto;
     private JSlider sliderValutazione;
     private ArrayList<Recensione> listaRecensioni;
-    private JComboBox ordinamentoStrategy;
+    private JComboBox comboBox;
     private Recensione recensione;
     private JLabel labelImm;
     private JLabel labelIndex;
@@ -67,14 +68,14 @@ public class CatalogoListener implements ActionListener {
         this.recensione = recensione;
     }
 
-    public CatalogoListener(JComboBox ordinamentoStrategy){
-        this.ordinamentoStrategy = ordinamentoStrategy;
+    public CatalogoListener(JComboBox comboBox){
+        this.comboBox = comboBox;
     }
 
-    public CatalogoListener(ArrayList<Recensione> listaRecensioni, JComboBox ordinamentoStrategy, ComponenteCatalogo comp) {
+    public CatalogoListener(ArrayList<Recensione> listaRecensioni, JComboBox comboBox, ComponenteCatalogo comp) {
         this.comp = comp;
         this.listaRecensioni = listaRecensioni;
-        this.ordinamentoStrategy = ordinamentoStrategy;
+        this.comboBox = comboBox;
     }
 
     public CatalogoListener(MainPage frame, ComponenteCatalogo comp) {
@@ -156,7 +157,7 @@ public class CatalogoListener implements ActionListener {
         } else if (SORT_RECENSIONI.equals(action)){
             OrdinamentoRecensioni ordinamentoRecensioni = new OrdinamentoRecensioni(listaRecensioni);
             IOrdinamentoRecensioneStrategy strategy = new RecensioniRecentiStrategy();
-            OrdinamentoRecensioni.Ordinamento ordinamento = (OrdinamentoRecensioni.Ordinamento) ordinamentoStrategy.getSelectedItem();
+            OrdinamentoRecensioni.Ordinamento ordinamento = (OrdinamentoRecensioni.Ordinamento) comboBox.getSelectedItem();
             switch (ordinamento){
                 case RECENTI -> strategy = new RecensioniRecentiStrategy();
                 case MIGLIORI -> strategy = new RecensioniMiglioriStrategy();
@@ -169,7 +170,7 @@ public class CatalogoListener implements ActionListener {
         } else if (SORT_CATALOGO.equals(action)){
             OrdinamentoArticoli ordinamentoArticoli = new OrdinamentoArticoli((List<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI));
             IOrdinamentoArticoliStrategy strategy = new ArticoliPiuVotatiStrategy();
-            OrdinamentoArticoli.Ordinamento ordinamento = (OrdinamentoArticoli.Ordinamento) ordinamentoStrategy.getSelectedItem();
+            OrdinamentoArticoli.Ordinamento ordinamento = (OrdinamentoArticoli.Ordinamento) comboBox.getSelectedItem();
             switch (ordinamento) {
                 case PIU_VOTATI -> strategy = new ArticoliPiuVotatiStrategy();
                 case PREZZO_PIU_ALTO -> strategy = new ArticoliPrezzoAltoStrategy();
@@ -180,7 +181,12 @@ public class CatalogoListener implements ActionListener {
             ordinamentoArticoli.setOrdinamentoArticoliStrategy(strategy);
             ordinamentoArticoli.ordina();
 
-            frame.mostraCatalogo();
+            frame.mostraCatalogo(null,false);
+        } else if (SELECT_CATEGORIA.equals(action)){
+            Categoria categoriaSelezionata = (Categoria) comboBox.getSelectedItem();
+            ArrayList<Articolo> articoliCat = ArticoloBusiness.getArticoliOfCategoria((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI), categoriaSelezionata);
+            frame.mostraCatalogo(articoliCat, true);
+
         } else if (DELETE_RECENSIONE.equals(action)){
             int input = JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare la recensione?", "Eliminare recensione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
             if (input==0){

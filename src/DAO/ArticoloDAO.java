@@ -36,6 +36,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return instance;
     }
 
+    /**
+     *
+     * @param idArticolo
+     * @return true se l'articolo è un prodotto, false altrimenti
+     */
     @Override
     public boolean isProdotto(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -60,6 +65,11 @@ public class ArticoloDAO implements IArticoloDAO {
         }
     }
 
+    /**
+     *
+     * @param idArticolo
+     * @return true se l'articolo è un servizio, false altrimenti
+     */
     @Override
     public boolean isServizio(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -84,6 +94,11 @@ public class ArticoloDAO implements IArticoloDAO {
         }
     }
 
+    /**
+     *
+     * @param idProdotto
+     * @return restituisce il prodotto caricato da database
+     */
     @Override
     public Prodotto loadProdotto(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -122,6 +137,10 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     *
+     * @return restituisce un arraylist di tutti i prodotti caricati da database
+     */
     @Override
     public ArrayList<Articolo> loadAllProdotti() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -159,6 +178,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     *
+     * @param idProdottoComposito
+     * @return restituisce il prodotto composito caricato da database
+     */
     @Override
     public ProdottoComposito loadProdottoComposito(int idProdottoComposito) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -199,6 +223,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     *
+     * @param idProdottoComposito
+     * @return true se l'id corrisponde ad un prodotto composito, false altrimenti
+     */
     @Override
     public boolean isProdottoComposito(int idProdottoComposito) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -223,6 +252,11 @@ public class ArticoloDAO implements IArticoloDAO {
         }
     }
 
+    /**
+     *
+     * @param idProdotto
+     * @return true se l'id corrisponde ad un sottoprodotto, false altrimenti
+     */
     @Override
     public boolean isSottoProdotto(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -249,8 +283,9 @@ public class ArticoloDAO implements IArticoloDAO {
 
     /**
      * TODO aggiungere in prodotto_has_prodotto gli id
+     * Aggiunge il prodotto al database
      * @param prodotto
-     * @return
+     * @return il numero di righe modificate sul database
      */
     @Override
     public int addProdotto(Articolo prodotto) {
@@ -345,6 +380,14 @@ public class ArticoloDAO implements IArticoloDAO {
         return 0;
     }
 
+    /**
+     * Crea un prodotto composito utilizzando prodotti già esistenti
+     * @param idProdotti
+     * @param nomeComp
+     * @param descrizioneComp
+     * @param idCategoria
+     * @return restituisce il numero di righe modificate sul database
+     */
     @Override
     public int createComposition(List<Integer> idProdotti, String nomeComp, String descrizioneComp, int idCategoria){
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -396,6 +439,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Aggiorna le informazioni del prodotto
+     * @param prodotto
+     * @return restituisce il numero di righe modificate sul database
+     */
     @Override
     public int updateProdotto(Articolo prodotto) {
         int rowCount = 0;
@@ -488,6 +536,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Rimuove il prodotto dal database
+     * @param idProdotto
+     * @return restituisce il numero di righe modificate
+     */
     @Override
     public int removeProdotto(int idProdotto) {
 
@@ -542,6 +595,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Carica il servizio dal database
+     * @param idServizio
+     * @return restituisce il servizio caricato dal database
+     */
     @Override
     public Servizio loadServizio(int idServizio) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -577,6 +635,10 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     * Carica tutti i servizi dal database
+     * @return restituisce un arraylist di tutti i servizi caricati dal database
+     */
     @Override
     public ArrayList<Servizio> loadAllServizi() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -613,6 +675,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     * Aggiunge un servizio al database
+     * @param servizio
+     * @return restituisce il numero di righe modificate
+     */
     @Override
     public int addServizio(Servizio servizio) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -653,6 +720,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Aggiorna le informazioni sul database del servizio
+     * @param servizio
+     * @return restituisce il numero di righe modificate
+     */
     @Override
     public int updateServizio(Servizio servizio) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -704,6 +776,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCountServizio + rowCountArticolo;
     }
 
+    /**
+     * Carica tutti gli articoli di uno specifico punto vendita dal database
+     * @param idPuntoVendita
+     * @return restituisce un arraylist di tutti gli articoli di uno specifico punto vendita caricati dal database
+     */
     @Override
     public ArrayList<Articolo> loadAllArticoliFromPuntoVendita(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -740,6 +817,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     * Carica tutti gli articoli di una specifica lista d'acquisto dal database
+     * @param idLista
+     * @return restituisce un hashmap di articoli e le loro relative quantità di una specifica lista d'acquisto
+     */
     @Override
     public HashMap<Articolo, Integer> getArticoliFromLista(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -777,6 +859,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return null;
     }
 
+    /**
+     * Imposta la chiave esterna riferente a "categoria" nella tabella "articolo" al valore preimpostato di default
+     * @param idCategoria
+     * @return restituisce il numero di righe modificate
+     */
     @Override
     public int setFKCategoriaToDefault(int idCategoria){
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -788,6 +875,11 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Imposta la chiave esterna riferente a "magazzino" nella tabella "magazzino_has_prodotto" al valore preimpostato di default
+     * @param idMagazzino
+     * @return restituisce il numero di righe modificate
+     */
     @Override
     public int setFKMagazzinoToDefault(int idMagazzino){
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -799,10 +891,15 @@ public class ArticoloDAO implements IArticoloDAO {
         return rowCount;
     }
 
+    /**
+     * Imposta la chiave esterna riferente a "erogatore" nella tabella "articolo" al valore preimpostato di default
+     * @param idErogatore
+     * @return
+     */
     @Override
     public int setFKProduttoreToDefault(int idErogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "UPDATE myshop.prodotto SET Erogatore_idErogatore = '" + ErogatoreDAO.PRODUTTORE_DEFAULT_ID +
+        String sql = "UPDATE myshop.articolo SET Erogatore_idErogatore = '" + ErogatoreDAO.PRODUTTORE_DEFAULT_ID +
                 "' WHERE `Erogatore_idErogatore` = '" + idErogatore + "';";
         IDbOperation update = new WriteOperation(sql);
         int rowCount = executor.executeOperation(update).getRowsAffected();

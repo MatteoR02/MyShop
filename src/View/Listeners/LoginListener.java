@@ -64,15 +64,15 @@ public class LoginListener implements ActionListener {
             frame.mostraRegister();
         } else if (CATALOGO_BTN.equals(action)) {
             //Visualizza catalogo Guest
-            frame.mostraCatalogo();
+            frame.mostraCatalogo(null, false);
         } else if (BACK_BTN.equals(action)){
             MainPage.PaginaCorrente paginaCorrente = frame.getPaginaCorrente();
             if (paginaCorrente == MainPage.PaginaCorrente.ARTICOLO){
-                frame.mostraCatalogo();
+                frame.mostraCatalogo(null, false);
             } else if(paginaCorrente == MainPage.PaginaCorrente.CATALOGO){
                frame.mostraMain();
             } else if (paginaCorrente == MainPage.PaginaCorrente.SOTTOPRODOTTI){
-                frame.mostraCatalogo();
+                frame.mostraCatalogo(null, false);
             } else{
                 frame.mostraMain();
             }

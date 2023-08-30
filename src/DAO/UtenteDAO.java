@@ -553,8 +553,9 @@ public class UtenteDAO implements IUtenteDAO{
 
     @Override
     public int blockCliente(String username) {
+        int idCliente = findIdByUsername(username);
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sqlBlocKCliente = "UPDATE `myshop`.`cliente` SET `stato` = 'BLOCCATO' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";
+        String sqlBlocKCliente = "UPDATE `myshop`.`cliente` SET `stato` = 'BLOCCATO' WHERE `Utente_idUtente` = '" + idCliente + "';";
         IDbOperation blockCliente = new WriteOperation(sqlBlocKCliente);
         int rowCount = executor.executeOperation(blockCliente).getRowsAffected();
         blockCliente.close();
@@ -563,8 +564,9 @@ public class UtenteDAO implements IUtenteDAO{
 
     @Override
     public int unlockCliente(String username) {
+        int idCliente = findIdByUsername(username);
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sqlBlocKCliente = "UPDATE `myshop`.`cliente` SET `stato` = 'BLOCCATO' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";
+        String sqlBlocKCliente = "UPDATE `myshop`.`cliente` SET `stato` = 'BLOCCATO' WHERE `Utente_idUtente` = '" + idCliente + "';";
         IDbOperation blockCliente = new WriteOperation(sqlBlocKCliente);
         int rowCount = executor.executeOperation(blockCliente).getRowsAffected();
         blockCliente.close();

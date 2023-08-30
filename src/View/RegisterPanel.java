@@ -91,7 +91,6 @@ public class RegisterPanel extends JPanel {
 
         this.add(textCivico,new GridBagCostraintsHorizontal(2,8,1,1,insets));
 
-
         this.add(via,new GridBagCostraintsHorizontal(0,9,2,1,insets));
 
         this.add(civico,new GridBagCostraintsHorizontal(2,9,1,1,insets));

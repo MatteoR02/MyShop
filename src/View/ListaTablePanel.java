@@ -102,17 +102,23 @@ public class ListaTablePanel extends JPanel {
         eliminaListaBtn.setActionCommand(ClienteListener.REMOVE_LISTA);
         eliminaListaBtn.addActionListener(clienteListener);
 
-        JButton pagaListaBtn = new JButton("Stampa lista");
-        pagaListaBtn.setActionCommand(ClienteListener.PRINT_LIST);
-        pagaListaBtn.addActionListener(clienteListener);
+        JButton stampaListaBtn = new JButton("Stampa lista");
+        stampaListaBtn.setActionCommand(ClienteListener.PRINT_LIST);
+        stampaListaBtn.addActionListener(clienteListener);
 
-        pulsantiAzioneTabella.add(rimuoviArticoloBtn);
-        pulsantiAzioneTabella.add(aggiornaQuantitaBtn);
-        pulsantiAzioneTabella.add(eliminaListaBtn);
-        pulsantiAzioneTabella.add(pagaListaBtn);
+        JButton toPrenotaBtn = new JButton("Prenota articolo/i");
+        toPrenotaBtn.setActionCommand(ClienteListener.TO_PRENOTA_ARTICOLI);
+        toPrenotaBtn.addActionListener(clienteListener);
+
+        if (lista.getStatoPagamento()!= ListaAcquisto.StatoPagamentoType.PAGATO){
+            pulsantiAzioneTabella.add(rimuoviArticoloBtn);
+            pulsantiAzioneTabella.add(aggiornaQuantitaBtn);
+            pulsantiAzioneTabella.add(eliminaListaBtn);
+            pulsantiAzioneTabella.add(stampaListaBtn);
+            pulsantiAzioneTabella.add(toPrenotaBtn);
+        }
 
         add(pulsantiAzioneTabella, BorderLayout.SOUTH);
-
 
     }
 

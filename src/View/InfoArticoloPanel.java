@@ -41,7 +41,6 @@ public class InfoArticoloPanel extends JPanel {
         JLabel immagine = new JLabel(imageIcon);
         immagine.setName("0");
 
-
         JLabel nomeArticolo = new JLabel(comp.getNomeArticolo());
         JLabel prezzo = new JLabel(comp.getPrezzo() +"€");
         JLabel nomeCategoria = new JLabel("Categoria: " + comp.getNomeCategoria());
