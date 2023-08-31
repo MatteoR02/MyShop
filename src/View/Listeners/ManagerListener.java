@@ -1,9 +1,14 @@
 package View.Listeners;
 
+import Business.ExecuteResult;
+import Business.PuntoVenditaBusiness;
 import Business.UtenteBusiness;
 import Model.Cliente;
+import Model.Prodotto;
 import View.MainPage;
 import View.ViewModel.ClientiTableModel;
+import View.ViewModel.ComponenteCatalogo;
+import View.ViewModel.GestisciQuantitaDialog;
 import View.ViewModel.RigaCliente;
 
 import javax.swing.*;
@@ -19,13 +24,18 @@ public class ManagerListener implements ActionListener {
     public final static String UNLOCK_CLIENTE = "unlock_cliente";
     public final static String RISPONDI_RECENSIONE = "rispondi_recensione";
     public final static String REMOVE_RECENSIONE = "remove_recensione";
-    public final static String GESTISCI_QUANTITA = "gestisci quantità";
+    public final static String GESTISCI_QUANTITA = "gestisci_quantità";
+    public final static String RIFORNISCI_PRODOTTO = "rifornisci_prodotto";
    // public final static String
    // public final static String
 
 
     private MainPage frame;
     private JTable table;
+    private ComponenteCatalogo comp;
+    private JDialog dialog;
+    private Prodotto prodotto;
+    private JSpinner spinner;
 
 
     public ManagerListener(MainPage frame) {
@@ -35,6 +45,18 @@ public class ManagerListener implements ActionListener {
     public ManagerListener(MainPage frame, JTable table){
         this.frame = frame;
         this.table = table;
+    }
+
+    public ManagerListener(MainPage frame, ComponenteCatalogo comp){
+        this.frame = frame;
+        this.comp = comp;
+    }
+
+    public ManagerListener(MainPage frame, JDialog dialog, Prodotto prodotto, JSpinner spinner) {
+        this.frame = frame;
+        this.dialog = dialog;
+        this.prodotto = prodotto;
+        this.spinner = spinner;
     }
 
     public void setFrame(MainPage frame) {
@@ -88,6 +110,16 @@ public class ManagerListener implements ActionListener {
                 UtenteBusiness.changeClienteStatus(idCliente, Cliente.StatoUtenteType.ABILITATO);
             }
             frame.mostraClientiTable();
+        } else if (GESTISCI_QUANTITA.equals(action)){
+            GestisciQuantitaDialog gestisciQuantitaDialog = new GestisciQuantitaDialog(frame,"Gestisci quantità", comp);
+        } else if (RIFORNISCI_PRODOTTO.equals(action)){
+            ExecuteResult<Boolean> result = PuntoVenditaBusiness.aggiornaQuantitaInMagazzino(prodotto, (Integer) spinner.getValue());
+            if (result.getResult()== ExecuteResult.ResultStatement.OK){
+                JOptionPane.showMessageDialog(dialog,"Rifornimento effettuato con successo", "Rifornimento effettuato", JOptionPane.INFORMATION_MESSAGE);
+            } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){
+                JOptionPane.showMessageDialog(dialog, "Errore nel rifornimento", "Errore rifornimento", JOptionPane.ERROR_MESSAGE);
+            }
+            dialog.dispose();
         }
     }
 }

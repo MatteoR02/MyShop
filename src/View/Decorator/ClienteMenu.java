@@ -27,6 +27,7 @@ public class ClienteMenu extends Menu {
 
         LoginListener loginListener = new LoginListener(frame);
         ClienteListener clienteListener = new ClienteListener(frame);
+
         sfogliaCatBtn.addActionListener(loginListener);
         profileBtn.addActionListener(loginListener);
         toListeBtn.addActionListener(clienteListener);

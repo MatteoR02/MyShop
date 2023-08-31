@@ -451,7 +451,7 @@ public class ArticoloDAO implements IArticoloDAO {
 
         if (!isProdottoComposito(prodotto.getId())){
             //Se è un prodotto normale le uniche cose da aggiornare sono in articolo e in collocazione
-            String sqlArticolo = "UPDATE myshop.articolo SET nome=? , descrizione=?, prezzo=?, Categoria_idCategoria=? Erogatore_idErogatore = ? WHERE idArticolo=?;";
+            String sqlArticolo = "UPDATE myshop.articolo SET nome=?, descrizione=?, prezzo=?, Categoria_idCategoria=?, Erogatore_idErogatore=? WHERE idArticolo=?;";
            // String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
             String sqlCollocazione = "UPDATE myshop.magazzino_has_prodotto SET Magazzino_idMagazzino=?, quantita=?, corsia=?, scaffale=? WHERE Prodotto_Articolo_idArticolo=?;";
 
@@ -477,10 +477,10 @@ public class ArticoloDAO implements IArticoloDAO {
                 prodottoStmt.close();*/
 
                 PreparedStatement collStmt = executor.executeOperation(writeOpColl).getPreparedStatement();
-                collStmt.setInt(1, ((Prodotto) prodotto).getCollocazione().getQuantita());
-                collStmt.setString(2, ((Prodotto) prodotto).getCollocazione().getCorsia());
-                collStmt.setInt(3, ((Prodotto) prodotto).getCollocazione().getScaffale());
-                collStmt.setInt(4, ((Prodotto) prodotto).getCollocazione().getMagazzino().getId());
+                collStmt.setInt(1, ((Prodotto) prodotto).getCollocazione().getMagazzino().getId());
+                collStmt.setInt(2, ((Prodotto) prodotto).getCollocazione().getQuantita());
+                collStmt.setString(3, ((Prodotto) prodotto).getCollocazione().getCorsia());
+                collStmt.setInt(4, ((Prodotto) prodotto).getCollocazione().getScaffale());
                 collStmt.setInt(5, prodotto.getId());
                 rowCount += collStmt.executeUpdate();
                 collStmt.close();

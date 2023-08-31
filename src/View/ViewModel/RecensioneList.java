@@ -1,6 +1,7 @@
 package View.ViewModel;
 
 
+import Business.FotoBusiness;
 import Business.SessionManager;
 import Business.UtenteBusiness;
 import Model.Cliente;
@@ -41,17 +42,11 @@ public class RecensioneList extends JPanel {
         cliente.setFont(clienteFont);
 
         ImageIcon starsIcon = getRecStars(recensione.getValutazione());
-
-        Image imageStars = starsIcon.getImage(); // La trasformo in un Image
-        Image starsNewImg = imageStars.getScaledInstance(100, 15,  java.awt.Image.SCALE_SMOOTH); // La dimensiono in modo smooth
-        starsIcon = new ImageIcon(starsNewImg);
+        starsIcon = FotoBusiness.scaleImageIcon(starsIcon, 100,15);
         JLabel valutazioneIMM = new JLabel(starsIcon);
 
         ImageIcon userIcon = new ImageIcon("resources/userIcon.png");
-
-        Image imageUser = userIcon.getImage();
-        Image userNewImg = imageUser.getScaledInstance(30, 30,  java.awt.Image.SCALE_SMOOTH);
-        userIcon = new ImageIcon(userNewImg);
+        userIcon = FotoBusiness.scaleImageIcon(userIcon, 30, 30);
         JLabel userImm = new JLabel(userIcon);
 
         JLabel data = new JLabel();

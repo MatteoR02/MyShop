@@ -5,9 +5,11 @@ import Business.ArticoloBusiness;
 import Business.FotoBusiness;
 import Business.SessionManager;
 import Model.Cliente;
+import Model.Manager;
 import Model.Utente;
 import View.Decorator.ClienteCompCatalogoMenu;
 import View.Decorator.GuestCompCatalogoMenu;
+import View.Decorator.ManagerCompCatalogoMenu;
 import View.Decorator.Menu;
 import View.GridBagCostraintsHorizontal;
 import View.Listeners.CatalogoListener;
@@ -62,6 +64,8 @@ public class ArticoloList extends JPanel {
         Utente u = (Utente) SessionManager.getSession().get(LOGGED_USER);
         if (u instanceof Cliente){
             compCatalogoMenu = new ClienteCompCatalogoMenu(frame, componente);
+        } else if (u instanceof Manager && componente.getTipoArticolo() == ArticoloBusiness.TipoArticolo.PRODOTTO){
+            compCatalogoMenu = new ManagerCompCatalogoMenu(frame, componente);
         } else {
             compCatalogoMenu = new GuestCompCatalogoMenu(frame, componente);
         }
@@ -95,24 +99,5 @@ public class ArticoloList extends JPanel {
             this.add(btn, "cell 0 " + (6 + i) + ", span, growx, wrap");
             i++;
         }
-/*
-        this.add(immagine,new GridBagCostraintsHorizontal(0,0,2,2,insets));
-        this.add(nome,new GridBagCostraintsHorizontal(0,2,1,1,insets));
-        this.add(prezzo,new GridBagCostraintsHorizontal(1,2,1,1,insets));
-        this.add(categoria,new GridBagCostraintsHorizontal(0,3,1,1,insets));
-        //this.add(labelStella,new GridBagCostraintsHorizontal(1,4,1,1,insets));
-        //this.add(mediaRec,new GridBagCostraintsHorizontal(0,4,1,1,insets));
-
-        if (componente.getTipoArticolo()== ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO){
-            this.add(visualizzaSPBtn, new GridBagCostraintsHorizontal(0,5,2,1,new Insets(5,10,5,10)));
-        }
-
-        int i=0;
-        for ( JButton btn : compCatalogoMenu.getPulsanti() ) {
-            btn.setFocusPainted(false);
-            this.add(btn,new GridBagCostraintsHorizontal(0,6+i,2,1,new Insets(5,10,5,10)));
-            i++;
-        }*/
-
     }
 }

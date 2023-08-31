@@ -94,7 +94,7 @@ public class InfoArticoloPanel extends JPanel {
                 button.setFocusPainted(false);
                 panelBottoni.add(button);
             }
-        } if (u instanceof Manager){
+        } if (u instanceof Manager && comp.getTipoArticolo() == ArticoloBusiness.TipoArticolo.PRODOTTO){
             Manager m = (Manager) u;
             Menu managerInfoArticoloMenu = new ManagerInfoArticoloMenu(frame,comp);
             for (JButton button : managerInfoArticoloMenu.getPulsanti()   ) {

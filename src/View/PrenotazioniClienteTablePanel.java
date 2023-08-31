@@ -70,7 +70,6 @@ public class PrenotazioniClienteTablePanel extends JPanel {
         JPanel sudPannello = new JPanel(new FlowLayout());
         JPanel nordPannello = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 1));
 
-
         nordPannello.add(statoPrenotazione);
         nordPannello.add(dataPrenotazione);
         nordPannello.add(dataArrivo);
