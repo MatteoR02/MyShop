@@ -22,6 +22,7 @@ public class ClientiTablePanel extends JPanel {
             riga.setNome(c.getPersona().getNome());
             riga.setCognome(c.getPersona().getCognome());
             riga.setUsername(c.getUsername());
+            riga.setEmail(c.getPersona().getEmail());
             riga.setProfessione(c.getProfessione());
             riga.setCanalePreferito(c.getCanalePreferito());
             riga.setStato(c.getStato());
@@ -51,8 +52,17 @@ public class ClientiTablePanel extends JPanel {
         sbloccaUtente.setActionCommand(ManagerListener.UNLOCK_CLIENTE);
         sbloccaUtente.addActionListener(managerListener);
 
+        JButton inviaMessaggioBtn = new JButton("Invia messaggio");
+        inviaMessaggioBtn.setActionCommand(ManagerListener.TO_INVIA_MESSAGGIO);
+        inviaMessaggioBtn.addActionListener(managerListener);
+
+        bloccaUtente.setFocusPainted(false);
+        sbloccaUtente.setFocusPainted(false);
+        inviaMessaggioBtn.setFocusPainted(false);
+
         pulsantiAzioneTabella.add(bloccaUtente);
         pulsantiAzioneTabella.add(sbloccaUtente);
+        pulsantiAzioneTabella.add(inviaMessaggioBtn);
         add(pulsantiAzioneTabella, BorderLayout.SOUTH);
 
 

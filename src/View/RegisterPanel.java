@@ -16,7 +16,7 @@ public class RegisterPanel extends JPanel {
         Insets insets = new Insets(3,10,3,10);
         JLabel textNome = new JLabel("Nome");
         JLabel textCognome = new JLabel("Cognome");
-        JLabel textEmail = new JLabel("Email");
+        JLabel textEmail = new JLabel("EmailSender");
         JLabel textUsername = new JLabel("Username");
         JLabel textPassword = new JLabel("Password");
         JLabel textTelefono = new JLabel("Telefono");

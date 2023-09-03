@@ -1,5 +1,7 @@
 package Business.Bridge;
 
+import java.io.File;
+
 public abstract class Documento {
 
     protected PdfAPI pdfAPI;
@@ -8,6 +10,6 @@ public abstract class Documento {
         this.pdfAPI = pdfAPI;
     }
 
-    public abstract void invia(String indirizzo);
+    public abstract File getFile();
 
 }

@@ -22,7 +22,7 @@ public class ClientiTableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return 8;
+        return 9;
     }
 
     public List<RigaCliente> getRighe() {
@@ -41,10 +41,11 @@ public class ClientiTableModel extends AbstractTableModel {
             case 1: return riga.getNome();
             case 2: return riga.getCognome();
             case 3: return riga.getUsername();
-            case 4: return riga.getProfessione();
-            case 5: return riga.getCanalePreferito();
-            case 6: return riga.getStato();
-            case 7: return riga.getSelezionato();
+            case 4: return riga.getEmail();
+            case 5: return riga.getProfessione();
+            case 6: return riga.getCanalePreferito();
+            case 7: return riga.getStato();
+            case 8: return riga.getSelezionato();
         }
 
         return null;
@@ -60,17 +61,17 @@ public class ClientiTableModel extends AbstractTableModel {
             case 1: riga.setNome(value.toString());
             case 2: riga.setCognome(value.toString());
             case 3: riga.setUsername(value.toString());
-            case 4: riga.setProfessione(Cliente.ProfessioneType.valueOf(value.toString()));
-            case 5: riga.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(value.toString()));
-            case 6: riga.setStato(Cliente.StatoUtenteType.valueOf(value.toString()));
-            case 7: riga.setSelezionato(Boolean.parseBoolean(value.toString()));
+            case 4: riga.getEmail();
+            case 5: riga.setProfessione(Cliente.ProfessioneType.valueOf(value.toString()));
+            case 6: riga.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(value.toString()));
+            case 7: riga.setStato(Cliente.StatoUtenteType.valueOf(value.toString()));
+            case 8: riga.setSelezionato(Boolean.parseBoolean(value.toString()));
         }
-        System.out.println("Cambiato");
     }
 
     @Override
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return columnIndex == 7;
+        return columnIndex == 8;
     }
 
     @Override
@@ -80,16 +81,17 @@ public class ClientiTableModel extends AbstractTableModel {
             case 1: return "Nome";
             case 2: return "Cognome";
             case 3: return "Username";
-            case 4: return "Professione";
-            case 5: return "Canale Preferito";
-            case 6: return "Stato";
+            case 4: return "Email";
+            case 5: return "Professione";
+            case 6: return "Canale Preferito";
+            case 7: return "Stato";
         }
         return null;
     }
 
     @Override
     public Class getColumnClass(int columnIndex){
-        if(columnIndex == 7){
+        if(columnIndex == 8){
             return Boolean.class;
         }
         return Object.class;

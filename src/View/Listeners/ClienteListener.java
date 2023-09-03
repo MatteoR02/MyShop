@@ -1,9 +1,7 @@
 package View.Listeners;
 
 import Business.*;
-import Business.Bridge.Documento;
-import Business.Bridge.DocumentoListaAcquisto;
-import Business.Bridge.PdfBoxAPI;
+import Business.Email.ListaAcquistoEmail;
 import Model.Articolo;
 import Model.Cliente;
 import Model.IProdotto;
@@ -120,8 +118,8 @@ public class ClienteListener implements ActionListener {
             panel.revalidate();
 
         } else if(PRINT_LIST.equals(action)){
-            Documento listaPDF = new DocumentoListaAcquisto(lista, new PdfBoxAPI());
-            listaPDF.invia(((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER)).getPersona().getEmail());
+            ListaAcquistoEmail listaAcquistoEmail = new ListaAcquistoEmail(((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER)).getPersona().getEmail(), lista);
+            listaAcquistoEmail.inviaEmail();
 
         } else if (REMOVE_FROM_LISTA.equals(action)){
             Map<RigaArticoloLista, Integer> mapArticoloLista = new HashMap<>();

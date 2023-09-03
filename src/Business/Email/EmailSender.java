@@ -1,4 +1,4 @@
-package Business.Bridge;
+package Business.Email;
 
 
 import javax.mail.*;
@@ -10,12 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-public class Email {
+public class EmailSender {
 
-    public static void sendEmail(String address, File file){
-        // Recipient's email ID needs to be mentioned.
-        //String to = address;
-
+    public static void sendEmail(String address, String oggetto, String corpo, File file){
 
         final String username = "myshopmatteo@gmail.com";
         final String password = "idtryuqcrtadcpgb";
@@ -39,21 +36,24 @@ public class Email {
 
         try {
            Message message = new MimeMessage(session);
-           message.setSubject("MyShop lista d'acquisto");
+           message.setSubject(oggetto);
 
            Address addressTo = new InternetAddress(address);
            message.setRecipient(Message.RecipientType.TO, addressTo);
 
            MimeMultipart multipart = new MimeMultipart();
 
-           MimeBodyPart attachment = new MimeBodyPart();
-           attachment.attachFile(file);
+           if (file!=null){
+               MimeBodyPart attachment = new MimeBodyPart();
+               attachment.attachFile(file);
+               multipart.addBodyPart(attachment);
+           }
 
            MimeBodyPart messageBodyPart = new MimeBodyPart();
-           messageBodyPart.setContent("<h2>Lista d'acquisto da stampare e portare al punto vendita</h2>", "text/html");
+           messageBodyPart.setContent(corpo, "text/html");
 
            multipart.addBodyPart(messageBodyPart);
-           multipart.addBodyPart(attachment);
+
 
            message.setContent(multipart);
 

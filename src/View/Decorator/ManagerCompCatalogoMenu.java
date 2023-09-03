@@ -28,7 +28,7 @@ public class ManagerCompCatalogoMenu extends Menu{
         viewArtBtn.addActionListener(catalogoListener);
         gestisciQuantitaBtn.addActionListener(managerListener);
 
-        gestisciQuantitaBtn.setForeground(Color.RED);
+        gestisciQuantitaBtn.setForeground(Color.BLUE);
 
 
         pulsanti.add(viewArtBtn);
