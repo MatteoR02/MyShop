@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class EmailSender {
 
-    public static void sendEmail(String address, String oggetto, String corpo, File file){
+    public static void sendEmail(Email email){
 
         final String username = "myshopmatteo@gmail.com";
         final String password = "idtryuqcrtadcpgb";
@@ -36,29 +36,27 @@ public class EmailSender {
 
         try {
            Message message = new MimeMessage(session);
-           message.setSubject(oggetto);
+           message.setSubject(email.getOggetto());
 
-           Address addressTo = new InternetAddress(address);
+           Address addressTo = new InternetAddress(email.getDestinatario());
            message.setRecipient(Message.RecipientType.TO, addressTo);
 
            MimeMultipart multipart = new MimeMultipart();
 
-           if (file!=null){
+           if (email.getAllegato()!=null){
                MimeBodyPart attachment = new MimeBodyPart();
-               attachment.attachFile(file);
+               attachment.attachFile(email.getAllegato());
                multipart.addBodyPart(attachment);
            }
 
            MimeBodyPart messageBodyPart = new MimeBodyPart();
-           messageBodyPart.setContent(corpo, "text/html");
+           messageBodyPart.setContent(email.getCorpo(), "text/html");
 
            multipart.addBodyPart(messageBodyPart);
-
 
            message.setContent(multipart);
 
            Transport.send(message);
-
 
         } catch (MessagingException | IOException e) {
             throw new RuntimeException(e);

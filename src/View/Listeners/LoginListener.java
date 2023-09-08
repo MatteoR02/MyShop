@@ -73,7 +73,9 @@ public class LoginListener implements ActionListener {
                frame.mostraMain();
             } else if (paginaCorrente == MainPage.PaginaCorrente.SOTTOPRODOTTI){
                 frame.mostraCatalogo(null, false);
-            } else{
+            } else if (paginaCorrente == MainPage.PaginaCorrente.CREAZIONE_ARTICOLO) {
+                frame.mostraCreaArticolo();
+            }else{
                 frame.mostraMain();
             }
         } else if (LOGOUT_BTN.equals(action)){

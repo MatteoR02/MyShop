@@ -1,5 +1,6 @@
 package View;
 
+import View.Decorator.AdminMenu;
 import View.Decorator.ClienteMenu;
 import View.Decorator.Menu;
 
@@ -16,10 +17,10 @@ public class AdminMainPanel extends JPanel {
         Dimension buttonDimension = new Dimension(200, 70);
         Insets insets = new Insets(10,10,10,10);
 
-        Menu clienteMenu = new ClienteMenu(frame);
+        Menu adminMenu = new AdminMenu(frame);
 
         int i=0;
-        for (JButton btn : clienteMenu.getPulsanti()) {
+        for (JButton btn : adminMenu.getPulsanti()) {
             btn.setFocusPainted(false);
             btn.setPreferredSize(buttonDimension);
             btn.setFont(buttonFont);

@@ -9,7 +9,10 @@ public class Prodotto extends Articolo implements IProdotto{
     public Prodotto(String nome, String descrizione, float prezzo, List<Recensione> recensioni, List<Foto> immagini, Categoria categoria, Collocazione collocazione, Erogatore erogatore) {
         super(nome, descrizione, prezzo, recensioni, immagini, categoria, erogatore);
         this.collocazione = collocazione;
-        this.erogatore = erogatore;
+    }
+
+    public Prodotto(String nome, String descrizione, Float prezzo, Categoria categoria, Erogatore erogatore) {
+        super(nome, descrizione, prezzo, categoria, erogatore);
     }
 
     public Prodotto() {

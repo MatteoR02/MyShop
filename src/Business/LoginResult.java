@@ -1,7 +1,7 @@
 package Business;
 
 public class LoginResult {
-    //prevediamo una enum di possibili risultati
+
     public enum Result{LOGIN_OK, WRONG_PASSWORD, USER_NOT_FOUND, USER_BLOCKED}
 
     private Result result;

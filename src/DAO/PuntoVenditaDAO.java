@@ -23,6 +23,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
 
     private static final IMagazzinoDAO magazzinoDAO = MagazzinoDAO.getInstance();
     private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
+    private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
     private PuntoVenditaDAO(){
         puntoVendita = null;
@@ -88,7 +89,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     }
 
     @Override
-    public List<PuntoVendita> loadPuntiVendita() {
+    public List<PuntoVendita> loadAllPuntiVendita() {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.puntovendita;";
         IDbOperation readOp = new ReadOperation(sql);
@@ -151,7 +152,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return null;
     }
 
-    @Override
+    /*@Override
     public List<PuntoVendita> loadPuntiVenditaOfCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "SELECT * FROM myshop.puntovendita AS P INNER JOIN myshop.puntovendita_has_cliente AS PC ON P.idPuntoVendita = PC.PuntoVendita_idPuntoVendita WHERE PC.Cliente_Utente_idUtente='"+ idCliente +"';";
@@ -180,7 +181,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
             readOp.close();
         }
         return null;
-    }
+    }*/
 
     @Override
     public int addPuntoVendita(PuntoVendita puntoVendita) {
@@ -241,6 +242,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     public int removePuntoVendita(int idPuntoVendita) {
 
         magazzinoDAO.setFKPuntoVenditaToDefault(idPuntoVendita);
+        utenteDAO.setFKPuntoVenditaToDefault(idPuntoVendita);
 
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "DELETE FROM myshop.puntovendita WHERE idPuntoVendita = '" + idPuntoVendita + "';";
@@ -251,6 +253,30 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     }
 
     @Override
+    public int addArticoloToPuntoVendita(int idArticolo, int idPuntoVendita) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "INSERT INTO myshop.puntovendita_has_articolo (PuntoVendita_idPuntoVendita, Articolo_idArticolo) VALUES (?,?);";
+
+        IDbOperation addByte = new WriteByteOperation(sql);
+        PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
+        int rowCount;
+        try{
+            if(preparedStatement!=null) {
+                preparedStatement.setInt(1, idPuntoVendita);
+                preparedStatement.setInt(2, idArticolo);
+                rowCount = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                return rowCount;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            addByte.close();
+        }
+        return 0;
+    }
+
+    /*@Override
     public int registraCliente(int idCliente, int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "INSERT INTO myshop.puntovendita_has_cliente (PuntoVendita_idPuntoVendita, Cliente_Utente_idUtente, data_registrazione) VALUES (?,?,?);";
@@ -283,5 +309,5 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         int rowCount = executor.executeOperation(removeCliente).getRowsAffected();
         removeCliente.close();
         return rowCount;
-    }
+    }*/
 }

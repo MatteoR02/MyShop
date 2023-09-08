@@ -143,7 +143,7 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         for ( Articolo item : listaAcquisto.getArticoli().keySet() ) {
             String sql;
             if (isInLista(listaAcquisto.getId(), item.getId())){
-                sql = "UPDATE listaacquisto_has_articolo SET ListaAcquisto_idListaAcquisto = "+ listaAcquisto.getId() +", Articolo_idArticolo = '"+ item.getId() +"', quantita = '"+ listaAcquisto.getArticoli().get(item) +"' WHERE (ListaAcquisto_idListaAcquisto = "+ listaAcquisto.getId() +") AND (Articolo_idArticolo = "+ item.getId() +");";
+                sql = "UPDATE listaacquisto_has_articolo SET Articolo_idArticolo = '"+ item.getId() +"', quantita = '"+ listaAcquisto.getArticoli().get(item) +"' WHERE (ListaAcquisto_idListaAcquisto = "+ listaAcquisto.getId() +") AND (Articolo_idArticolo = "+ item.getId() +");";
             } else {
                 sql = "INSERT INTO listaacquisto_has_articolo (ListaAcquisto_idListaAcquisto, Articolo_idArticolo, quantita) VALUES ('"+listaAcquisto.getId()+"','"+item.getId()+"','"+listaAcquisto.getArticoli().get(item)+"');";
             }

@@ -24,9 +24,9 @@ public class Cliente extends Utente {
     private StatoUtenteType stato;
     private List<Messaggio> messaggi;
     private List<ListaAcquisto> listeAcquisto;
-    private List<PuntoVendita> puntiVenditaRegistrati;
+    private int idPuntoVendita;
 
-    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Date dataAbilitazione, StatoUtenteType stato, List<Messaggio> messaggi, List<ListaAcquisto> listeAcquisto, List<PuntoVendita> puntiVenditaRegistrati) {
+    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Date dataAbilitazione, StatoUtenteType stato, List<Messaggio> messaggi, List<ListaAcquisto> listeAcquisto, int idPuntoVendita) {
         super(persona, username, password, indirizzo);
         this.dataAbilitazione = dataAbilitazione;
         this.professione = professione;
@@ -34,7 +34,7 @@ public class Cliente extends Utente {
         this.stato = stato;
         this.messaggi = messaggi;
         this.listeAcquisto = listeAcquisto;
-        this.puntiVenditaRegistrati = puntiVenditaRegistrati;
+        this.idPuntoVendita = idPuntoVendita;
     }
 
     public Cliente() {
@@ -91,12 +91,12 @@ public class Cliente extends Utente {
         this.listeAcquisto = listeAcquisto;
     }
 
-    public List<PuntoVendita> getPuntiVenditaRegistrati() {
-        return puntiVenditaRegistrati;
+    public int getIdPuntoVendita() {
+        return idPuntoVendita;
     }
 
-    public void setPuntiVenditaRegistrati(List<PuntoVendita> puntiVenditaRegistrati) {
-        this.puntiVenditaRegistrati = puntiVenditaRegistrati;
+    public void setIdPuntoVendita(int idPuntoVendita) {
+        this.idPuntoVendita = idPuntoVendita;
     }
 
     @Override

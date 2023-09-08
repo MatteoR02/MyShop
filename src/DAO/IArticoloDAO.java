@@ -15,16 +15,18 @@ public interface IArticoloDAO {
     ProdottoComposito loadProdottoComposito(int idProdottoComposito);
     boolean isProdottoComposito(int idProdottoComposito);
     boolean isSottoProdotto(int idProdotto);
-    int addProdotto(Articolo prodotto);
+    int addProdotto(Articolo prodotto, boolean returnID);
     int updateProdotto(Articolo prodotto);
     int removeProdotto(int idProdotto);
-    int createComposition(List<Integer> idProdotti, String nomeComp,String descrizione, int idCategoria);
+    int removeSottoProdotto(int idProdComp, int idSottoProd);
+
+    int addSottoProdotto(int idProdComp, IProdotto prodotto);
 
     HashMap<Articolo, Integer> getArticoliFromLista(int idLista);
 
     Servizio loadServizio(int idServizio);
     ArrayList<Servizio> loadAllServizi();
-    int addServizio(Servizio servizio);
+    int addServizio(Servizio servizio, boolean returnID);
     int updateServizio(Servizio servizio);
     int removeServizio(int idServizio);
 
@@ -34,6 +36,6 @@ public interface IArticoloDAO {
 
     int setFKCategoriaToDefault(int idCategoria);
     int setFKMagazzinoToDefault(int idMagazzino);
-    int setFKProduttoreToDefault(int idProduttore);
+    int setFKErogatoreToDefault(int idProduttore);
 
 }

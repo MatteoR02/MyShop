@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class ArticoloBusiness {
 
@@ -23,6 +24,7 @@ public class ArticoloBusiness {
     private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     private static final IPuntoVenditaDAO puntoVenditaDAO = PuntoVenditaDAO.getInstance();
     private static final ICategoriaDAO categoriaDAO = CategoriaDAO.getInstance();
+    private static final IErogatoreDAO erogatoreDAO = ErogatoreDAO.getInstance();
     public enum TipoArticolo{PRODOTTO, PRODOTTO_COMPOSITO, SERVIZIO, NOT_ARTICLE}
 
 
@@ -52,12 +54,39 @@ public class ArticoloBusiness {
         articoli.addAll(servizi);
         result.setObject(articoli);
         result.setMessage(ExecuteResult.ResultStatement.OK.toString());
+        if(isUndefined(result.getObjectFromArray(0).getNome())){
+            result.removeFromArray(0);
+        }
         result.execute(SessionManager.ALL_ARTICOLI);
 
         return null;
     }
 
-    public static ExecuteResult<Articolo> getAllProdottifromPV(int id){
+    public static ExecuteResult<Articolo> getAllProdotti(){
+        ExecuteResult<Articolo> result = new ExecuteResult<>();
+        ArrayList<Articolo> articoliUncheck = articoloDAO.loadAllProdotti(); //carica prodotti e prodotti compositi
+
+        ArrayList<Articolo> articoli = new ArrayList<>();
+
+        for (Articolo art : articoliUncheck   ) {
+            if (hasNoFoto(art)){
+                articoli.add(setDefaultFoto(art));
+            } else {
+                articoli.add(art);
+            }
+        }
+
+        result.setObject(articoli);
+        if(isUndefined(result.getObjectFromArray(0).getNome())){
+            result.removeFromArray(0);
+        }
+
+        result.setResult(ExecuteResult.ResultStatement.OK);
+        result.setMessage(ExecuteResult.ResultStatement.OK.toString());
+        return result;
+    }
+
+    public static ExecuteResult<Articolo> getAllArticoliFromPV(int id){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
         if(puntoVenditaDAO.isPuntoVendita(id)){
 
@@ -83,19 +112,6 @@ public class ArticoloBusiness {
             result.setMessage("L'id inserito non corrisponde ad un punto vendita");
             return result;
         }
-
-        //ArrayList<Articolo> articoli = result.getObject();
-       /* for (int i = 0; i < articoli.size(); i++) {
-            if(articoloCheckType(articoli.get(i).getId()) != TipoArticolo.PRODOTTO_COMPOSITO && articoloCheckType(articoli.get(i).getId()) != TipoArticolo.SERVIZIO){
-                ExecuteResult<Foto> res = FotoBusiness.loadSingleFoto(articoli.get(i).getId(), FotoDAO.ID_ARTICOLO);
-                ArrayList<Foto> photos = res.getObject();
-                ((Prodotto)articoli.get(i)).setImmagini(photos);
-                result.setMessage(result.getMessage() + res.getMessage());
-            }
-        }*/
-
-        //result.setObject(articoli);
-
         result.execute(SessionManager.ALL_ARTICOLI_PV);
         return result;
     }
@@ -108,6 +124,34 @@ public class ArticoloBusiness {
             result.setSingleObject(articoloDAO.loadServizio(id));
             result.setMessage("Servizio caricato!");
             result.setResult(ExecuteResult.ResultStatement.OK);
+        }else if(articoloCheckType(id) == TipoArticolo.PRODOTTO){
+            result.setSingleObject(articoloDAO.loadProdotto(id));
+            result.setMessage("Prodotto!");
+            result.setResult(ExecuteResult.ResultStatement.OK);
+        }
+        if(articoloCheckType(id) == TipoArticolo.PRODOTTO_COMPOSITO){
+            result.reset();
+            result.setSingleObject(articoloDAO.loadProdottoComposito(id));
+            result.setMessage("Prodotto composito caricato!");
+            result.setResult(ExecuteResult.ResultStatement.OK);
+        }
+        if(articoloCheckType(id) != TipoArticolo.SERVIZIO && articoloCheckType(id) != TipoArticolo.PRODOTTO && articoloCheckType(id) != TipoArticolo.PRODOTTO_COMPOSITO){
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("Non è stato passato l'id di un articolo!");
+        }
+        if(isUndefined(result.getSingleObject().getNome())){
+            result.reset();
+            result.setMessage("Articolo selezionato: undefined!");
+            result.setResult(ExecuteResult.ResultStatement.UNDEFINED);
+        }
+        return result;
+    }
+
+    public static ExecuteResult<IProdotto> getIProdotto(int id){
+        ExecuteResult<IProdotto> result = new ExecuteResult<>();
+        if(articoloCheckType(id) == TipoArticolo.SERVIZIO){
+            result.setMessage("L'id fornito è un servizio");
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
         }else if(articoloCheckType(id) == TipoArticolo.PRODOTTO){
             result.setSingleObject(articoloDAO.loadProdotto(id));
             result.setMessage("Prodotto!");
@@ -157,6 +201,7 @@ public class ArticoloBusiness {
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
         }
+        getAllArticoli();
         return result;
     }
 
@@ -191,6 +236,7 @@ public class ArticoloBusiness {
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
         }
+        getAllArticoli();
         return result;
     }
 
@@ -201,24 +247,26 @@ public class ArticoloBusiness {
 
         if(tipoArticolo == TipoArticolo.PRODOTTO){
             Prodotto p = (Prodotto) articolo;
-            articolo.setId(articoloDAO.addProdotto(p));
-            result.setMessage("prodotto aggiunto!");
+            articolo.setId(articoloDAO.addProdotto(p, true));
+            result.setMessage("Prodotto aggiunto!");
         }
         if(tipoArticolo == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
-            articoloDAO.addServizio(s);
+            articoloDAO.addServizio(s, true);
             result.setMessage("Servizio aggiunto!");
         }
         if(tipoArticolo == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito pc = (ProdottoComposito) articolo;
-            articolo.setId(articoloDAO.addProdotto(pc));
-            result.setMessage("Servizio aggiunto!");
+            articoloDAO.addProdotto(pc, true);
+            result.setMessage("Prodotto composito aggiunto!");
         }
         if(tipoArticolo != TipoArticolo.PRODOTTO && tipoArticolo != TipoArticolo.SERVIZIO && tipoArticolo != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
         }
+        getAllArticoli();
+
        /* if(result.getSingleObject()){
             ExecuteResult<Articolo> artResult = new ExecuteResult<>();
             artResult.execute(SessionManager.NEW_TEMP_ARTICOLI);
@@ -226,43 +274,55 @@ public class ArticoloBusiness {
         return result;
     }
 
-    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo, ArrayList<File> imgFiles){
+    public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo, ArrayList<File> imgFiles, int idPuntoVendita){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
         result.setResult(ExecuteResult.ResultStatement.OK);
 
         if(tipoArticolo == TipoArticolo.PRODOTTO){
-            Prodotto p = articoloDAO.loadProdotto(articoloDAO.addProdotto(articolo));
-            for (File i:imgFiles) {
+            Prodotto p = (Prodotto) articolo;
+            p.setImmagini(new ArrayList<Foto>());
+            for (File f: imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(i));
-                FotoDAO.getInstance().addFotoToArticolo(foto,p.getId());
+                foto.setImmagine(imgToBlob(f));
+                p.getImmagini().add(foto);
             }
-            //Refresho gli articoli nella session
-            //getAllProdottiDisponibili();
-            getAllArticoli();
+            int idProd = articoloDAO.addProdotto(p, true);
+            puntoVenditaDAO.addArticoloToPuntoVendita(idProd, idPuntoVendita);
+            //getAllArticoli();
             result.setMessage("prodotto aggiunto!");
 
         }
         if(tipoArticolo == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
-            articoloDAO.addServizio(s);
+            s.setImmagini(new ArrayList<Foto>());
+            for (File f: imgFiles) {
+                Foto foto = new Foto();
+                foto.setImmagine(imgToBlob(f));
+                s.getImmagini().add(foto);
+            }
+            int idServ = articoloDAO.addServizio(s, true);
+            puntoVenditaDAO.addArticoloToPuntoVendita(idServ, idPuntoVendita);
             result.setMessage("Servizio aggiunto!");
         }
         if(tipoArticolo == TipoArticolo.PRODOTTO_COMPOSITO){
             ProdottoComposito pc = (ProdottoComposito) articolo;
-            articoloDAO.addProdotto(pc);
-            result.setMessage("Servizio aggiunto!");
+            pc.setImmagini(new ArrayList<Foto>());
+            for (File f: imgFiles) {
+                Foto foto = new Foto();
+                foto.setImmagine(imgToBlob(f));
+                pc.getImmagini().add(foto);
+            }
+            int idProdComp = articoloDAO.addProdotto(pc, true);
+            puntoVenditaDAO.addArticoloToPuntoVendita(idProdComp,idPuntoVendita);
+            result.setMessage("Prodotto composito aggiunto!");
         }
         if(tipoArticolo != TipoArticolo.PRODOTTO && tipoArticolo != TipoArticolo.SERVIZIO && tipoArticolo != TipoArticolo.PRODOTTO_COMPOSITO){
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setSingleObject(false);
             result.setMessage(articolo.toString());
         }
-        /*if(result.getSingleObject()){
-            ExecuteResult<Articolo> artResult = new ExecuteResult<>();
-            artResult.execute(SessionManager.NEW_TEMP_ARTICOLI);
-        }*/
+        getAllArticoli();
         return result;
     }
 
@@ -293,6 +353,7 @@ public class ArticoloBusiness {
             result.setSingleObject(false);
             result.setMessage("Id inserito non corrispondente ad un articolo!");
         }
+        getAllArticoli();
         return result;
     }
 
@@ -332,12 +393,20 @@ public class ArticoloBusiness {
     }
 
     public static ArrayList<Articolo> sottoProdottiToArticoli(ProdottoComposito prodottoComposito){
+        ArrayList<Articolo> articoliUncheck = new ArrayList<>();
         ArrayList<Articolo> articoli = new ArrayList<>();
         for (IProdotto iProd : prodottoComposito.getSottoProdotti()) {
             if (iProd instanceof Prodotto){
-                articoli.add((Prodotto) iProd);
+                articoliUncheck.add((Prodotto) iProd);
             } else if (iProd instanceof ProdottoComposito){
-                articoli.add((ProdottoComposito) iProd);
+                articoliUncheck.add((ProdottoComposito) iProd);
+            }
+        }
+        for (Articolo art : articoliUncheck   ) {
+            if (hasNoFoto(art)) {
+                articoli.add(setDefaultFoto(art));
+            } else {
+                articoli.add(art);
             }
         }
         return articoli;
@@ -364,11 +433,61 @@ public class ArticoloBusiness {
         return result;
     }
 
+    public static ExecuteResult<Categoria> getAllCategorie(Categoria.TipoCategoria tipologia){
+        ExecuteResult<Categoria> result = new ExecuteResult<>();
+        ArrayList<Categoria> categorie = new ArrayList<>();
+        switch (tipologia){
+            case PRODOTTO -> categorie = (ArrayList<Categoria>) categoriaDAO.loadAllCategorieProdotto();
+            case SERVIZIO -> categorie = (ArrayList<Categoria>) categoriaDAO.loadAllCategorieServizio();
+        }
+        categorie.removeIf(cat -> isUndefined(cat.getNome()));
+        result.setObject(categorie);
+        return result;
+    }
+
     public static Categoria createTuttoCategoria(){
         Categoria tutto = new Categoria();
         tutto.setId(-1);
         tutto.setNome("Tutte le categoria");
         return tutto;
+    }
+
+    public static ExecuteResult<Boolean> creaCategoria(Categoria categoria){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+        int rows = categoriaDAO.addCategoria(categoria);
+        if (rows>0){
+            result.setResult(ExecuteResult.ResultStatement.OK);
+            result.setMessage("Categoria creata con successo");
+            result.setSingleObject(true);
+        } else {
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("Errore nella creazione della categoria");
+            result.setSingleObject(false);
+        }
+        return result;
+    }
+
+    public static ExecuteResult<Boolean> creaErogatore(Erogatore erogatore){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+        int rows = erogatoreDAO.addErogatore(erogatore);
+        if (rows>0){
+            result.setResult(ExecuteResult.ResultStatement.OK);
+            result.setMessage("Erogatore creato con successo");
+            result.setSingleObject(true);
+        } else {
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("Errore nella creazione dell'erogatore");
+            result.setSingleObject(false);
+        }
+        return result;
+    }
+
+    public static ExecuteResult<Erogatore> getAllErogatori(){
+        ExecuteResult<Erogatore> result = new ExecuteResult<>();
+        ArrayList<Erogatore> erogatori = (ArrayList<Erogatore>) erogatoreDAO.loadAllErogatori();
+        erogatori.removeIf(er -> isUndefined(er.getNome()));
+        result.setObject(erogatori);
+        return result;
     }
 
 

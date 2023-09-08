@@ -42,10 +42,6 @@ public class Magazzino {
 
     @Override
     public String toString() {
-        return "Magazzino{" +
-                "id=" + id +
-                ", indirizzo=" + indirizzo +
-                ", idPuntoVendita=" + idPuntoVendita +
-                '}';
+        return "Magazzino in " + indirizzo;
     }
 }

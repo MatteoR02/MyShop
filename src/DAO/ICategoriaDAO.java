@@ -18,6 +18,9 @@ public interface ICategoriaDAO {
     List<Categoria> loadAllSottoCategorie();
     List<Categoria> loadAllSottoCategoriaOfID(int idCategoria);
 
+    List<Categoria> loadAllCategorieProdotto();
+    List<Categoria> loadAllCategorieServizio();
+
     boolean isSottoCategoria(int idCategoria);
     boolean isMacroCategoria(int idCategoria);
 

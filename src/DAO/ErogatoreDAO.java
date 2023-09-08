@@ -59,7 +59,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
     @Override
     public ArrayList<Erogatore> loadAllErogatori() {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.erogatore WHERE idProduttore;";
+        String sql = "SELECT * FROM myshop.erogatore;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Erogatore> produttori = new ArrayList<>();
@@ -67,7 +67,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
         try {
             while(rs.next()){
                 erogatore = new Erogatore();
-                erogatore.setId(rs.getInt("idProduttore"));
+                erogatore.setId(rs.getInt("idErogatore"));
                 erogatore.setNome(rs.getString("nome"));
                 erogatore.setSitoWeb(rs.getString("sito_web"));
                 erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
@@ -149,7 +149,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
     @Override
     public int removeErogatore(int idErogatore) {
 
-        articoloDAO.setFKProduttoreToDefault(idErogatore);
+        articoloDAO.setFKErogatoreToDefault(idErogatore);
 
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "DELETE FROM myshop.erogatore WHERE idErogatore = '" + idErogatore + "';";

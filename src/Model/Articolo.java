@@ -25,6 +25,14 @@ public class Articolo {
         this.erogatore = erogatore;
     }
 
+    public Articolo(String nome, String descrizione, Float prezzo, Categoria categoria, Erogatore erogatore) {
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.prezzo = prezzo;
+        this.categoria = categoria;
+        this.erogatore = erogatore;
+    }
+
     public Articolo() {
         this.id = 0;
         this.nome = "";

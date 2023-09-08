@@ -38,8 +38,6 @@ public class DocumentoListaAcquisto extends Documento {
 
         try {
             File tempFile = new File("C:\\Users\\matte\\Desktop\\Progetti IntelliJ\\MyShop\\PDFOutput\\MyShop_lista " + lista.getNome() +".pdf");
-            //File tempFile = File.createTempFile("MyShop_lista " + lista.getNome(), ".pdf");
-            System.out.println(tempFile);
             pdfAPI.creaPdf(lines, tempFile.getAbsolutePath());
             return tempFile;
         } catch (Exception e) {

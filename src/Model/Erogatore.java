@@ -50,11 +50,6 @@ public class Erogatore {
 
     @Override
     public String toString() {
-        return "Erogatore{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", sitoWeb='" + sitoWeb + '\'' +
-                ", indirizzo=" + indirizzo +
-                '}';
+        return nome;
     }
 }

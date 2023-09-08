@@ -227,6 +227,33 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
     }
 
     @Override
+    public int removeProdottoFromPrenotazione(int idPrenotazione, int idProdotto) {
+
+        DbOperationExecutor executor = new DbOperationExecutor();
+        int rowCount = 0;
+
+            String sqlDeletePrenProd = "DELETE FROM myshop.prenotazione_has_prodotto WHERE Prenotazione_idPrenotazione = '" + idPrenotazione + "' AND Prodotto_Articolo_idArticolo = '" + idProdotto + "';";
+            IDbOperation removePrenProd = new WriteOperation(sqlDeletePrenProd);
+            rowCount += executor.executeOperation(removePrenProd).getRowsAffected();
+            removePrenProd.close();
+
+        return rowCount;
+    }
+
+    @Override
+    public int removeProdottoFromAllPrenotazioni(int idProdotto) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        int rowCount = 0;
+
+        String sqlDeletePrenProd = "DELETE FROM myshop.prenotazione_has_prodotto WHERE Prodotto_Articolo_idArticolo = '" + idProdotto + "';";
+        IDbOperation removePrenProd = new WriteOperation(sqlDeletePrenProd);
+        rowCount += executor.executeOperation(removePrenProd).getRowsAffected();
+        removePrenProd.close();
+
+        return rowCount;
+    }
+
+    @Override
     public int addPrenotazione(Prenotazione prenotazione) {
         DbOperationExecutor executor = new DbOperationExecutor();
 
@@ -291,6 +318,13 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
                 prenotazioneStmt.setInt(4,prenotazione.getId());
                 rowCount = prenotazioneStmt.executeUpdate() ;
                 prenotazioneStmt.close();
+
+                for (IProdotto prod : prenotazione.getProdottiPrenotati().keySet()) {
+                    String sql = "UPDATE prenotazione_has_prodotto SET quantita = '"+ prenotazione.getProdottiPrenotati().get(prod) +"' WHERE (Prenotazione_idPrenotazione = "+ prenotazione.getId() +") AND (Prodotto_Articolo_idArticolo = "+ prod.getId() +");";
+                    IDbOperation writeOp = new WriteOperation(sql);
+                    rowCount+= executor.executeOperation(writeOp).getRowsAffected();
+                    writeOp.close();
+                }
                 return rowCount;
 
             } catch (SQLException e) {
@@ -331,5 +365,16 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         } catch (SQLException e) {
             e.printStackTrace();
         }return false;
+    }
+
+    @Override
+    public int setFKProdottoToDefault(int idProdotto) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "UPDATE myshop.prenotazione_has_prodotto SET Prodotto_Articolo_idArticolo = '" + ArticoloDAO.ARTICOLO_DEFAULT_ID +
+                "' WHERE `Prodotto_Articolo_idArticolo1` = '" + idProdotto + "';";
+        IDbOperation update = new WriteOperation(sql);
+        int rowCount = executor.executeOperation(update).getRowsAffected();
+        update.close();
+        return rowCount;
     }
 }

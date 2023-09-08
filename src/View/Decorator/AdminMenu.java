@@ -1,6 +1,7 @@
 package View.Decorator;
 
 
+import View.Listeners.AdminListener;
 import View.Listeners.LoginListener;
 import View.MainPage;
 
@@ -13,25 +14,23 @@ public class AdminMenu extends Menu {
     public AdminMenu(MainPage page) {
         this.frame = page;
 
-        JButton sfogliaCatBtn = new JButton("Sfoglia Catalogo");
+        JButton sfogliaCatBtn = new JButton("Gestisci Catalogo");
         sfogliaCatBtn.setActionCommand(LoginListener.CATALOGO_BTN);
-        JButton profileBtn = new JButton("Profilo");
-        profileBtn.setActionCommand(LoginListener.TO_PROFILE_BTN);
+        JButton creaArticoloBtn = new JButton("Crea Articolo");
+        creaArticoloBtn.setActionCommand(AdminListener.TO_CREA_ARTICOLO);
         JButton logoutBtn = new JButton("Logout");
         logoutBtn.setActionCommand(LoginListener.LOGOUT_BTN);
 
-
-
         LoginListener loginListener = new LoginListener(frame);
+        AdminListener adminListener = new AdminListener(frame);
+
         sfogliaCatBtn.addActionListener(loginListener);
-        profileBtn.addActionListener(loginListener);
+        creaArticoloBtn.addActionListener(adminListener);
         logoutBtn.addActionListener(loginListener);
 
 
-
-
         pulsanti.add(sfogliaCatBtn);
-        pulsanti.add(profileBtn);
+        pulsanti.add(creaArticoloBtn);
         pulsanti.add(logoutBtn);
 
 

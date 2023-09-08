@@ -16,7 +16,39 @@ public abstract class Email {
         this.allegato = allegato;
     }
 
-    public Email() {
+    public Email(){
+    }
+
+    public String getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(String destinatario) {
+        this.destinatario = destinatario;
+    }
+
+    public String getOggetto() {
+        return oggetto;
+    }
+
+    public void setOggetto(String oggetto) {
+        this.oggetto = oggetto;
+    }
+
+    public String getCorpo() {
+        return corpo;
+    }
+
+    public void setCorpo(String corpo) {
+        this.corpo = corpo;
+    }
+
+    public File getAllegato() {
+        return allegato;
+    }
+
+    public void setAllegato(File allegato) {
+        this.allegato = allegato;
     }
 
     public abstract void inviaEmail();

@@ -25,19 +25,19 @@ public class ManagerMenu extends Menu {
         logoutBtn.setActionCommand(LoginListener.LOGOUT_BTN);
 
 
-
         LoginListener loginListener = new LoginListener(frame);
         ManagerListener managerListener = new ManagerListener(frame);
+
+
         gestisciArticoliBtn.addActionListener(managerListener);
         gestisciClientiBtn.addActionListener(managerListener);
         prenotazioniBtn.addActionListener(managerListener);
         logoutBtn.addActionListener(loginListener);
 
 
-
-
         pulsanti.add(gestisciArticoliBtn);
         pulsanti.add(gestisciClientiBtn);
+        pulsanti.add(prenotazioniBtn);
         pulsanti.add(logoutBtn);
 
 

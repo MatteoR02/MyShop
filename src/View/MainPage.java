@@ -3,6 +3,7 @@ package View;
 import Business.*;
 import DAO.PrenotazioneDAO;
 import Model.*;
+import View.CreaArticolo.*;
 import View.Decorator.*;
 import View.Decorator.Menu;
 import View.ViewModel.ComponenteCatalogo;
@@ -22,7 +23,7 @@ public class MainPage extends JFrame {
     private JPanel sud = new JPanel();
     private JPanel main = new JPanel();
 
-    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, SOTTOPRODOTTI, LISTE, ARTICOLO}
+    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, SOTTOPRODOTTI, LISTE, ARTICOLO, CREAZIONE_ARTICOLO}
 
     private PaginaCorrente paginaCorrente;
 
@@ -134,6 +135,8 @@ public class MainPage extends JFrame {
             centro.add(new ClienteMainPanel(this));
         } else if(u instanceof Manager){
             centro.add(new ManagerMainPanel(this));
+        } else if (u instanceof Admin){
+            centro.add(new AdminMainPanel(this));
         } else {
             centro.add(new GuestMainPanel(this));
         }
@@ -176,7 +179,66 @@ public class MainPage extends JFrame {
     public void mostraPrenotazioni(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new PrenotazioniClientePanel(this, PrenotazioneDAO.getInstance().loadPrenotazioniOfCliente(((Cliente) SessionManager.getSession().get(LOGGED_USER)).getId())));
+        Utente u = (Utente) SessionManager.getSession().get(LOGGED_USER);
+        if (u instanceof Cliente){
+            centro.add(new PrenotazioniClientePanel(this, PrenotazioneDAO.getInstance().loadPrenotazioniOfCliente(((Cliente) SessionManager.getSession().get(LOGGED_USER)).getId())));
+        } else if (u instanceof Manager){
+            centro.add(new PrenotazioniManagerPanel(this, null));
+        }
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaArticolo(){
+        paginaCorrente=PaginaCorrente.CATALOGO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaArticoloPanel(this));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaProdotto(PuntoVendita pv){
+        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaProdottoPanel(this, pv));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaProdottoComposito(PuntoVendita pv){
+        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaProdottoCompositoPanel(this, pv));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaServizio(PuntoVendita pv){
+        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaServizioPanel(this,pv));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaCategoria(){
+        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaCategoriaPanel(this));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaErogatore(){
+        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaErogatorePanel(this));
         repaint();
         validate();
     }

@@ -45,6 +45,7 @@ public class CategoriaDAO implements ICategoriaDAO {
                 idCat = rs.getInt("idCategoria");
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
             }
             if (isSottoCategoria(idCat)) {
                 return loadSottoCategoria(idCat);
@@ -80,6 +81,7 @@ public class CategoriaDAO implements ICategoriaDAO {
                 sottoCategoria = new Categoria();
                 sottoCategoria.setId(rs.getInt("idCategoria"));
                 sottoCategoria.setNome(rs.getString("nome"));
+                sottoCategoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
             }return sottoCategoria;
         } catch (SQLException e) {
             // handle any errors
@@ -108,6 +110,7 @@ public class CategoriaDAO implements ICategoriaDAO {
             while (rs.next()){
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
                 idSottoProdotti.add(rs.getInt("Categoria_idCategoria1"));
             }
             for (Integer id : idSottoProdotti) {
@@ -137,11 +140,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         ArrayList<Categoria> categorie = new ArrayList<>();
 
         try {
-
             while(rs.next()) {
                 categoria = new Categoria();
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
                 categorie.add(categoria);
             }return categorie;
         } catch (SQLException e) {
@@ -161,8 +164,8 @@ public class CategoriaDAO implements ICategoriaDAO {
     @Override
     public int addCategoria(Categoria categoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.categoria (nome) VALUES " +
-                "('" + categoria.getNome() + "');";
+        String sql = "INSERT INTO myshop.categoria (nome, tipologia) VALUES " +
+                "('" + categoria.getNome() + "', '"+ categoria.getTipologia() + "');";
         IDbOperation add = new WriteOperation(sql);
         int rowCount = executor.executeOperation(add).getRowsAffected();
         add.close();
@@ -173,6 +176,7 @@ public class CategoriaDAO implements ICategoriaDAO {
     public int updateCategoria(Categoria categoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "UPDATE myshop.categoria SET `nome` = '" + categoria.getNome() +
+                "', tipologia='" + categoria.getTipologia() +
                 "' WHERE `idCategoria` = '" + categoria.getId() + "';";
 
         IDbOperation update = new WriteOperation(sql);
@@ -208,6 +212,7 @@ public class CategoriaDAO implements ICategoriaDAO {
                 categoria = new Categoria();
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
                 categorie.add(categoria);
             } return categorie;
         } catch (SQLException e) {
@@ -237,6 +242,7 @@ public class CategoriaDAO implements ICategoriaDAO {
                 categoria = new Categoria();
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
                 categorie.add(categoria);
             } return categorie;
         } catch (SQLException e) {
@@ -266,8 +272,71 @@ public class CategoriaDAO implements ICategoriaDAO {
                 categoria = new Categoria();
                 categoria.setId(rs.getInt("idCategoria"));
                 categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
                 categorie.add(categoria);
             } return categorie;
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Categoria> loadAllCategorieProdotto() {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.categoria WHERE tipologia='PRODOTTO';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+        ArrayList<Categoria> categorie = new ArrayList<>();
+
+        try {
+
+            while(rs.next()) {
+                categoria = new Categoria();
+                categoria.setId(rs.getInt("idCategoria"));
+                categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
+                categorie.add(categoria);
+            }return categorie;
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public List<Categoria> loadAllCategorieServizio() {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.categoria WHERE tipologia='SERVIZIO';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+        ArrayList<Categoria> categorie = new ArrayList<>();
+
+        try {
+
+            while(rs.next()) {
+                categoria = new Categoria();
+                categoria.setId(rs.getInt("idCategoria"));
+                categoria.setNome(rs.getString("nome"));
+                categoria.setTipologia(Categoria.TipoCategoria.valueOf(rs.getString("tipologia")));
+                categorie.add(categoria);
+            }return categorie;
         } catch (SQLException e) {
             // handle any errors
             System.out.println("SQLException: " + e.getMessage());

@@ -70,7 +70,10 @@ public class CatalogoPanel extends JPanel {
                 componenteCatalogo.setDescrizioneArticolo(articolo.getDescrizione());
                 componenteCatalogo.setPrezzo(articolo.getPrezzo());
                 componenteCatalogo.setNomeCategoria(articolo.getCategoria().getNome());
-                componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
+                if (articolo.getImmagini()!=null){
+                    componenteCatalogo.setDefaultImmagine(ArticoloBusiness.blobToImage(articolo.getImmagini().get(0).getImmagine()));
+
+                }
                 componenteCatalogo.setNomeErogatore(articolo.getErogatore().getNome());
                 componenteCatalogo.setRecensioni(articolo.getRecensioni());
                 componenteCatalogo.setMediaRecensioni(articolo.getMediaRecensioni());

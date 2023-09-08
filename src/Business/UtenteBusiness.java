@@ -81,6 +81,31 @@ public class UtenteBusiness {
             SessionManager.getSession().remove(SessionManager.CATALOGO_VIEW);
         }
 
+        return result;
+    }
+
+    public RegisterResult registerCliente(Cliente cliente){
+        RegisterResult result = new RegisterResult();
+
+        boolean userExists = utenteDAO.userExists(cliente.getUsername());
+        if(userExists) {
+            result.setResult(RegisterResult.Result.USERNAME_TAKEN);
+            result.setMessage("Username già preso");
+            return result;
+        }
+
+        boolean userEmailExists = utenteDAO.userEmailExists(cliente.getUsername());
+        if(userEmailExists) {
+            result.setResult(RegisterResult.Result.EMAIL_TAKEN);
+            result.setMessage("Email già registrata");
+            return result;
+        }
+
+        int rows = utenteDAO.addCliente(cliente);
+        if (rows>0){
+            result.setResult(RegisterResult.Result.OK);
+            result.setMessage("Cliente registrato con successo");
+        }
 
         return result;
     }

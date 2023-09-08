@@ -120,6 +120,8 @@ public class ClienteListener implements ActionListener {
         } else if(PRINT_LIST.equals(action)){
             ListaAcquistoEmail listaAcquistoEmail = new ListaAcquistoEmail(((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER)).getPersona().getEmail(), lista);
             listaAcquistoEmail.inviaEmail();
+            JOptionPane.showMessageDialog(dialog,"Lista d'acquisto " + lista.getNome() + " inviata alla tua email", "Lista stampata", JOptionPane.INFORMATION_MESSAGE);
+
 
         } else if (REMOVE_FROM_LISTA.equals(action)){
             Map<RigaArticoloLista, Integer> mapArticoloLista = new HashMap<>();

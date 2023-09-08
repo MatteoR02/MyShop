@@ -5,6 +5,7 @@ import DbInterface.command.*;
 import Model.Articolo;
 import Model.Categoria;
 import Model.Foto;
+import Model.IProdotto;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -216,6 +217,7 @@ public class FotoDAO implements IFotoDAO{
         return 0;
     }
 
+
     @Override
     public int updateFotoOfRecensione(Foto foto, int idRecensione) {
         return 0;
@@ -286,6 +288,47 @@ public class FotoDAO implements IFotoDAO{
             addByte.close();
         }
         return 0;
+    }
+
+    @Override
+    public int addNewFotoToArticolo(Foto foto, int idArticolo) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+
+        String sqlFoto = "INSERT INTO myshop.foto (immagine) VALUES (?);";
+
+        IDbOperation add = new WriteByteOperation(sqlFoto);
+        int rowCount = 0;
+        try {
+            PreparedStatement statement = executor.executeOperation(add).getPreparedStatement();
+
+            int idGen = -1;
+            try {
+                if (statement!=null){
+                    statement.setBlob(1, foto.getImmagine());
+                    rowCount = statement.executeUpdate(); //aggiungo prenotazione
+                }
+                try (ResultSet generatedID = statement.getGeneratedKeys()) {
+                    if (generatedID.next()) {
+                        idGen = generatedID.getInt(1);
+                    }
+                }
+                statement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            statement.close();
+
+                String sqlArtFoto = "INSERT INTO myshop.articolo_has_foto (Articolo_idArticolo ,Foto_idFoto) VALUES " +
+                        "('"+ idArticolo +"', '" + idGen + "');";
+                add = new WriteOperation(sqlArtFoto);
+                rowCount += executor.executeOperation(add).getRowsAffected();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            add.close();
+        }
+        return rowCount;
     }
 
     @Override

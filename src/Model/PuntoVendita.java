@@ -62,9 +62,6 @@ public class PuntoVendita {
 
     @Override
     public String toString() {
-        return "PuntoVendita{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                '}';
+        return nome;
     }
 }

@@ -45,7 +45,7 @@ public class TestDAO {
 
         /*int rows = utenteDAO.removeUtente("ciccio");
         System.out.println("Righe eliminate = " + rows);*/
-        Cliente clienteP = new Cliente(new Persona("BABBO", "MINCHIA", "babbominchia@gmail.com", "340", null), "BABBO", "babbo", new Indirizzo("nazione", "citta", "0", "via", 0), Cliente.ProfessioneType.IMPIEGATO, Cliente.CanalePreferitoType.EMAIL, null, Cliente.StatoUtenteType.ABILITATO, new ArrayList<Messaggio>(), new ArrayList<ListaAcquisto>(), new ArrayList<PuntoVendita>());
+        Cliente clienteP = new Cliente(new Persona("BABBO", "MINCHIA", "babbominchia@gmail.com", "340", null), "BABBO", "babbo", new Indirizzo("nazione", "citta", "0", "via", 0), Cliente.ProfessioneType.IMPIEGATO, Cliente.CanalePreferitoType.EMAIL, null, Cliente.StatoUtenteType.ABILITATO, new ArrayList<Messaggio>(), new ArrayList<ListaAcquisto>(), 2);
        // utenteDAO.addCliente(clienteP);
 
         //utenteDAO.removeCliente("BABBO");

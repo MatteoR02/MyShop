@@ -4,12 +4,11 @@ package View.ViewModel;
 import Business.ArticoloBusiness;
 import Business.FotoBusiness;
 import Business.SessionManager;
+import Model.Admin;
 import Model.Cliente;
 import Model.Manager;
 import Model.Utente;
-import View.Decorator.ClienteCompCatalogoMenu;
-import View.Decorator.GuestCompCatalogoMenu;
-import View.Decorator.ManagerCompCatalogoMenu;
+import View.Decorator.*;
 import View.Decorator.Menu;
 import View.GridBagCostraintsHorizontal;
 import View.Listeners.CatalogoListener;
@@ -66,6 +65,8 @@ public class ArticoloList extends JPanel {
             compCatalogoMenu = new ClienteCompCatalogoMenu(frame, componente);
         } else if (u instanceof Manager && componente.getTipoArticolo() == ArticoloBusiness.TipoArticolo.PRODOTTO){
             compCatalogoMenu = new ManagerCompCatalogoMenu(frame, componente);
+        } else if (u instanceof Admin){
+            compCatalogoMenu = new AdminCompCatalogoMenu(frame, componente);
         } else {
             compCatalogoMenu = new GuestCompCatalogoMenu(frame, componente);
         }

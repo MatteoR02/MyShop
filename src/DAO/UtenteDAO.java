@@ -197,6 +197,29 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    @Override
+    public boolean userEmailExists(String email) {
+        String sql = "SELECT count(*) AS count FROM myshop.utente as U WHERE U.email='"+ email + "';";
+
+        DbOperationExecutor executor = new DbOperationExecutor();
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                int count = rs.getInt("count");
+                return count == 1;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            readOp.close();
+        }
+    }
+
     /**
      * verifica se l'utente è un cliente
      * @param username dell'utente da verificare
@@ -296,7 +319,8 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
                 cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
-                cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
+                cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
+                //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 return cliente;
             }
         } catch (SQLException e) {
@@ -335,7 +359,8 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
                 cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
-                cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
+                cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
+                //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 return cliente;
             }
         } catch (SQLException e) {
@@ -373,7 +398,8 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
                 cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
-                cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
+                cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
+                //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 clienti.add(cliente);
             }
             return clienti;
@@ -394,7 +420,7 @@ public class UtenteDAO implements IUtenteDAO{
     @Override
     public ArrayList<Cliente> loadAllClientiOfPV(int idPV) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.puntovendita_has_cliente WHERE PuntoVendita_idPuntoVendita ='"+ idPV +"' ;";
+        String sql = "SELECT * FROM myshop.cliente WHERE PuntoVendita_idPuntoVendita ='"+ idPV +"' ;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Cliente> clienti = new ArrayList<>();
@@ -455,10 +481,10 @@ public class UtenteDAO implements IUtenteDAO{
             }
             statement.close();
 
-            String sqlCliente = "INSERT INTO `myshop`.`cliente` (`Utente_idUtente`, `professione`, `canale_preferito`, `data_abilitazione`, `stato`)" +
+            String sqlCliente = "INSERT INTO `myshop`.`cliente` (`Utente_idUtente`, `professione`, `canale_preferito`, `data_abilitazione`, `stato`, `PuntoVendita_idPuntoVendita`)" +
                     "VALUES " +
                     "('" + idGen + "', '" + cliente.getProfessione() + "', '" + cliente.getCanalePreferito() +
-                    "', '" + cliente.getDataAbilitazione() + "', '" + cliente.getStato() + "');";
+                    "', '" + cliente.getDataAbilitazione() + "', '" + cliente.getStato() + "', '"+ cliente.getIdPuntoVendita() +"');";
             add = new WriteOperation(sqlCliente);
             rowCount += executor.executeOperation(add).getRowsAffected();
         } catch (SQLException e) {
@@ -517,7 +543,7 @@ public class UtenteDAO implements IUtenteDAO{
         String sqlUpdateCliente = "UPDATE `myshop`.`cliente` SET `professione` = '" + cliente.getProfessione() +
                 "', `canale_preferito` = '" + cliente.getCanalePreferito() +
                 "', `data_abilitazione` = '" + cliente.getDataAbilitazione() +
-                "', `stato` = '" + cliente.getStato() + "' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";
+                "', `stato` = '" + cliente.getStato() + "', `PuntoVendita_idPuntoVendita` = '" + cliente.getIdPuntoVendita() + "' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";
 
         IDbOperation updateUtente = new WriteOperation(sqlUpdateUtente);
         int rowCountUtente = executor.executeOperation(updateUtente).getRowsAffected();
@@ -1007,4 +1033,16 @@ public class UtenteDAO implements IUtenteDAO{
         }
         return username;
     }
+
+    @Override
+    public int setFKPuntoVenditaToDefault(int idPuntoVendita) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "UPDATE myshop.cliente SET PuntoVendita_idPuntoVendita = '" + PuntoVenditaDAO.PUNTOVENDITA_DEFAULT_ID +
+                "' WHERE `PuntoVendita_idPuntoVendita` = '" + idPuntoVendita + "';";
+        IDbOperation update = new WriteOperation(sql);
+        int rowCount = executor.executeOperation(update).getRowsAffected();
+        update.close();
+        return rowCount;
+    }
+
 }

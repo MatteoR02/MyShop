@@ -20,12 +20,16 @@ public interface IPrenotazioneDAO {
     ArrayList<Prenotazione> loadPrenotazioniOfPV(int idPV);
 
     int removeProdottiFromPrenotazione(int idPrenotazione);
+    int removeProdottoFromPrenotazione(int idPrenotazione, int idProdotto);
+    int removeProdottoFromAllPrenotazioni(int idProdotto);
 
     int addPrenotazione(Prenotazione prenotazione);
     int updatePrenotazione(Prenotazione prenotazione);
     int removePrenotazione(int idPrenotazione);
 
     boolean isArrivata(int idPrenotazione);
+
+    int setFKProdottoToDefault(int idProdotto);
 
 
 }

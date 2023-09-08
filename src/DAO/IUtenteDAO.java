@@ -11,6 +11,7 @@ public interface IUtenteDAO {
     int removeUtente(String username);
     int updateUtente(Utente utente);
     boolean userExists(String username);
+    boolean userEmailExists(String email);
 
     boolean isCliente(String username);
     boolean isManager(String username);
@@ -46,5 +47,7 @@ public interface IUtenteDAO {
 
     int findIdByUsername(String username);
     String findUsernameByID(int id);
+
+    int setFKPuntoVenditaToDefault(int idPuntoVendita);
 
 }

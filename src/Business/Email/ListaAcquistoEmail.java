@@ -23,8 +23,7 @@ public class ListaAcquistoEmail extends Email{
 
     @Override
     public void inviaEmail(){
-        EmailSender.sendEmail(destinatario, oggetto, corpo, allegato);
+        EmailSender.sendEmail(this);
     }
-
 
 }

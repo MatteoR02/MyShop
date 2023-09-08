@@ -1,10 +1,9 @@
 package Business;
 
 import DAO.*;
-import Model.Manager;
-import Model.Prodotto;
-import Model.PuntoVendita;
-import Model.Utente;
+import Model.*;
+
+import java.util.ArrayList;
 
 public class PuntoVenditaBusiness {
 
@@ -64,5 +63,28 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    public static ExecuteResult<PuntoVendita> getAllPV(){
+        ExecuteResult<PuntoVendita> result = new ExecuteResult<>();
+        ArrayList<PuntoVendita> puntiVendita = (ArrayList<PuntoVendita>) puntoVenditaDAO.loadAllPuntiVendita();
+        puntiVendita.removeIf(puntoVendita -> isUndefined(puntoVendita.getNome()));
+        result.setObject(puntiVendita);
+        result.setResult(ExecuteResult.ResultStatement.OK);
+        result.setMessage("Punti vendita caricati con successo");
+        return result;
+    }
+
+    public static ExecuteResult<Magazzino> getAllMagazziniOfPV(int idPV){
+        ExecuteResult<Magazzino> result = new ExecuteResult<>();
+        ArrayList<Magazzino> magazzini = (ArrayList<Magazzino>) magazzinoDAO.loadMagazziniOfPuntoVendita(idPV);
+        magazzini.removeIf(magazzino -> isUndefined(magazzino.getIndirizzo().getNazione()));
+        result.setObject(magazzini);
+        result.setResult(ExecuteResult.ResultStatement.OK);
+        result.setMessage("Magazzini caricati con successo");
+        return result;
+    }
+
+    public static boolean isUndefined(String string){
+        return string.equals("undefined");
+    }
 
 }
