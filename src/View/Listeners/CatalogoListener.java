@@ -137,14 +137,21 @@ public class CatalogoListener implements ActionListener {
             } else if (!ArticoloBusiness.isArticoloBoughtFrom(comp.getIdArticolo(), c.getId()).getSingleObject()){
                 JOptionPane.showMessageDialog(frame, "Non puoi recensire un articolo che non hai acquistato", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else {
-                AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp);
+                AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp, false, null);
             }
         } else if (ADD_RECENSIONE.equals(action)){
             Recensione.Punteggio valutazione = RecensioneBusiness.integerToPunteggio(sliderValutazione.getValue());
             Date dataAttuale = new java.sql.Date(System.currentTimeMillis());
-            Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
-            Recensione newRec = new Recensione(fieldTitolo.getText(), fieldTesto.getText(), valutazione, dataAttuale, null, c.getId());
-            ExecuteResult<Boolean> result = RecensioneBusiness.addRecensione(newRec, comp.getIdArticolo());
+            Utente u = (Utente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
+            ExecuteResult<Boolean> result = new ExecuteResult<>();
+            if(u instanceof Cliente){
+                Cliente c = (Cliente) u;
+                Recensione newRec = new Recensione(fieldTitolo.getText(), fieldTesto.getText(), valutazione, dataAttuale, null, c.getId());
+                newRec.setIdRecensione(0);
+                result = RecensioneBusiness.addRecensione(newRec, comp.getIdArticolo());
+            }
+
+
             if (result.getResult() == ExecuteResult.ResultStatement.OK_WITH_WARNINGS){
                 JOptionPane.showMessageDialog(dialog, "Hai già lasciato una recensione per questo articolo", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){

@@ -41,7 +41,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
             if (rs.getRow() == 1) {
                 magazzino = new Magazzino();
                 magazzino.setId(rs.getInt("idMagazzino"));
-                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 magazzino.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 return magazzino;
             }
@@ -71,7 +71,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
             while (rs.next()){
                 magazzino = new Magazzino();
                 magazzino.setId(rs.getInt("idMagazzino"));
-                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 magazzino.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 magazzini.add(magazzino);
             }return magazzini;
@@ -101,7 +101,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
             while (rs.next()){
                 magazzino = new Magazzino();
                 magazzino.setId(rs.getInt("idMagazzino"));
-                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                magazzino.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 magazzino.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 magazzini.add(magazzino);
             }return magazzini;
@@ -135,7 +135,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
                 idMagazzino = rs.getInt("Magazzino_idMagazzino");
                 collocazione.setQuantita(rs.getInt("quantita"));
                 collocazione.setCorsia(rs.getString("corsia"));
-                collocazione.setScaffale(rs.getInt("scaffale"));
+                collocazione.setScaffale(rs.getString("scaffale"));
             }
             collocazione.setMagazzino(loadMagazzino(idMagazzino));
             return collocazione;
@@ -167,7 +167,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
                 preparedStatement.setString(2, magazzino.getIndirizzo().getCitta());
                 preparedStatement.setString(3, magazzino.getIndirizzo().getCap());
                 preparedStatement.setString(4, magazzino.getIndirizzo().getVia());
-                preparedStatement.setInt(5, magazzino.getIndirizzo().getCivico());
+                preparedStatement.setString(5, magazzino.getIndirizzo().getCivico());
                 preparedStatement.setInt(6, magazzino.getIdPuntoVendita());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
@@ -195,7 +195,7 @@ public class MagazzinoDAO implements IMagazzinoDAO{
                 preparedStatement.setString(2, magazzino.getIndirizzo().getCitta());
                 preparedStatement.setString(3, magazzino.getIndirizzo().getCap());
                 preparedStatement.setString(4, magazzino.getIndirizzo().getVia());
-                preparedStatement.setInt(5, magazzino.getIndirizzo().getCivico());
+                preparedStatement.setString(5, magazzino.getIndirizzo().getCivico());
                 preparedStatement.setInt(6, magazzino.getIdPuntoVendita());
                 preparedStatement.setInt(7, magazzino.getId());
                 rowCount = preparedStatement.executeUpdate();

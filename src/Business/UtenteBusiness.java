@@ -62,6 +62,7 @@ public class UtenteBusiness {
         if(tipoUtente==TipoUtente.CLIENTE){
             Cliente c = utenteDAO.loadCliente(username);
             SessionManager.getSession().put(SessionManager.LOGGED_USER, c);
+            SessionManager.getSession().put(SessionManager.PUNTO_VENDITA, PuntoVenditaBusiness.getPV(c.getIdPuntoVendita()).getSingleObject());
             result.setMessage("Benvenuto " + c.getUsername()+ "!");
 
         } else if (tipoUtente==TipoUtente.MANAGER) {
@@ -84,7 +85,7 @@ public class UtenteBusiness {
         return result;
     }
 
-    public RegisterResult registerCliente(Cliente cliente){
+    public static RegisterResult registerCliente(Cliente cliente){
         RegisterResult result = new RegisterResult();
 
         boolean userExists = utenteDAO.userExists(cliente.getUsername());
@@ -105,6 +106,7 @@ public class UtenteBusiness {
         if (rows>0){
             result.setResult(RegisterResult.Result.OK);
             result.setMessage("Cliente registrato con successo");
+            SessionManager.getSession().put(SessionManager.LOGGED_USER,cliente);
         }
 
         return result;
@@ -233,37 +235,6 @@ public class UtenteBusiness {
         return flag;
     }
 
-    public static ExecuteResult<Boolean> prenotaArticoli(Map<IProdotto, Integer> articoli){
-        ExecuteResult<Boolean> result = new ExecuteResult<>();
-        Cliente c = (Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
-        PuntoVendita pv = (PuntoVendita) SessionManager.getSession().get(SessionManager.PUNTO_VENDITA);
-
-        for (IProdotto prod : articoli.keySet() ) {
-            if (isArticoloPrenotato(prod, c.getId())){
-                result.setSingleObject(false);
-                result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
-                result.setMessage("Il prodotto è stato già prenotato dal cliente");
-                return result;
-            }
-        }
-
-        Prenotazione prenotazione = new Prenotazione(articoli, c.getId(), 2, Date.valueOf(LocalDate.now()) ,Date.valueOf((LocalDate.now()).plusDays(7)) , Prenotazione.StatoPrenotazione.IN_CORSO  );
-        //TODO sistemare data di arrivo
-
-        int rows = prenotazioneDAO.addPrenotazione(prenotazione);
-
-        if (rows > 0){
-            result.setSingleObject(true);
-            result.setResult(ExecuteResult.ResultStatement.OK);
-            result.setMessage("Prenotazione effettuata con successo");
-        } else {
-            result.setSingleObject(false);
-            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
-            result.setMessage("C'è stato un errore con la prenotazione");
-        }
-        return result;
-    }
-
     public static ExecuteResult<String> getClienteByID(int idCliente){
         ExecuteResult<String> executeResult = new ExecuteResult<>();
         String username = utenteDAO.findUsernameByID(idCliente);
@@ -276,16 +247,13 @@ public class UtenteBusiness {
         return executeResult;
     }
 
-    public static Boolean isArticoloPrenotato(IProdotto prod, int idCliente){
-        ArrayList<Prenotazione> prenotazioni = prenotazioneDAO.loadPrenotazioniOfCliente(idCliente);
-        for (Prenotazione prenotazione : prenotazioni  ) {
-            if (prenotazione.getProdottiPrenotati().containsKey(prod)){
-                return true;
-            }
-        }
-        return false;
+    public static ExecuteResult<String> getUsernameByID(int idCliente){
+        ExecuteResult<String> executeResult = new ExecuteResult<>();
+        String username = utenteDAO.findUsernameByID(idCliente);
+        executeResult.setSingleObject(username);
+        executeResult.setResult(ExecuteResult.ResultStatement.OK);
+        return executeResult;
     }
-
 
     public static TipoUtente checkRole(String username){
         if (utenteDAO.isAdmin(username)) {

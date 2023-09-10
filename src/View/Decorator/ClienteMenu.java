@@ -1,6 +1,7 @@
 package View.Decorator;
 
 
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.ClienteListener;
 import View.Listeners.LoginListener;
 import View.MainPage;
@@ -26,7 +27,7 @@ public class ClienteMenu extends Menu {
         logoutBtn.setActionCommand(LoginListener.LOGOUT_BTN);
 
         LoginListener loginListener = new LoginListener(frame);
-        ClienteListener clienteListener = new ClienteListener(frame);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(frame).build();
 
         sfogliaCatBtn.addActionListener(loginListener);
         profileBtn.addActionListener(loginListener);

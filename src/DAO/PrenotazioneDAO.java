@@ -368,6 +368,16 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
     }
 
     @Override
+    public int changePrenotazioneStatus(int idPrenotazione, Prenotazione.StatoPrenotazione stato) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sqlChangePrenotazioneStatus = "UPDATE myshop.prenotazione SET stato = '" + stato + "' WHERE idPrenotazione = '" + idPrenotazione + "';";
+        IDbOperation changeStatus = new WriteOperation(sqlChangePrenotazioneStatus);
+        int rowCount = executor.executeOperation(changeStatus).getRowsAffected();
+        changeStatus.close();
+        return rowCount;
+    }
+
+    @Override
     public int setFKProdottoToDefault(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "UPDATE myshop.prenotazione_has_prodotto SET Prodotto_Articolo_idArticolo = '" + ArticoloDAO.ARTICOLO_DEFAULT_ID +

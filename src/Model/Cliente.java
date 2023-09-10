@@ -8,32 +8,23 @@ public class Cliente extends Utente {
 
     public enum ProfessioneType {IMPIEGATO, STUDENTE, DISOCCUPATO}
 
-    ;
-
     public enum CanalePreferitoType {EMAIL, SMS}
 
-    ;
-
     public enum StatoUtenteType {BLOCCATO, SOSPESO, ABILITATO}
-
-    ;
 
     private Date dataAbilitazione;
     private ProfessioneType professione;
     private CanalePreferitoType canalePreferito;
     private StatoUtenteType stato;
-    private List<Messaggio> messaggi;
     private List<ListaAcquisto> listeAcquisto;
     private int idPuntoVendita;
 
-    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Date dataAbilitazione, StatoUtenteType stato, List<Messaggio> messaggi, List<ListaAcquisto> listeAcquisto, int idPuntoVendita) {
+    public Cliente(Persona persona, String username, String password, Indirizzo indirizzo, ProfessioneType professione, CanalePreferitoType canalePreferito, Date dataAbilitazione, int idPuntoVendita, StatoUtenteType stato) {
         super(persona, username, password, indirizzo);
         this.dataAbilitazione = dataAbilitazione;
         this.professione = professione;
         this.canalePreferito = canalePreferito;
         this.stato = stato;
-        this.messaggi = messaggi;
-        this.listeAcquisto = listeAcquisto;
         this.idPuntoVendita = idPuntoVendita;
     }
 
@@ -73,14 +64,6 @@ public class Cliente extends Utente {
 
     public void setStato(StatoUtenteType stato) {
         this.stato = stato;
-    }
-
-    public List<Messaggio> getMessaggi() {
-        return messaggi;
-    }
-
-    public void setMessaggi(List<Messaggio> messaggi) {
-        this.messaggi = messaggi;
     }
 
     public List<ListaAcquisto> getListeAcquisto() {

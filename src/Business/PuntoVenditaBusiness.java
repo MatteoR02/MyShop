@@ -63,6 +63,15 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    public static ExecuteResult<PuntoVendita> getPV(int idPV){
+        ExecuteResult<PuntoVendita> result = new ExecuteResult<>();
+        PuntoVendita puntoVendita = puntoVenditaDAO.loadPuntoVendita(idPV);
+        result.setSingleObject(puntoVendita);
+        result.setResult(ExecuteResult.ResultStatement.OK);
+        result.setMessage("Punti vendita caricato con successo");
+        return result;
+    }
+
     public static ExecuteResult<PuntoVendita> getAllPV(){
         ExecuteResult<PuntoVendita> result = new ExecuteResult<>();
         ArrayList<PuntoVendita> puntiVendita = (ArrayList<PuntoVendita>) puntoVenditaDAO.loadAllPuntiVendita();
@@ -80,6 +89,21 @@ public class PuntoVenditaBusiness {
         result.setObject(magazzini);
         result.setResult(ExecuteResult.ResultStatement.OK);
         result.setMessage("Magazzini caricati con successo");
+        return result;
+    }
+
+    public static ExecuteResult<Boolean> creaPuntoVendita(PuntoVendita puntoVendita){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+        int rows = puntoVenditaDAO.addPuntoVendita(puntoVendita);
+        if (rows>0){
+            result.setResult(ExecuteResult.ResultStatement.OK);
+            result.setMessage("Punto vendita creato con successo");
+            result.setSingleObject(true);
+        } else {
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("Errore nella creazione del punto vendita");
+            result.setSingleObject(false);
+        }
         return result;
     }
 

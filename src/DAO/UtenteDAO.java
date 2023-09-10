@@ -51,7 +51,7 @@ public class UtenteDAO implements IUtenteDAO{
                 utente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 utente.setUsername(rs.getString("username"));
                 utente.setPassword(rs.getString("password"));
-                utente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                utente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 return utente;
             }
         } catch (SQLException e) {
@@ -86,7 +86,7 @@ public class UtenteDAO implements IUtenteDAO{
                 utente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 utente.setUsername(rs.getString("username"));
                 utente.setPassword(rs.getString("password"));
-                utente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                utente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 utenti.add(utente);
             }
             return utenti;
@@ -312,13 +312,13 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 cliente.setUsername(rs.getString("username"));
                 cliente.setPassword(rs.getString("password"));
-                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 cliente.setProfessione(Cliente.ProfessioneType.valueOf(rs.getString("professione")));
                 cliente.setDataAbilitazione(rs.getDate("data_abilitazione"));
                 cliente.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(rs.getString("canale_preferito")));
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
-                cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
+                //cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
                 cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 return cliente;
@@ -352,13 +352,13 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 cliente.setUsername(rs.getString("username"));
                 cliente.setPassword(rs.getString("password"));
-                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 cliente.setProfessione(Cliente.ProfessioneType.valueOf(rs.getString("professione")));
                 cliente.setDataAbilitazione(rs.getDate("data_abilitazione"));
                 cliente.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(rs.getString("canale_preferito")));
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
-                cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
+                //cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
                 cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 return cliente;
@@ -391,13 +391,13 @@ public class UtenteDAO implements IUtenteDAO{
                 cliente.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 cliente.setUsername(rs.getString("username"));
                 cliente.setPassword(rs.getString("password"));
-                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                cliente.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 cliente.setProfessione(Cliente.ProfessioneType.valueOf(rs.getString("professione")));
                 cliente.setDataAbilitazione(rs.getDate("data_abilitazione"));
                 cliente.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(rs.getString("canale_preferito")));
                 cliente.setStato(Cliente.StatoUtenteType.valueOf(rs.getString("stato")));
                 cliente.setListeAcquisto(listaAcquistoDAO.getListeOfCliente(rs.getInt("idUtente")));
-                cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
+                //cliente.setMessaggi(messaggioDAO.loadMessaggiOfCliente(rs.getInt("idUtente")));
                 cliente.setIdPuntoVendita(rs.getInt("PuntoVendita_idPuntoVendita"));
                 //cliente.setPuntiVenditaRegistrati(puntoVenditaDAO.loadPuntiVenditaOfCliente(rs.getInt("idUtente")));
                 clienti.add(cliente);
@@ -427,7 +427,7 @@ public class UtenteDAO implements IUtenteDAO{
         ArrayList<Integer> idClienti = new ArrayList<>();
         try {
             while (rs.next()) {
-              idClienti.add(rs.getInt("Cliente_Utente_idUtente"));
+              idClienti.add(rs.getInt("Utente_idUtente"));
             }
             for (int id: idClienti ) {
                 clienti.add(loadCliente(findUsernameByID(id)));
@@ -503,9 +503,9 @@ public class UtenteDAO implements IUtenteDAO{
 
         recensioneDAO.setFKClienteToDefault(findIdByUsername(username));
 
-        for ( Messaggio mes : loadCliente(username).getMessaggi()) {
+       /* for ( Messaggio mes : loadCliente(username).getMessaggi()) {
             messaggioDAO.removeMessaggio(mes.getId());
-        }
+        }*/
 
         for ( ListaAcquisto lista : loadCliente(username).getListeAcquisto()) {
             listaAcquistoDAO.removeListaAcquisto(lista.getId());
@@ -602,11 +602,7 @@ public class UtenteDAO implements IUtenteDAO{
     @Override
     public int changeClienteStatus(String username, Cliente.StatoUtenteType stato){
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sqlFindId = "SELECT `idUtente` FROM myshop.utente WHERE `username` = '" + username + "';";
-        IDbOperation readId = new ReadOperation(sqlFindId);
-        rs = executor.executeOperation(readId).getResultSet();
         int idUtente = findIdByUsername(username);
-
 
         String sqlChangeClienteStatus = "UPDATE `myshop`.`cliente` SET `stato` = '" + stato + "' WHERE `Utente_idUtente` = '" + idUtente + "';";
         IDbOperation changeStatus = new WriteOperation(sqlChangeClienteStatus);
@@ -651,8 +647,8 @@ public class UtenteDAO implements IUtenteDAO{
                 manager.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 manager.setUsername(rs.getString("username"));
                 manager.setPassword(rs.getString("password"));
-                manager.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
-                manager.setIdPuntoVendita(puntoVenditaDAO.loadPuntoVenditaOfManager(rs.getInt("idUtente")).getId());
+                manager.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
+                manager.setIdPuntoVendita((puntoVenditaDAO.loadPuntoVenditaOfManager(rs.getInt("idUtente"))).getId());
                 return manager;
             }
         } catch (SQLException e) {
@@ -688,8 +684,8 @@ public class UtenteDAO implements IUtenteDAO{
                 manager.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 manager.setUsername(rs.getString("username"));
                 manager.setPassword(rs.getString("password"));
-                manager.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
-                manager.setMessaggi(messaggioDAO.loadMessaggiOfManager(rs.getInt("idUtente")));
+                manager.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
+                //manager.setMessaggi(messaggioDAO.loadMessaggiOfManager(rs.getInt("idUtente")));
 
                 managers.add(manager);
             }
@@ -712,7 +708,7 @@ public class UtenteDAO implements IUtenteDAO{
     public int addManager(Manager manager) {
         DbOperationExecutor executor = new DbOperationExecutor();
 
-        String sqlUtente = "INSERT INTO `myshop`.`utente` (`nome`, `cognome`, `email`, `username`, `password`," +
+        /*String sqlUtente = "INSERT INTO `myshop`.`utente` (`nome`, `cognome`, `email`, `username`, `password`," +
                 " `telefono`, `data_nascita`, `nazione`,  `citta`, `via`, `cap`, `civico`) VALUES " +
                 "('" + manager.getPersona().getNome() + "', '" + manager.getPersona().getCognome() + "', '" + manager.getPersona().getEmail() +
                 "', '" + manager.getUsername() + "', '" + manager.getPassword() +
@@ -721,34 +717,54 @@ public class UtenteDAO implements IUtenteDAO{
                 "', '" + manager.getIndirizzo().getVia() + "', '" + manager.getIndirizzo().getCap() +
                 "', '" + manager.getIndirizzo().getCivico() + "');";
 
-        IDbOperation add = new WriteByteOperation(sqlUtente);
+        IDbOperation add = new WriteByteOperation(sqlUtente);*/
+
+        String sqlUtente = "INSERT INTO myshop.utente (nome, cognome, email, username, password, telefono, data_nascita, nazione, citta, via, cap, civico) " +
+                "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
 
         int rowCount = 0;
+        IDbOperation addByte = new WriteByteOperation(sqlUtente);
+        PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
         try {
-            PreparedStatement statement = executor.executeOperation(add).getPreparedStatement();
 
             int idGen = -1;
             try {
-                rowCount = statement.executeUpdate(); //aggiungo manager
-                try (ResultSet generatedID = statement.getGeneratedKeys()) {
+                if(preparedStatement!=null) {
+                    preparedStatement.setString(1, manager.getPersona().getNome());
+                    preparedStatement.setString(2, manager.getPersona().getCognome());
+                    preparedStatement.setString(3, manager.getPersona().getEmail());
+                    preparedStatement.setString(4, manager.getUsername());
+                    preparedStatement.setString(5, manager.getPassword());
+                    preparedStatement.setString(6, manager.getPersona().getTelefono());
+                    preparedStatement.setDate(7, manager.getPersona().getDataNascita());
+                    preparedStatement.setString(8, manager.getIndirizzo().getNazione());
+                    preparedStatement.setString(9, manager.getIndirizzo().getCitta());
+                    preparedStatement.setString(10, manager.getIndirizzo().getCap());
+                    preparedStatement.setString(11, manager.getIndirizzo().getVia());
+                    preparedStatement.setString(12, manager.getIndirizzo().getCivico());
+
+                    rowCount = preparedStatement.executeUpdate();
+                }
+                try (ResultSet generatedID = preparedStatement.getGeneratedKeys()) {
                     if (generatedID.next()) {
                         idGen = generatedID.getInt(1);
                     }
                 }
-                statement.close();
+                preparedStatement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            statement.close();
+            preparedStatement.close();
 
-            String sqlManager = "INSERT INTO `myshop`.`manager` (`Utente_idUtente`) VALUES " +
-                    "('" + idGen + "', '" +  "');";
-            add = new WriteOperation(sqlManager);
-            rowCount += executor.executeOperation(add).getRowsAffected();
+           String sqlManager = "INSERT INTO `myshop`.`manager` (`Utente_idUtente`) VALUES " +
+                    "('" + idGen + "');";
+
+            addByte = new WriteOperation(sqlManager);
+            rowCount += executor.executeOperation(addByte).getRowsAffected();
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            add.close();
+            addByte.close();
         }
         return rowCount;
 
@@ -832,7 +848,7 @@ public class UtenteDAO implements IUtenteDAO{
                 admin.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 admin.setUsername(rs.getString("username"));
                 admin.setPassword(rs.getString("password"));
-                admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 return admin;
             }
         } catch (SQLException e) {
@@ -864,7 +880,7 @@ public class UtenteDAO implements IUtenteDAO{
                 admin.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 admin.setUsername(rs.getString("username"));
                 admin.setPassword(rs.getString("password"));
-                admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 return admin;
             }
         } catch (SQLException e) {
@@ -895,7 +911,7 @@ public class UtenteDAO implements IUtenteDAO{
                 admin.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
                 admin.setUsername(rs.getString("username"));
                 admin.setPassword(rs.getString("password"));
-                admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+            admin.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 admins.add(admin);
             }
             return admins;

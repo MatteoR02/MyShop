@@ -1,13 +1,8 @@
 package View.Listeners;
 
+import Business.*;
 import Business.Email.MessaggioManagerEmail;
-import Business.ExecuteResult;
-import Business.PuntoVenditaBusiness;
-import Business.SessionManager;
-import Business.UtenteBusiness;
-import Model.Cliente;
-import Model.Manager;
-import Model.Prodotto;
+import Model.*;
 import View.MainPage;
 import View.ViewModel.*;
 
@@ -15,6 +10,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class ManagerListener implements ActionListener {
@@ -23,6 +19,7 @@ public class ManagerListener implements ActionListener {
     public final static String GESTISCI_CLIENTI_BTN = "gestisci_clienti_btn";
     public final static String BLOCK_CLIENTE = "block_cliente";
     public final static String UNLOCK_CLIENTE = "unlock_cliente";
+    public final static String TO_RISPONDI_RECENSIONE = "to_rispondi_recensione";
     public final static String RISPONDI_RECENSIONE = "rispondi_recensione";
     public final static String REMOVE_RECENSIONE = "remove_recensione";
     public final static String GESTISCI_QUANTITA = "gestisci_quantità";
@@ -31,6 +28,8 @@ public class ManagerListener implements ActionListener {
     public final static String ALLEGA_FILE = "allega_file";
     public final static String INVIA_MESSAGGIO = "invia_messaggio";
     public final static String TO_PRENOTAZIONI = "to_prenotazioni";
+    public final static String ANNULLA_PRENOTAZIONE = "annulla_prenotazione";
+    public final static String COMPLETA_PRENOTAZIONE = "completa_prenotazione";
    // public final static String
    // public final static String
 
@@ -49,6 +48,12 @@ public class ManagerListener implements ActionListener {
     private RigaCliente rigaCliente;
     private JLabel labelAllegato;
 
+    private JTextField fieldTitolo;
+    private JTextArea fieldTesto;
+    private Recensione recensione;
+
+    private Prenotazione prenotazione;
+
 
     public ManagerListener(MainPage frame) {
         this.frame = frame;
@@ -64,6 +69,19 @@ public class ManagerListener implements ActionListener {
         this.comp = comp;
     }
 
+    public ManagerListener(MainPage frame, Prenotazione prenotazione) {
+        this.frame = frame;
+        this.prenotazione = prenotazione;
+    }
+
+    public ManagerListener(MainPage frame, JDialog dialog, JTextField fieldTitolo, JTextArea fieldTesto, ComponenteCatalogo comp, Recensione recensione) {
+        this.frame = frame;
+        this.comp = comp;
+        this.dialog = dialog;
+        this.fieldTitolo = fieldTitolo;
+        this.fieldTesto = fieldTesto;
+        this.recensione = recensione;
+    }
 
     public ManagerListener(MainPage frame, JDialog dialog, Prodotto prodotto, JSpinner spinner) {
         this.frame = frame;
@@ -78,6 +96,12 @@ public class ManagerListener implements ActionListener {
         this.corpoField = corpoField;
         this.rigaCliente = rigaCliente;
         this.labelAllegato = labelAllegato;
+    }
+
+    public ManagerListener(MainPage frame, ComponenteCatalogo comp, Recensione recensione) {
+        this.frame = frame;
+        this.comp = comp;
+        this.recensione = recensione;
     }
 
     public void setFrame(MainPage frame) {
@@ -157,7 +181,9 @@ public class ManagerListener implements ActionListener {
             }
             if (righeClienti.toArray().length > 1){
                 JOptionPane.showMessageDialog(frame, "Selezionare un solo cliente a cui inviare un messaggio", "Errore messaggio", JOptionPane.ERROR_MESSAGE);
-            } else {
+            } else if (righeClienti.toArray().length == 0) {
+                JOptionPane.showMessageDialog(frame, "Selezionare un cliente", "Errore messaggio", JOptionPane.ERROR_MESSAGE);
+            }else {
                 InviaMessaggioDialog inviaMessaggioDialog = new InviaMessaggioDialog(frame, "Messaggio", righeClienti.get(0));
             }
         } else if (ALLEGA_FILE.equals(action)){
@@ -176,6 +202,43 @@ public class ManagerListener implements ActionListener {
             messaggioManagerEmail.inviaEmail();
             JOptionPane.showMessageDialog(dialog,"Messaggio inviato", "Messaggio inviato", JOptionPane.INFORMATION_MESSAGE);
             dialog.dispose();
+        } else if (TO_RISPONDI_RECENSIONE.equals(action)){
+            AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp, true, recensione);
+        } else if (RISPONDI_RECENSIONE.equals(action)){
+            Date dataAttuale = new java.sql.Date(System.currentTimeMillis());
+            Utente u = (Utente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
+            ExecuteResult<Boolean> result = new ExecuteResult<>();
+            Manager m = (Manager) u;
+            Recensione newRec = new Recensione(fieldTitolo.getText(), fieldTesto.getText(), Recensione.Punteggio.ECCELLENTE , dataAttuale, null, m.getId());
+            newRec.setIdRecensione(recensione.getId());
+            result = RecensioneBusiness.addRisposta(newRec, recensione.getId());
+            System.out.println(result.getResult());
+            System.out.println(result.getMessage());
+            if (result.getResult() == ExecuteResult.ResultStatement.OK_WITH_WARNINGS){
+                JOptionPane.showMessageDialog(dialog, "Hai già lasciato una risposta per questo articolo", "Risposta non disponibile", JOptionPane.ERROR_MESSAGE);
+            } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){
+                JOptionPane.showMessageDialog(dialog, "Non puoi rispondere a questa recensione", "Risposta non disponibile", JOptionPane.ERROR_MESSAGE);
+            } else if (result.getResult() == ExecuteResult.ResultStatement.OK){
+                dialog.dispose();
+                JOptionPane.showMessageDialog(dialog,result.getMessage(), "Risposta inviata", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraArticolo(comp, false, null);
+            }
+        } else if (TO_PRENOTAZIONI.equals(action)){
+            frame.mostraPrenotazioni();
+        } else if (ANNULLA_PRENOTAZIONE.equals(action)){
+            int input = JOptionPane.showConfirmDialog(frame, "Annullare prenotazione?", "Eliminare prenotazione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (input==0){
+                ExecuteResult<Boolean> result = PrenotazioneBusiness.removePrenotazione(prenotazione.getId());
+                JOptionPane.showMessageDialog(frame,"Prenotazione annullata", "Prenotazione annullata", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraPrenotazioni();
+            }
+        } else if (COMPLETA_PRENOTAZIONE.equals(action)){
+            int input = JOptionPane.showConfirmDialog(frame, "Completare prenotazione?", "Completare prenotazione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (input==0) {
+                ExecuteResult<Boolean> result = PrenotazioneBusiness.changePrenotazioneStatus(prenotazione.getId(), Prenotazione.StatoPrenotazione.ARRIVATA);
+                JOptionPane.showMessageDialog(frame, "Stato prenotazione cambiato", "Stato prenotazione cambiato", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraPrenotazioni();
+            }
         }
     }
 }

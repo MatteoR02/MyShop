@@ -5,8 +5,6 @@ import View.MainPage;
 import View.Listeners.*;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class GuestMenu extends Menu {
 
@@ -20,7 +18,7 @@ public class GuestMenu extends Menu {
         JButton loginBtn = new JButton("Accedi");
         loginBtn.setActionCommand(LoginListener.TO_LOGIN_BTN);
         JButton registerBtn = new JButton("Registrati");
-        registerBtn.setActionCommand(LoginListener.REGISTER_BTN);
+        registerBtn.setActionCommand(LoginListener.TO_REGISTER_BTN);
 
         LoginListener loginListener = new LoginListener(frame);
         sfogliaCatBtn.addActionListener(loginListener);

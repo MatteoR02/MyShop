@@ -120,18 +120,29 @@ public class InfoArticoloPanel extends JPanel {
 
         JPanel recensioniScrollPanel = new JPanel(new GridLayout(0,1,10,10));
 
-        //ArrayList<Recensione> recensioni = (ArrayList<Recensione>) comp.getRecensioni();
-        ExecuteResult<Recensione> resultRec = RecensioneBusiness.loadRecensioni(comp.getIdArticolo());
+        ExecuteResult<Recensione> resultRec = RecensioneBusiness.getRecensioniOfArticolo(comp.getIdArticolo());
         if (!ordinato){
             ArrayList<Recensione> recensioni = resultRec.getObject();
             for (Recensione rec: recensioni) {
-                RecensioneList recensioneList = new RecensioneList(rec, comp, frame);
-                recensioniScrollPanel.add(recensioneList);
+                RecensioneList recensioneList = new RecensioneList(rec, comp, frame, false);
+                ExecuteResult<Recensione> resultRisposta = RecensioneBusiness.getRisposta(rec.getId());
+                if (resultRisposta.getResult()== ExecuteResult.ResultStatement.OK){
+                    Recensione risposta = RecensioneBusiness.getRisposta(rec.getId()).getSingleObject();
+                    RecensioneList rispostaList = new RecensioneList(risposta, comp, frame, true);
+                    recensioniScrollPanel.add(recensioneList);
+                    recensioniScrollPanel.add(rispostaList);
+                } else {
+                    recensioniScrollPanel.add(recensioneList);
+                }
             }
         } else {
             for (Recensione rec : listaRecensioni) {
-                RecensioneList recensioneList = new RecensioneList(rec, comp, frame);
-                recensioniScrollPanel.add(recensioneList);
+                RecensioneList recensioneList = new RecensioneList(rec, comp, frame, false);
+                ExecuteResult<Recensione> resultRisposta = RecensioneBusiness.getRisposta(rec.getId());
+                if (resultRisposta.getResult()== ExecuteResult.ResultStatement.OK){
+                    Recensione risposta = RecensioneBusiness.getRisposta(rec.getId()).getSingleObject();
+                    RecensioneList rispostaList = new RecensioneList(risposta, comp, frame, true);
+                }
             }
         }
 

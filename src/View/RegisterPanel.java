@@ -1,7 +1,10 @@
 package View;
 
+import Business.ExecuteResult;
+import Business.PuntoVenditaBusiness;
+import Model.Cliente;
+import Model.PuntoVendita;
 import View.Listeners.LoginListener;
-import com.toedter.calendar.JCalendar;
 import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
@@ -11,12 +14,12 @@ import java.awt.event.KeyEvent;
 
 public class RegisterPanel extends JPanel {
 
-    public RegisterPanel() {
+    public RegisterPanel(MainPage frame) {
         this.setLayout(new GridBagLayout());
         Insets insets = new Insets(3,10,3,10);
         JLabel textNome = new JLabel("Nome");
         JLabel textCognome = new JLabel("Cognome");
-        JLabel textEmail = new JLabel("EmailSender");
+        JLabel textEmail = new JLabel("Email");
         JLabel textUsername = new JLabel("Username");
         JLabel textPassword = new JLabel("Password");
         JLabel textTelefono = new JLabel("Telefono");
@@ -27,6 +30,8 @@ public class RegisterPanel extends JPanel {
         JLabel textVia = new JLabel("Via");
         JLabel textCivico = new JLabel("Civico");
         JLabel textPuntiVendita = new JLabel("Scegli il punto vendita a cui ti vuoi registrare");
+        JLabel textProfessione = new JLabel("Professione");
+        JLabel textCanalePreferito = new JLabel("Canale preferito");
         JTextField nome = new JTextField(20);
         JTextField cognome = new JTextField(20);
         JTextField email = new JTextField(20);
@@ -38,21 +43,24 @@ public class RegisterPanel extends JPanel {
         JTextField via = new JTextField(20);
         JTextField civico = new JTextField(20);
 
-        //prendere puntiVendita da database
-        String[] puntiVendita = { "Punto Vendita Lecce", "Punto Vendita Milano", "Punto Vendita Roma", "Punto Vendita Pisa", "Punto Vendita Torino" };
 
-        JComboBox puntiVenditaList = new JComboBox(puntiVendita);
-        puntiVenditaList.setSelectedIndex(0);
+        ExecuteResult<PuntoVendita> puntiVendita = PuntoVenditaBusiness.getAllPV();
+        PuntoVendita[] selPuntoVendita = puntiVendita.getObject().toArray(new PuntoVendita[0]);
+
+        JComboBox selPuntoVenditaBox = new JComboBox(selPuntoVendita);
+
+        JComboBox selProfessioneBox = new JComboBox(Cliente.ProfessioneType.values());
+        JComboBox selCanaleBox = new JComboBox(Cliente.CanalePreferitoType.values());
 
         JTextField username = new JTextField(20);
         JPasswordField password = new JPasswordField(20);
         JButton register = new JButton("Registrati");
-        //register.setPreferredSize(new Dimension(200,50));
+
         register.setFocusPainted(false);
         register.setActionCommand(LoginListener.REGISTER_BTN);
-        LoginListener loginListener = new LoginListener(username, password);
+        LoginListener loginListener = new LoginListener(frame, nome, cognome, email, telefono, username, password, dataNascita, nazione, citta, cap, via, civico, selPuntoVenditaBox, selProfessioneBox, selCanaleBox);
         register.addActionListener(loginListener);
-        JDateChooser compleanno = new JDateChooser();
+
         this.add(textNome,new GridBagCostraintsHorizontal(0,0,1,1,insets));
 
         this.add(new JLabel(""),new GridBagCostraintsHorizontal(1,0,1,1,insets));
@@ -105,9 +113,17 @@ public class RegisterPanel extends JPanel {
 
         this.add(textPuntiVendita,new GridBagCostraintsHorizontal(0,14,3,1,insets) );
 
-        this.add(puntiVenditaList, new GridBagCostraintsHorizontal(0,15,1,1,insets));
+        this.add(selPuntoVenditaBox, new GridBagCostraintsHorizontal(0,15,1,1,insets));
 
-        this.add(register,new GridBagCostraintsHorizontal(1,15,2,1,insets));
+        this.add(textProfessione, new GridBagCostraintsHorizontal(0,16,1,1,insets));
+
+        this.add(selProfessioneBox, new GridBagCostraintsHorizontal(0,17,1,1,insets));
+
+        this.add(textCanalePreferito, new GridBagCostraintsHorizontal(2,16,1,1,insets));
+
+        this.add(selCanaleBox, new GridBagCostraintsHorizontal(2,17,1,1,insets));
+
+        this.add(register,new GridBagCostraintsHorizontal(0,18,3,1,insets));
 
         telefono.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent ke) {

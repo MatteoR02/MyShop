@@ -20,14 +20,14 @@ public class ManagerRecensioneMenu extends Menu{
         this.recensione = recensione;
 
         JButton rispondiBtn = new JButton("Rispondi alla recensione");
-        rispondiBtn.setActionCommand(ManagerListener.RISPONDI_RECENSIONE);
+        rispondiBtn.setActionCommand(ManagerListener.TO_RISPONDI_RECENSIONE);
 
         JButton removeBtn = new JButton("Elimina recensione");
         removeBtn.setActionCommand(ManagerListener.REMOVE_RECENSIONE);
 
-        CatalogoListener catalogoListener = new CatalogoListener(frame, comp, recensione);
-        rispondiBtn.addActionListener(catalogoListener);
-        removeBtn.addActionListener(catalogoListener);
+        ManagerListener managerListener = new ManagerListener(frame, comp, recensione);
+        rispondiBtn.addActionListener(managerListener);
+        removeBtn.addActionListener(managerListener);
 
         pulsanti.add(rispondiBtn);
         pulsanti.add(removeBtn);

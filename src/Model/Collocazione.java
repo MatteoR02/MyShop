@@ -4,10 +4,10 @@ public class Collocazione {
 
     private int quantita;
     private String corsia;
-    private int scaffale;
+    private String scaffale;
     private Magazzino magazzino;
 
-    public Collocazione(int quantita, String corsia, int scaffale, Magazzino magazzino) {
+    public Collocazione(int quantita, String corsia, String scaffale, Magazzino magazzino) {
         this.quantita = quantita;
         this.corsia = corsia;
         this.scaffale = scaffale;
@@ -33,11 +33,11 @@ public class Collocazione {
         this.corsia = corsia;
     }
 
-    public int getScaffale() {
+    public String  getScaffale() {
         return scaffale;
     }
 
-    public void setScaffale(int scaffale) {
+    public void setScaffale(String scaffale) {
         this.scaffale = scaffale;
     }
 

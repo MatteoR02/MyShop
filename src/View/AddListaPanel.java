@@ -1,14 +1,11 @@
 package View;
 
-import Model.ListaAcquisto;
-import View.Listeners.CatalogoListener;
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.ClienteListener;
-import View.ViewModel.ComponenteCatalogo;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.ArrayList;
 
 public class AddListaPanel extends JPanel {
 
@@ -28,7 +25,7 @@ public class AddListaPanel extends JPanel {
         JTextField nuovaListaField = new JTextField(30);
         JButton creaNuovaListaBtn = new JButton("Crea una nuova lista");
 
-        ClienteListener clienteListener = new ClienteListener(nuovaListaField, dialog);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(frame).fieldNewLista(nuovaListaField).dialog(dialog).build();
         clienteListener.setFrame(frame);
 
         creaNuovaListaBtn.setActionCommand(ClienteListener.CREATE_NEW_LISTA);

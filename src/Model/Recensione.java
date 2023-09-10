@@ -15,6 +15,7 @@ public class Recensione {
     private Date data;
     private List<Foto> immagini;
     private int idCliente;
+    private int idRecensione;
 
     public Recensione(String titolo, String testo, Punteggio valutazione, Date data, List<Foto> immagini, int idCliente) {
         this.titolo = titolo;
@@ -26,6 +27,7 @@ public class Recensione {
     }
 
     public Recensione() {
+        idRecensione = -1;
     }
 
     public int getId() {
@@ -82,6 +84,14 @@ public class Recensione {
 
     public void setIdCliente(int idCliente) {
         this.idCliente = idCliente;
+    }
+
+    public int getIdRecensione() {
+        return idRecensione;
+    }
+
+    public void setIdRecensione(int idRecensione) {
+        this.idRecensione = idRecensione;
     }
 
     public int punteggioToInteger(Punteggio punteggio){

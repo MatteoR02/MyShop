@@ -18,6 +18,10 @@ public class AdminMenu extends Menu {
         sfogliaCatBtn.setActionCommand(LoginListener.CATALOGO_BTN);
         JButton creaArticoloBtn = new JButton("Crea Articolo");
         creaArticoloBtn.setActionCommand(AdminListener.TO_CREA_ARTICOLO);
+        JButton creaPuntoVenditaBtn = new JButton("Crea Punto Vendita");
+        creaPuntoVenditaBtn.setActionCommand(AdminListener.TO_CREA_PV);
+        JButton creaManagerBtn = new JButton("Crea Manager");
+        creaManagerBtn.setActionCommand(AdminListener.TO_CREA_MANAGER);
         JButton logoutBtn = new JButton("Logout");
         logoutBtn.setActionCommand(LoginListener.LOGOUT_BTN);
 
@@ -26,14 +30,16 @@ public class AdminMenu extends Menu {
 
         sfogliaCatBtn.addActionListener(loginListener);
         creaArticoloBtn.addActionListener(adminListener);
+        creaPuntoVenditaBtn.addActionListener(adminListener);
+        creaManagerBtn.addActionListener(adminListener);
         logoutBtn.addActionListener(loginListener);
 
 
         pulsanti.add(sfogliaCatBtn);
         pulsanti.add(creaArticoloBtn);
+        pulsanti.add(creaPuntoVenditaBtn);
+        pulsanti.add(creaManagerBtn);
         pulsanti.add(logoutBtn);
-
-
 
     }
 }

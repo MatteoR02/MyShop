@@ -39,7 +39,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
                 erogatore.setId(rs.getInt("idErogatore"));
                 erogatore.setNome(rs.getString("nome"));
                 erogatore.setSitoWeb(rs.getString("sito_web"));
-                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 return erogatore;
             }
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
                 erogatore.setId(rs.getInt("idErogatore"));
                 erogatore.setNome(rs.getString("nome"));
                 erogatore.setSitoWeb(rs.getString("sito_web"));
-                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                erogatore.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 produttori.add(erogatore);
             }return produttori;
         } catch (SQLException e) {
@@ -103,7 +103,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
                 preparedStatement.setString(4, erogatore.getIndirizzo().getCitta());
                 preparedStatement.setString(5, erogatore.getIndirizzo().getCap());
                 preparedStatement.setString(6, erogatore.getIndirizzo().getVia());
-                preparedStatement.setInt(7, erogatore.getIndirizzo().getCivico());
+                preparedStatement.setString(7, erogatore.getIndirizzo().getCivico());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 return rowCount;
@@ -132,7 +132,7 @@ public class ErogatoreDAO implements IErogatoreDAO {
                 preparedStatement.setString(4, erogatore.getIndirizzo().getCitta());
                 preparedStatement.setString(5, erogatore.getIndirizzo().getCap());
                 preparedStatement.setString(6, erogatore.getIndirizzo().getVia());
-                preparedStatement.setInt(7, erogatore.getIndirizzo().getCivico());
+                preparedStatement.setString(7, erogatore.getIndirizzo().getCivico());
                 preparedStatement.setInt(8, erogatore.getId());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();

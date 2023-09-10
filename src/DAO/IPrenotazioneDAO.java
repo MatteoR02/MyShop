@@ -29,6 +29,8 @@ public interface IPrenotazioneDAO {
 
     boolean isArrivata(int idPrenotazione);
 
+    int changePrenotazioneStatus(int idPrenotazione, Prenotazione.StatoPrenotazione stato);
+
     int setFKProdottoToDefault(int idProdotto);
 
 

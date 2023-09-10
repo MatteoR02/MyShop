@@ -14,7 +14,7 @@ public class AdminMainPanel extends JPanel {
         Color sfondo = Color.WHITE;
         this.setBackground(sfondo);
         Font buttonFont = new Font("Arial", Font.PLAIN, 20);
-        Dimension buttonDimension = new Dimension(200, 70);
+        Dimension buttonDimension = new Dimension(250, 70);
         Insets insets = new Insets(10,10,10,10);
 
         Menu adminMenu = new AdminMenu(frame);

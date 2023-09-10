@@ -7,9 +7,8 @@ import Model.Erogatore;
 import Model.Magazzino;
 import Model.PuntoVendita;
 import View.Listeners.AdminListener;
-import View.Listeners.ManagerListener;
 import View.MainPage;
-import View.ViewModel.RigaCliente;
+import View.ViewModel.ComponenteCatalogo;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 
 public class CreaProdottoPanel extends JPanel {
 
-    public CreaProdottoPanel(JFrame frame, PuntoVendita pv) {
+    public CreaProdottoPanel(JFrame frame, PuntoVendita pv, boolean modifica, ComponenteCatalogo comp) {
 
         this.setLayout(new MigLayout("insets 80, fillx, align 50% 50%", "[]push []push []push []", "[]30 [] []15 [] [] []15 [] []15 []30 []"));
 
@@ -35,11 +34,11 @@ public class CreaProdottoPanel extends JPanel {
         JLabel labelErogatore = new JLabel("Erogatore");
         JLabel labelFoto = new JLabel("Foto");
 
-        JTextField fieldNome = new JTextField(20);
+        JTextField fieldNome = new JTextField("",20);
         JTextArea fieldDescrizione = new JTextArea("", 15, 50);
-        JTextField fieldCorsia = new JTextField(4);
-        JTextField fieldScaffale = new JTextField(4);
-        JTextField fieldPrezzo = new JTextField(5);
+        JTextField fieldCorsia = new JTextField("",4);
+        JTextField fieldScaffale = new JTextField("",4);
+        JTextField fieldPrezzo = new JTextField("",5);
 
         fieldDescrizione.setFont(fieldDescrizione.getFont().deriveFont(17f));
 
@@ -76,6 +75,16 @@ public class CreaProdottoPanel extends JPanel {
         creaProdottoBtn.addActionListener(adminListener);
         creaProdottoBtn.setActionCommand(AdminListener.CREA_PRODOTTO);
 
+        if (modifica){
+            fieldNome.setText(comp.getNomeArticolo());
+            fieldDescrizione.setText(comp.getDescrizioneArticolo());
+            fieldPrezzo.setText(comp.getPrezzo()+"");
+            fieldCorsia.setText(comp.getCorsia());
+            fieldScaffale.setText(comp.getScaffale());
+            creaProdottoBtn.setText("Modifica Prodotto");
+            adminListener.setComponenteCatalogo(comp);
+            creaProdottoBtn.setActionCommand(AdminListener.MODIFICA_PRODOTTO);
+        }
 
         this.add(labelCreazione, "cell 0 0, wrap");
         this.add(labelNome, "cell 0 1");

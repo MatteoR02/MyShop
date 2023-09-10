@@ -4,6 +4,7 @@ import Model.Articolo;
 import Model.IProdotto;
 import Model.ListaAcquisto;
 import Model.Prodotto;
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.ClienteListener;
 import View.ViewModel.*;
 
@@ -85,7 +86,7 @@ public class ListaTablePanel extends JPanel {
 
         add(pannello, BorderLayout.CENTER);
 
-        ClienteListener clienteListener = new ClienteListener(frame,this, table, lista);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(frame).tableLista(table).listaAcq(lista).build();
 
         JPanel pulsantiAzioneTabella = new JPanel();
         pulsantiAzioneTabella.setLayout(new FlowLayout());

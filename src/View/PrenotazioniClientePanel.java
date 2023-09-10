@@ -55,8 +55,8 @@ public class PrenotazioniClientePanel extends JPanel {
 
         splitPane.setLeftComponent(leftPanel);
         splitPane.setRightComponent(listaPanel);
-        splitPane.setDividerLocation(0.2);
-        splitPane.setResizeWeight(0.2);
+        splitPane.setDividerLocation(0.1);
+        splitPane.setResizeWeight(0.1);
 
         this.add(splitPane);
         this.setVisible(true);

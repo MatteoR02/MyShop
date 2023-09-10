@@ -6,6 +6,7 @@ import Model.Erogatore;
 import Model.PuntoVendita;
 import View.Listeners.AdminListener;
 import View.MainPage;
+import View.ViewModel.ComponenteCatalogo;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class CreaServizioPanel extends JPanel {
 
-    public CreaServizioPanel(JFrame frame, PuntoVendita pv) {
+    public CreaServizioPanel(JFrame frame, PuntoVendita pv, boolean modifica, ComponenteCatalogo comp) {
 
         this.setLayout(new MigLayout("insets 80, fillx, align 50% 50%", "[]push [] []", "[]30 [] []15 [] [] []15 [] []15 []30 []"));
 
@@ -61,6 +62,14 @@ public class CreaServizioPanel extends JPanel {
 
         creaProdottoBtn.addActionListener(adminListener);
         creaProdottoBtn.setActionCommand(AdminListener.CREA_SERVIZIO);
+
+        if (modifica){
+            fieldNome.setText(comp.getNomeArticolo());
+            fieldDescrizione.setText(comp.getDescrizioneArticolo());
+            fieldPrezzo.setText(String.valueOf(comp.getPrezzo()));
+            creaProdottoBtn.setText("Modifica Servizio");
+            creaProdottoBtn.setActionCommand(AdminListener.MODIFICA_PRODOTTO);
+        }
 
 
         this.add(labelCreazione, "cell 0 0, wrap");

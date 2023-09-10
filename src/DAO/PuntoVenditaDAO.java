@@ -69,7 +69,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
             if (rs.getRow() == 1) {
                 puntoVendita = new PuntoVendita();
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
-                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
                 //puntoVendita.setArticoli();
                 return puntoVendita;
@@ -101,7 +101,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
                 puntoVendita = new PuntoVendita();
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
                 puntoVendita.setNome(rs.getString("nome"));
-                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
                 //puntoVendita.setArticoli();
                 puntiVendita.add(puntoVendita);
@@ -133,7 +133,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
                 puntoVendita = new PuntoVendita();
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
                 puntoVendita.setNome(rs.getString("nome"));
-                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
+                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
                 puntoVendita.setArticoli(articoloDAO.loadAllArticoliFromPuntoVendita(rs.getInt("idPuntoVendita")));
                 return puntoVendita;
@@ -186,18 +186,19 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     @Override
     public int addPuntoVendita(PuntoVendita puntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.puntovendita (nazione, citta, cap, via, civico) VALUES (?,?,?,?,?);";
+        String sql = "INSERT INTO myshop.puntovendita (nome, nazione, citta, cap, via, civico) VALUES (?,?,?,?,?,?);";
 
         IDbOperation addByte = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
         int rowCount;
         try{
             if(preparedStatement!=null) {
-                preparedStatement.setString(1, puntoVendita.getIndirizzo().getNazione());
-                preparedStatement.setString(2, puntoVendita.getIndirizzo().getCitta());
-                preparedStatement.setString(3, puntoVendita.getIndirizzo().getCap());
-                preparedStatement.setString(4, puntoVendita.getIndirizzo().getVia());
-                preparedStatement.setInt(5, puntoVendita.getIndirizzo().getCivico());
+                preparedStatement.setString(1, puntoVendita.getNome());
+                preparedStatement.setString(2, puntoVendita.getIndirizzo().getNazione());
+                preparedStatement.setString(3, puntoVendita.getIndirizzo().getCitta());
+                preparedStatement.setString(4, puntoVendita.getIndirizzo().getCap());
+                preparedStatement.setString(5, puntoVendita.getIndirizzo().getVia());
+                preparedStatement.setString(6, puntoVendita.getIndirizzo().getCivico());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 return rowCount;
@@ -224,7 +225,7 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
                 preparedStatement.setString(2, puntoVendita.getIndirizzo().getCitta());
                 preparedStatement.setString(3, puntoVendita.getIndirizzo().getCap());
                 preparedStatement.setString(4, puntoVendita.getIndirizzo().getVia());
-                preparedStatement.setInt(5, puntoVendita.getIndirizzo().getCivico());
+                preparedStatement.setString(5, puntoVendita.getIndirizzo().getCivico());
                 preparedStatement.setInt(7, puntoVendita.getId());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();

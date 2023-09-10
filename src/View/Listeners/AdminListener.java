@@ -2,25 +2,27 @@ package View.Listeners;
 
 import Business.ArticoloBusiness;
 import Business.ExecuteResult;
+import Business.PuntoVenditaBusiness;
 import Model.*;
 import View.MainPage;
 import View.ViewModel.*;
+import com.toedter.calendar.JDateChooser;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AdminListener implements ActionListener {
 
-    public final static String ASSIGN_MANAGER = "assign_manager";
-    public final static String CREA_MANAGER = "crea_manager";
     public final static String TO_CREA_ARTICOLO = "to_crea_articolo";
     public final static String CREA_ARTICOLO = "crea_articolo";
-    public final static String MODIFICA_ARTICOLO = "modifica_articolo";
+    public final static String TO_MODIFICA_ARTICOLO = "to_modifica_articolo";
+    public final static String MODIFICA_PRODOTTO = "modifica_prodotto";
     public final static String ELIMINA_ARTICOLO = "elimina_articolo";
     public final static String TO_CREA_PRODOTTO = "to_crea_prodotto";
     public final static String CREA_PRODOTTO = "crea_prodotto";
@@ -33,6 +35,10 @@ public class AdminListener implements ActionListener {
     public final static String CREA_CATEGORIA = "crea_categoria";
     public final static String TO_CREA_EROGATORE = "to_crea_erogatore";
     public final static String CREA_EROGATORE = "crea_erogatore";
+    public final static String TO_CREA_PV = "to_crea_pv";
+    public final static String CREA_PV = "crea_pv";
+    public final static String TO_CREA_MANAGER = "to_crea_manager";
+    public final static String CREA_MANAGER = "crea_manager";
 
     private MainPage frame;
 
@@ -42,7 +48,6 @@ public class AdminListener implements ActionListener {
 
     private PuntoVendita puntoVendita;
 
-    private JTextField fieldNome;
     private JTextArea fieldDescrizione;
     private JTextField fieldPrezzo;
     private JTextField fieldCorsia, fieldScaffale;
@@ -55,8 +60,10 @@ public class AdminListener implements ActionListener {
 
     private JTable tableProdotti;
 
+    private JTextField fieldNome, fieldCognome, fieldEmail, fieldTelefono, fieldUsername;
+    private JPasswordField fieldPassword;
+    private JDateChooser dataNascita;
     private JTextField fieldSito, fieldNazione, fieldCitta, fieldCap, fieldVia, fieldCivico;
-
 
     public AdminListener(MainPage frame) {
         this.frame = frame;
@@ -112,9 +119,9 @@ public class AdminListener implements ActionListener {
         this.tableProdotti = tableProdotti;
     }
 
-    public AdminListener(MainPage frame, JTextField fieldNome, JComboBox tipoBox) {
+    public AdminListener(MainPage frame, JTextField fieldNomeArt, JComboBox tipoBox) {
         this.frame = frame;
-        this.fieldNome = fieldNome;
+        this.fieldNome = fieldNomeArt;
         this.tipoBox = tipoBox;
     }
 
@@ -129,6 +136,37 @@ public class AdminListener implements ActionListener {
         this.fieldCivico = fieldCivico;
     }
 
+    public AdminListener(MainPage frame, JTextField fieldNome, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
+        this.frame = frame;
+        this.fieldNome = fieldNome;
+        this.fieldNazione = fieldNazione;
+        this.fieldCitta = fieldCitta;
+        this.fieldCap = fieldCap;
+        this.fieldVia = fieldVia;
+        this.fieldCivico = fieldCivico;
+    }
+
+    public AdminListener(MainPage frame, JComboBox selPuntoVenditaBox, JTextField fieldNome, JTextField fieldCognome, JTextField fieldEmail, JTextField fieldTelefono, JTextField fieldUsername, JPasswordField fieldPassword, JDateChooser dataNascita, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
+        this.frame = frame;
+        this.selPuntoVenditaBox = selPuntoVenditaBox;
+        this.fieldNome = fieldNome;
+        this.fieldCognome = fieldCognome;
+        this.fieldEmail = fieldEmail;
+        this.fieldTelefono = fieldTelefono;
+        this.fieldUsername = fieldUsername;
+        this.fieldPassword = fieldPassword;
+        this.dataNascita = dataNascita;
+        this.fieldNazione = fieldNazione;
+        this.fieldCitta = fieldCitta;
+        this.fieldCap = fieldCap;
+        this.fieldVia = fieldVia;
+        this.fieldCivico = fieldCivico;
+    }
+
+    public void setComponenteCatalogo(ComponenteCatalogo componenteCatalogo) {
+        this.componenteCatalogo = componenteCatalogo;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         String action = e.getActionCommand();
@@ -136,9 +174,33 @@ public class AdminListener implements ActionListener {
             frame.mostraCreaArticolo();
         } else if (CREA_ARTICOLO.equals(action)){
 
-        } else if (MODIFICA_ARTICOLO.equals(action)){
+        } else if (TO_MODIFICA_ARTICOLO.equals(action)){
+            frame.mostraCreaProdotto(PuntoVenditaBusiness.getPV(1).getSingleObject(), true, componenteCatalogo);
+        } else if (MODIFICA_PRODOTTO.equals(action)){
+            String nome = fieldNome.getText();
+            String descrizione = fieldDescrizione.getText();
+            Float prezzo = Float.parseFloat(fieldPrezzo.getText());
+            String corsia = fieldCorsia.getText();
+            String scaffale = fieldScaffale.getText();
+            Categoria categoria = (Categoria) categoriaBox.getSelectedItem();
+            Erogatore erogatore = (Erogatore) erogatoreBox.getSelectedItem();
+            ArrayList<File> files = new ArrayList<>();
+            if (immagini!=null){
+                files = new ArrayList<>(Arrays.asList(immagini));
+            }
 
-        } else if (ELIMINA_ARTICOLO.equals(action)){
+            Prodotto prodottoNuovo = new Prodotto(nome,descrizione,prezzo,categoria,erogatore);
+            prodottoNuovo.setCollocazione(new Collocazione(0, corsia, scaffale, componenteCatalogo.getMagazzino()));
+            prodottoNuovo.setId(componenteCatalogo.getIdArticolo());
+
+            ExecuteResult<Boolean> result = ArticoloBusiness.updateArticolo(prodottoNuovo, files);
+            if (result.getResult()== ExecuteResult.ResultStatement.OK){
+                JOptionPane.showMessageDialog(frame,"Prodotto modificato con successo", "Prodotto modificato", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraCatalogo(null, false);
+            } else {
+                JOptionPane.showMessageDialog(frame, "C'è stato un errore nella modifica del prodotto", "Errore modifica prodotto", JOptionPane.ERROR_MESSAGE);
+            }
+        }else if (ELIMINA_ARTICOLO.equals(action)){
             int input = JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare l'articolo?", "Eliminare articolo?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
             if (input==0){
                 ExecuteResult<Boolean> result = ArticoloBusiness.removeArticolo(componenteCatalogo.getIdArticolo());
@@ -147,13 +209,13 @@ public class AdminListener implements ActionListener {
             }
         } else if (TO_CREA_PRODOTTO.equals(action)){
             PuntoVendita pv = (PuntoVendita) selPuntoVenditaBox.getSelectedItem();
-            frame.mostraCreaProdotto(pv);
+            frame.mostraCreaProdotto(pv, false, null);
         } else if (TO_CREA_PRODOTTO_COMPOSITO.equals(action)){
             PuntoVendita pv = (PuntoVendita) selPuntoVenditaBox.getSelectedItem();
-            frame.mostraCreaProdottoComposito(pv);
+            frame.mostraCreaProdottoComposito(pv, false, null);
         } else if (TO_CREA_SERVIZIO.equals(action)){
             PuntoVendita pv = (PuntoVendita) selPuntoVenditaBox.getSelectedItem();
-            frame.mostraCreaServizio(pv);
+            frame.mostraCreaServizio(pv, false, null);
         } else if (SELEZIONA_IMMAGINI.equals(action)){
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setMultiSelectionEnabled(true);
@@ -174,7 +236,7 @@ public class AdminListener implements ActionListener {
             String descrizione = fieldDescrizione.getText();
             Float prezzo = Float.parseFloat(fieldPrezzo.getText());
             String corsia = fieldCorsia.getText();
-            int scaffale = Integer.parseInt(fieldScaffale.getText());
+            String scaffale = fieldScaffale.getText();
             Categoria categoria = (Categoria) categoriaBox.getSelectedItem();
             Erogatore erogatore = (Erogatore) erogatoreBox.getSelectedItem();
             ArrayList<File> files = new ArrayList<>();
@@ -277,7 +339,7 @@ public class AdminListener implements ActionListener {
             String cap = fieldCap.getText();
             String via = fieldVia.getText();
             String civico = fieldCivico.getText();
-            Indirizzo indirizzo = new Indirizzo(nazione, citta, cap, via, Integer.parseInt(civico));
+            Indirizzo indirizzo = new Indirizzo(nazione, citta, cap, via, civico);
             Erogatore erogatoreNuovo = new Erogatore(nome, sito, indirizzo);
             ExecuteResult<Boolean> result = ArticoloBusiness.creaErogatore(erogatoreNuovo);
             if (result.getResult()== ExecuteResult.ResultStatement.OK){
@@ -285,6 +347,50 @@ public class AdminListener implements ActionListener {
                 frame.mostraCreaArticolo();
             } else if (result.getResult()== ExecuteResult.ResultStatement.NOT_OK){
                 JOptionPane.showMessageDialog(frame, "C'è stato un errore nella creazione dell'erogatore", "Errore creazione erogatore", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (TO_CREA_MANAGER.equals(action)){
+            frame.mostraCreaManager();
+        } else if (CREA_MANAGER.equals(action)){
+            String nome = fieldNome.getText();
+            String cognome = fieldCognome.getText();
+            String email = fieldEmail.getText();
+            String telefono = fieldTelefono.getText();
+            String username = fieldUsername.getText();
+            String password = new String(fieldPassword.getPassword());
+            java.util.Date data = dataNascita.getDate();
+            Date dataNasc = new Date(data.getTime());
+            String nazione = fieldNazione.getText();
+            String citta = fieldCitta.getText();
+            String cap = fieldCap.getText();
+            String via = fieldVia.getText();
+            String civico = fieldCivico.getText();
+            int idPV = ((PuntoVendita) selPuntoVenditaBox.getSelectedItem()).getId();
+
+            Manager nuovoManager = new Manager(new Persona(nome, cognome, email, telefono, dataNasc), username, password, new Indirizzo(nazione, citta, cap, via, civico), idPV);
+            ExecuteResult<Boolean> result = PuntoVenditaBusiness.creaManager(nuovoManager);
+            if (result.getResult()== ExecuteResult.ResultStatement.OK){
+                JOptionPane.showMessageDialog(frame,"Manager creato con successo", "Manager creato", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraMain();
+            } else if (result.getResult()== ExecuteResult.ResultStatement.NOT_OK){
+                JOptionPane.showMessageDialog(frame, "C'è stato un errore nella creazione del manager", "Errore creazione manager", JOptionPane.ERROR_MESSAGE);
+            }
+        } else if (TO_CREA_PV.equals(action)){
+            frame.mostraCreaPV();
+        } else if (CREA_PV.equals(action)){
+            String nome = fieldNome.getText();
+            String nazione = fieldNazione.getText();
+            String citta = fieldCitta.getText();
+            String cap = fieldCap.getText();
+            String via = fieldVia.getText();
+            String civico = fieldCivico.getText();
+            Indirizzo indirizzo = new Indirizzo(nazione, citta, cap, via, civico);
+            PuntoVendita puntoVenditaNuovo = new PuntoVendita(nome, indirizzo);
+            ExecuteResult<Boolean> result = PuntoVenditaBusiness.creaPuntoVendita(puntoVenditaNuovo);
+            if (result.getResult()== ExecuteResult.ResultStatement.OK){
+                JOptionPane.showMessageDialog(frame,"Punto vendita creato con successo", "Punto vendita creato", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraMain();
+            } else if (result.getResult()== ExecuteResult.ResultStatement.NOT_OK){
+                JOptionPane.showMessageDialog(frame, "C'è stato un errore nella creazione del punto vendita", "Errore creazione punto vendita", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

@@ -34,7 +34,6 @@ public class ClienteListener implements ActionListener {
 
     private MainPage frame;
     private JTable table;
-    private JPanel panel;
     private JTextField newLista;
     private ListaAcquisto lista;
     private JDialog dialog;
@@ -45,51 +44,20 @@ public class ClienteListener implements ActionListener {
     private ArrayList<JSpinner> spinners;
     private JButton button;
 
-    public ClienteListener(JTextField newLista, JDialog dialog) {
-        this.newLista = newLista;
-        this.dialog = dialog;
-    }
-
-    public ClienteListener(JDialog dialog, ArrayList<IProdotto> articoli, ArrayList<JSpinner> spinners) {
-        this.dialog = dialog;
-        this.articoli = articoli;
-        this.spinners = spinners;
-    }
-
-    public ClienteListener(MainPage frame, DefaultListModel<ListaAcquisto> listModel, ArrayList<ListaAcquisto> liste, JButton button){
+    public ClienteListener(MainPage frame, JTable table, JTextField newLista, ListaAcquisto lista, JDialog dialog, ComponenteCatalogo comp, DefaultListModel<ListaAcquisto> listModel, ArrayList<ListaAcquisto> liste, ArrayList<IProdotto> articoli, ArrayList<JSpinner> spinners, JButton button) {
         this.frame = frame;
+        this.table = table;
+        this.newLista = newLista;
+        this.lista = lista;
+        this.dialog = dialog;
+        this.comp = comp;
         this.listModel = listModel;
         this.liste = liste;
+        this.articoli = articoli;
+        this.spinners = spinners;
         this.button = button;
     }
 
-    public ClienteListener(MainPage frame, JPanel panel, JTable table, ListaAcquisto lista) {
-        this.frame = frame;
-        this.panel = panel;
-        this.table = table;
-        this.lista = lista;
-    }
-
-    public ClienteListener(JDialog dialog, JTextField newLista, ComponenteCatalogo comp) {
-        this.dialog = dialog;
-        this.newLista = newLista;
-        this.comp = comp;
-    }
-
-    public ClienteListener(MainPage frame) {
-        this.frame = frame;
-    }
-
-    public ClienteListener(MainPage frame, JTable table) {
-        this.frame = frame;
-        this.table = table;
-    }
-
-    public ClienteListener(MainPage frame, JTable table, ListaAcquisto lista) {
-        this.frame = frame;
-        this.table = table;
-        this.lista = lista;
-    }
 
     public void setFrame(MainPage frame) {
         this.frame = frame;
@@ -114,8 +82,8 @@ public class ClienteListener implements ActionListener {
             }
             JOptionPane.showMessageDialog(frame,"Le quantita' degli articoli nella lista sono state aggiornate", "Quantità modificata", JOptionPane.INFORMATION_MESSAGE);
             tModel.fireTableDataChanged();
-            panel.repaint();
-            panel.revalidate();
+            frame.repaint();
+            frame.revalidate();
 
         } else if(PRINT_LIST.equals(action)){
             ListaAcquistoEmail listaAcquistoEmail = new ListaAcquistoEmail(((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER)).getPersona().getEmail(), lista);
@@ -150,8 +118,8 @@ public class ClienteListener implements ActionListener {
                     tModel.fireTableRowsDeleted(indice,indice);
                     JOptionPane.showMessageDialog(frame,result.getMessage(), "Articolo rimosso dalla lista", JOptionPane.INFORMATION_MESSAGE);
                     tModel.fireTableDataChanged();
-                    panel.repaint();
-                    panel.revalidate();
+                    frame.repaint();
+                    frame.revalidate();
                 }
             } else {
                 JOptionPane.showMessageDialog(frame,"Nessun articolo selezionato", "Errore lista", JOptionPane.ERROR_MESSAGE);
@@ -246,7 +214,7 @@ public class ClienteListener implements ActionListener {
                 articoliQuant.put(prod, (Integer) spinners.get(i).getValue());
                 i++;
             }
-            ExecuteResult<Boolean> result = UtenteBusiness.prenotaArticoli(articoliQuant);
+            ExecuteResult<Boolean> result = PrenotazioneBusiness.prenotaArticoli(articoliQuant);
             if (result.getResult() == ExecuteResult.ResultStatement.OK){
                 JOptionPane.showMessageDialog(dialog,"Prenotazione effettuata con successo", "Prenotazione effettuata", JOptionPane.INFORMATION_MESSAGE);
             } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){

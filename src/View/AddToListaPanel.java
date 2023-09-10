@@ -1,6 +1,7 @@
 package View;
 
 import Model.ListaAcquisto;
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.CatalogoListener;
 import View.Listeners.ClienteListener;
 import View.ViewModel.ComponenteCatalogo;
@@ -42,7 +43,7 @@ public class AddToListaPanel extends JPanel {
         listeDropDown.setSelectedIndex(0);
 
         CatalogoListener catalogoListener = new CatalogoListener(dialog, comp, listeDropDown, quantitaSpinner);
-        ClienteListener clienteListener = new ClienteListener(dialog, nuovaListaField, comp);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(null).dialog(dialog).fieldNewLista(nuovaListaField).componenteCatalogo(comp).build();
 
         addBtn.setActionCommand(CatalogoListener.ADD_TO_LISTA_BTN);
         addBtn.addActionListener(catalogoListener);

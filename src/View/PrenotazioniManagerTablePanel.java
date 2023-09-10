@@ -1,8 +1,10 @@
 package View;
 
+import Business.UtenteBusiness;
 import Model.IProdotto;
 import Model.Prenotazione;
 import View.Listeners.ClienteListener;
+import View.Listeners.ManagerListener;
 import View.ViewModel.PrenotazioniClienteTableModel;
 import View.ViewModel.RigaPrenotazioneLista;
 import View.ViewModel.SpinnerColoumnModel;
@@ -28,7 +30,6 @@ public class PrenotazioniManagerTablePanel extends JPanel {
 
         ArrayList<RigaPrenotazioneLista> righe = new ArrayList<>();
 
-
         while (iterator.hasNext()){
             Map.Entry<IProdotto,Integer> entry = iterator.next();
             RigaPrenotazioneLista riga = new RigaPrenotazioneLista();
@@ -52,6 +53,8 @@ public class PrenotazioniManagerTablePanel extends JPanel {
         table.setRowHeight(25);
         JScrollPane scrollPane = new JScrollPane(table);
 
+
+        JLabel clientePrenotazione = new JLabel("Prenotazione effetuata da: " + UtenteBusiness.getUsernameByID(prenotazione.getIdCliente()).getSingleObject());
         JLabel statoPrenotazione = new JLabel("Stato prenotazione: " + prenotazione.getStatoPrenotazione().toString());
         JLabel dataPrenotazione = new JLabel();
         JLabel dataArrivo = new JLabel();
@@ -62,6 +65,7 @@ public class PrenotazioniManagerTablePanel extends JPanel {
             dataArrivo = new JLabel("Data di arrivo prevista per il:" + sdf.format(prenotazione.getDataArrivo()) + " ");
         }
 
+        clientePrenotazione.setFont(testoFont);
         statoPrenotazione.setFont(testoFont);
         dataPrenotazione.setFont(testoFont);
         dataArrivo.setFont(testoFont);
@@ -70,10 +74,10 @@ public class PrenotazioniManagerTablePanel extends JPanel {
         JPanel sudPannello = new JPanel(new FlowLayout());
         JPanel nordPannello = new JPanel(new FlowLayout(FlowLayout.CENTER, 30, 1));
 
+        nordPannello.add(clientePrenotazione);
         nordPannello.add(statoPrenotazione);
         nordPannello.add(dataPrenotazione);
         nordPannello.add(dataArrivo);
-
 
         pannello.add(scrollPane, BorderLayout.CENTER);
         pannello.add(sudPannello, BorderLayout.SOUTH);
@@ -81,21 +85,21 @@ public class PrenotazioniManagerTablePanel extends JPanel {
 
         add(pannello, BorderLayout.CENTER);
 
-        //ClienteListener clienteListener = new ClienteListener();
-
         JPanel pulsantiAzioneTabella = new JPanel();
         pulsantiAzioneTabella.setLayout(new FlowLayout());
 
-        JButton rimuoviArticoloBtn = new JButton("Completa prenotazione");
-        rimuoviArticoloBtn.setActionCommand(ClienteListener.REMOVE_FROM_LISTA);
-        //rimuoviArticoloBtn.addActionListener(clienteListener);
+        ManagerListener managerListener = new ManagerListener(frame,prenotazione);
+
+        JButton completaPrenotazioneBtn = new JButton("Completa prenotazione");
+        completaPrenotazioneBtn.setActionCommand(ManagerListener.COMPLETA_PRENOTAZIONE);
+        completaPrenotazioneBtn.addActionListener(managerListener);
 
         JButton annullaPrenotazioneBtn = new JButton("Annulla prenotazione");
-        annullaPrenotazioneBtn.setActionCommand(ClienteListener.REMOVE_LISTA);
-       // eliminaListaBtn.addActionListener(clienteListener);
+        annullaPrenotazioneBtn.setActionCommand(ManagerListener.ANNULLA_PRENOTAZIONE);
+        annullaPrenotazioneBtn.addActionListener(managerListener);
 
-        if (prenotazione.getStatoPrenotazione()== Prenotazione.StatoPrenotazione.IN_CORSO){
-            pulsantiAzioneTabella.add(rimuoviArticoloBtn);
+        if (prenotazione.getStatoPrenotazione() == Prenotazione.StatoPrenotazione.IN_CORSO){
+            pulsantiAzioneTabella.add(completaPrenotazioneBtn);
             pulsantiAzioneTabella.add(annullaPrenotazioneBtn);
         }
 

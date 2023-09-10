@@ -21,7 +21,7 @@ public class AdminCompCatalogoMenu extends Menu{
         JButton viewArtBtn = new JButton("Visualizza");
         viewArtBtn.setActionCommand(CatalogoListener.VIEW_ART_BTN);
         JButton modificaArticoloBtn = new JButton("Modifica articolo");
-        modificaArticoloBtn.setActionCommand(AdminListener.MODIFICA_ARTICOLO);
+        modificaArticoloBtn.setActionCommand(AdminListener.TO_MODIFICA_ARTICOLO);
         JButton eliminaArticoloBtn = new JButton("Elimina articolo");
         eliminaArticoloBtn.setActionCommand(AdminListener.ELIMINA_ARTICOLO);
 

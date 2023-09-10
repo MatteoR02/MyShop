@@ -2,6 +2,7 @@ package View;
 
 import Model.Articolo;
 import Model.IProdotto;
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.ClienteListener;
 
 import javax.swing.*;
@@ -27,7 +28,7 @@ public class AddPrenotazionePanel extends JPanel {
 
         ArrayList<JSpinner> spinners = new ArrayList<>();
 
-        ClienteListener clienteListener = new ClienteListener(dialog, articoli, spinners);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(frame).dialog(dialog).arrayProdotti(articoli).arraySpinners(spinners).build();
 
         prenotaBtn.setActionCommand(ClienteListener.PRENOTA_ARTICOLI);
         prenotaBtn.addActionListener(clienteListener);

@@ -5,9 +5,9 @@ public class Indirizzo {
     private String citta;
     private String cap;
     private String via;
-    private int civico;
+    private String civico;
 
-    public Indirizzo(String nazione, String citta, String cap, String via, int civico) {
+    public Indirizzo(String nazione, String citta, String cap, String via, String civico) {
         this.nazione = nazione;
         this.citta = citta;
         this.cap = cap;
@@ -50,11 +50,11 @@ public class Indirizzo {
         this.via = via;
     }
 
-    public int getCivico() {
+    public String  getCivico() {
         return civico;
     }
 
-    public void setCivico(int civico) {
+    public void setCivico(String  civico) {
         this.civico = civico;
     }
 

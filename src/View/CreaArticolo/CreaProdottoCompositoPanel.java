@@ -4,20 +4,18 @@ import Business.ArticoloBusiness;
 import Model.*;
 import View.Listeners.AdminListener;
 import View.MainPage;
+import View.ViewModel.ComponenteCatalogo;
 import View.ViewModel.CreazionePCTableModel;
-import View.ViewModel.RigaCliente;
 import View.ViewModel.RigaProdottoCreazione;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class CreaProdottoCompositoPanel extends JPanel {
 
-    public CreaProdottoCompositoPanel(JFrame frame, PuntoVendita pv) {
+    public CreaProdottoCompositoPanel(JFrame frame, PuntoVendita pv, boolean modifica, ComponenteCatalogo comp) {
 
         this.setLayout(new MigLayout("insets 80, fill, align 50% 50%", "[]push [] []", "[]30 [] []15 [] [] []30 [] []15 []30 [] [] [] [] [] [] []"));
 
@@ -82,6 +80,13 @@ public class CreaProdottoCompositoPanel extends JPanel {
 
         creaProdottoBtn.addActionListener(adminListener);
         creaProdottoBtn.setActionCommand(AdminListener.CREA_PRODOTTO_COMPOSITO);
+
+        if (modifica){
+            fieldNome.setText(comp.getNomeArticolo());
+            fieldDescrizione.setText(comp.getDescrizioneArticolo());
+            creaProdottoBtn.setText("Modifica Prodotto Composito");
+            creaProdottoBtn.setActionCommand(AdminListener.MODIFICA_PRODOTTO);
+        }
 
 
         this.add(labelCreazione, "cell 0 0, wrap");

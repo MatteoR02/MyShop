@@ -1,6 +1,7 @@
 package View;
 
 import Model.ListaAcquisto;
+import View.Listeners.Builders.ClienteListenerBuilder;
 import View.Listeners.ClienteListener;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class ListeAcquistoPanel extends JPanel {
 
         JPanel pulsantiPanel = new JPanel(new GridLayout(0,1, 5, 5));
 
-        ClienteListener clienteListener = new ClienteListener(frame);
+        ClienteListener clienteListener = ClienteListenerBuilder.newBuilder(frame).build();
 
         JButton creaListaBtn = new JButton("Crea Lista");
         creaListaBtn.setFocusPainted(false);
@@ -35,7 +36,8 @@ public class ListeAcquistoPanel extends JPanel {
 
         JButton mostraListePagateBtn = new JButton("Mostra liste pagate");
 
-        ClienteListener clienteListenerListe = new ClienteListener(frame, model, liste, mostraListePagateBtn);
+
+        ClienteListener clienteListenerListe = ClienteListenerBuilder.newBuilder(frame).listModel(model).arrayListeAcq(liste).buttonMostraNascondi(mostraListePagateBtn).build();
 
         mostraListePagateBtn.setFocusPainted(false);
         mostraListePagateBtn.setActionCommand(ClienteListener.MOSTRA_LISTE_PAGATE);

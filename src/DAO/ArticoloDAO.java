@@ -491,7 +491,7 @@ public class ArticoloDAO implements IArticoloDAO {
                 collStmt.setInt(1, ((Prodotto) prodotto).getCollocazione().getMagazzino().getId());
                 collStmt.setInt(2, ((Prodotto) prodotto).getCollocazione().getQuantita());
                 collStmt.setString(3, ((Prodotto) prodotto).getCollocazione().getCorsia());
-                collStmt.setInt(4, ((Prodotto) prodotto).getCollocazione().getScaffale());
+                collStmt.setString(4, ((Prodotto) prodotto).getCollocazione().getScaffale());
                 collStmt.setInt(5, prodotto.getId());
                 rowCount += collStmt.executeUpdate();
                 collStmt.close();
@@ -568,6 +568,7 @@ public class ArticoloDAO implements IArticoloDAO {
         String sqlCollocazione = "DELETE FROM myshop.magazzino_has_prodotto WHERE Prodotto_Articolo_idArticolo='" + idProdotto + "';";
         String sqlProdotto = "DELETE FROM myshop.prodotto WHERE Articolo_idArticolo='" + idProdotto + "';";
         String sqlArticolo = "DELETE FROM myshop.articolo WHERE idArticolo='" + idProdotto + "';";
+        String sqlPV = "DELETE FROM myshop.puntovendita_has_articolo WHERE Articolo_idArticolo='" + idProdotto +"';";
 
 
         int rowCount = 0;
@@ -583,21 +584,26 @@ public class ArticoloDAO implements IArticoloDAO {
 
                 IDbOperation prodottoRem = new WriteOperation(sqlProdotto);
                 IDbOperation articoloRem = new WriteOperation(sqlArticolo);
+                IDbOperation pvRem = new WriteOperation(sqlPV);
 
                 DbOperationExecutor executor = new DbOperationExecutor();
                 rowCount = executor.executeOperation(prodottoRem).getRowsAffected()
+                        + executor.executeOperation(pvRem).getRowsAffected()
                         + executor.executeOperation(articoloRem).getRowsAffected();
+
 
             }  else if (!isProdottoComposito(idProdotto)) {
 
                 IDbOperation collocazioneRem = new WriteOperation(sqlCollocazione);
                 IDbOperation prodottoRem = new WriteOperation(sqlProdotto);
                 IDbOperation articoloRem = new WriteOperation(sqlArticolo);
+                IDbOperation pvRem = new WriteOperation(sqlPV);
 
                 DbOperationExecutor executor = new DbOperationExecutor();
 
                 rowCount = executor.executeOperation(collocazioneRem).getRowsAffected()
                         + executor.executeOperation(prodottoRem).getRowsAffected()
+                        + executor.executeOperation(pvRem).getRowsAffected()
                         + executor.executeOperation(articoloRem).getRowsAffected();
             }
         } catch (Exception e) {
@@ -798,6 +804,11 @@ public class ArticoloDAO implements IArticoloDAO {
 
         DbOperationExecutor executor = new DbOperationExecutor();
 
+        String sqlDeleteServFromPv = "DELETE FROM myshop.puntovendita_has_articolo WHERE Articolo_idArticolo = '" + idServizio + "';";
+        IDbOperation removeServizioPV = new WriteOperation(sqlDeleteServFromPv);
+        int rowCountPV = executor.executeOperation(removeServizioPV).getRowsAffected();
+        removeServizioPV.close();
+
         String sqlDeleteServizio = "DELETE FROM `myshop`.`servizio` WHERE `Articolo_idArticolo` = '" + idServizio + "';";
         IDbOperation removeServizio = new WriteOperation(sqlDeleteServizio);
         int rowCountServizio = executor.executeOperation(removeServizio).getRowsAffected();
@@ -812,7 +823,7 @@ public class ArticoloDAO implements IArticoloDAO {
         int rowCountArticolo =  executor.executeOperation(removeArticolo).getRowsAffected();
         removeArticolo.close();
 
-        return rowCountServizio + rowCountArticolo;
+        return rowCountPV +rowCountServizio + rowCountArticolo;
     }
 
     /**

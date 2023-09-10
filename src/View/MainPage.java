@@ -23,7 +23,7 @@ public class MainPage extends JFrame {
     private JPanel sud = new JPanel();
     private JPanel main = new JPanel();
 
-    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, SOTTOPRODOTTI, LISTE, ARTICOLO, CREAZIONE_ARTICOLO}
+    public enum PaginaCorrente{MAIN, LOGIN, REGISTER, CATALOGO, SOTTOPRODOTTI, LISTE, ARTICOLO, MENU_CREAZIONE, PROFILO}
 
     private PaginaCorrente paginaCorrente;
 
@@ -119,7 +119,7 @@ public class MainPage extends JFrame {
     public void mostraRegister(){
         centro.removeAll();
         centro.setLayout(new GridBagLayout());
-        centro.add(new RegisterPanel());
+        centro.add(new RegisterPanel(this));
         repaint();
         validate();
     }
@@ -144,15 +144,20 @@ public class MainPage extends JFrame {
         validate();
     }
 
+    public void mostraProfilo(){
+        paginaCorrente = PaginaCorrente.PROFILO;
+        centro.removeAll();
+        centro.add(new ProfiloPanel(this));
+        repaint();
+        validate();
+    }
+
     public void mostraClientiTable(){
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-
         Manager m = (Manager) SessionManager.getSession().get(LOGGED_USER);
         UtenteBusiness.getAllClientiOfPV(m.getIdPuntoVendita());
-        //System.out.println((ArrayList<Cliente>) SessionManager.getSession().get(SessionManager.ALL_CLIENTI_PV));
         centro.add(new ClientiTablePanel((ArrayList<Cliente>) SessionManager.getSession().get(SessionManager.ALL_CLIENTI_PV), this));
-
         repaint();
         validate();
     }
@@ -180,10 +185,10 @@ public class MainPage extends JFrame {
         centro.removeAll();
         centro.setLayout(new BorderLayout());
         Utente u = (Utente) SessionManager.getSession().get(LOGGED_USER);
-        if (u instanceof Cliente){
-            centro.add(new PrenotazioniClientePanel(this, PrenotazioneDAO.getInstance().loadPrenotazioniOfCliente(((Cliente) SessionManager.getSession().get(LOGGED_USER)).getId())));
-        } else if (u instanceof Manager){
-            centro.add(new PrenotazioniManagerPanel(this, null));
+        if (u instanceof Cliente c){
+            centro.add(new PrenotazioniClientePanel(this, PrenotazioneBusiness.getAllPrenotazioni(c.getId()).getObject()));
+        } else if (u instanceof Manager m){
+            centro.add(new PrenotazioniManagerPanel(this, PrenotazioneBusiness.getAllPrenotazioni(m.getId()).getObject()));
         }
         repaint();
         validate();
@@ -198,35 +203,41 @@ public class MainPage extends JFrame {
         validate();
     }
 
-    public void mostraCreaProdotto(PuntoVendita pv){
-        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+    public void mostraCreaProdotto(PuntoVendita pv, boolean modifica, ComponenteCatalogo comp){
+        paginaCorrente = PaginaCorrente.MENU_CREAZIONE;
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new CreaProdottoPanel(this, pv));
+        if (modifica){
+            paginaCorrente = PaginaCorrente.CATALOGO;
+            centro.add(new CreaProdottoPanel(this, pv, true, comp));
+        } else {
+            centro.add(new CreaProdottoPanel(this, pv, false, null));
+        }
+
         repaint();
         validate();
     }
 
-    public void mostraCreaProdottoComposito(PuntoVendita pv){
-        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+    public void mostraCreaProdottoComposito(PuntoVendita pv, boolean modifica, ComponenteCatalogo comp){
+        paginaCorrente = PaginaCorrente.MENU_CREAZIONE;
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new CreaProdottoCompositoPanel(this, pv));
+        centro.add(new CreaProdottoCompositoPanel(this, pv, modifica, comp));
         repaint();
         validate();
     }
 
-    public void mostraCreaServizio(PuntoVendita pv){
-        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+    public void mostraCreaServizio(PuntoVendita pv, boolean modifica, ComponenteCatalogo comp){
+        paginaCorrente = PaginaCorrente.MENU_CREAZIONE;
         centro.removeAll();
         centro.setLayout(new BorderLayout());
-        centro.add(new CreaServizioPanel(this,pv));
+        centro.add(new CreaServizioPanel(this,pv,modifica, comp));
         repaint();
         validate();
     }
 
     public void mostraCreaCategoria(){
-        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        paginaCorrente = PaginaCorrente.MENU_CREAZIONE;
         centro.removeAll();
         centro.setLayout(new BorderLayout());
         centro.add(new CreaCategoriaPanel(this));
@@ -235,10 +246,28 @@ public class MainPage extends JFrame {
     }
 
     public void mostraCreaErogatore(){
-        paginaCorrente = PaginaCorrente.CREAZIONE_ARTICOLO;
+        paginaCorrente = PaginaCorrente.MENU_CREAZIONE;
         centro.removeAll();
         centro.setLayout(new BorderLayout());
         centro.add(new CreaErogatorePanel(this));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaPV(){
+        paginaCorrente = PaginaCorrente.CATALOGO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaPuntoVenditaPanel(this));
+        repaint();
+        validate();
+    }
+
+    public void mostraCreaManager(){
+        paginaCorrente = PaginaCorrente.CATALOGO;
+        centro.removeAll();
+        centro.setLayout(new BorderLayout());
+        centro.add(new CreaManagerPanel(this));
         repaint();
         validate();
     }

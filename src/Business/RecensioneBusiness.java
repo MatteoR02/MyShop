@@ -19,7 +19,7 @@ public class RecensioneBusiness {
 
     private static final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
 
-    public static ExecuteResult<Recensione> loadRecensioni(int idArticolo){
+    public static ExecuteResult<Recensione> getRecensioniOfArticolo(int idArticolo){
         ExecuteResult<Recensione> result = new ExecuteResult<>();
         if (ArticoloBusiness.articoloCheckType(idArticolo) != ArticoloBusiness.TipoArticolo.NOT_ARTICLE){
             ArrayList<Recensione> recensioni = (ArrayList<Recensione>) recensioneDAO.loadRecensioniOfArticolo(idArticolo);
@@ -29,6 +29,29 @@ public class RecensioneBusiness {
         } else {
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
             result.setMessage("Articolo non trovato");
+        }
+        return result;
+    }
+
+    public static ExecuteResult<Recensione> getRecensione(int idRecensione){
+        ExecuteResult<Recensione> result = new ExecuteResult<>();
+        Recensione recensione = recensioneDAO.loadRecensione(idRecensione);
+        result.setSingleObject(recensione);
+        result.setResult(ExecuteResult.ResultStatement.OK);
+        result.setMessage("Recensione caricata correttamente");
+        return result;
+    }
+
+    public static ExecuteResult<Recensione> getRisposta(int idRecensione){
+        ExecuteResult<Recensione> result = new ExecuteResult<>();
+        Recensione recensione = recensioneDAO.loadRisposta(idRecensione);
+        if (recensione!=null){
+            result.setSingleObject(recensione);
+            result.setResult(ExecuteResult.ResultStatement.OK);
+            result.setMessage("Risposta caricata correttamente");
+        } else {
+            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+            result.setMessage("La recensione non ha una risposta");
         }
         return result;
     }
@@ -59,6 +82,28 @@ public class RecensioneBusiness {
             result.setMessage("Articolo non trovato");
         }
 
+        return result;
+    }
+
+    public static ExecuteResult<Boolean> addRisposta(Recensione recensione, int idRecensione){
+        ExecuteResult<Boolean> result = new ExecuteResult<>();
+        Manager m = (Manager) SessionManager.getSession().get(SessionManager.LOGGED_USER);
+        int rows = recensioneDAO.addRisposta(recensione, idRecensione);
+        if (recensioneDAO.isRispostaDone(m.getId(), idRecensione)) {
+            result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
+            result.setSingleObject(false);
+            result.setMessage("Risposta già data alla recensione");
+        } else {
+            if(rows>0){
+                result.setResult(ExecuteResult.ResultStatement.OK);
+                result.setSingleObject(true);
+                result.setMessage("Risposta aggiunta");
+            } else {
+                result.setResult(ExecuteResult.ResultStatement.NOT_OK);
+                result.setSingleObject(false);
+                result.setMessage("Errore aggiunta risposta");
+            }
+        }
         return result;
     }
 

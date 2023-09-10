@@ -69,6 +69,42 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
+                recensione.setIdRecensione(rs.getInt("Recensione_idRecensione"));
+                return recensione;
+            }
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
+    }
+
+    @Override
+    public Recensione loadRisposta(int idRecensione) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT RR.* FROM myshop.recensione AS R INNER JOIN myshop.recensione AS RR ON RR.Recensione_idRecensione = R.idRecensione WHERE R.idRecensione = '"+idRecensione+"';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                recensione = new Recensione();
+                recensione.setId(rs.getInt("idRecensione"));
+                recensione.setTitolo(rs.getString("titolo"));
+                recensione.setTesto(rs.getString("testo"));
+                recensione.setValutazione(Recensione.Punteggio.valueOf(rs.getString("valutazione")));
+                recensione.setData(rs.getDate("data"));
+                recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
+                recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
+                recensione.setIdRecensione(rs.getInt("Recensione_idRecensione"));
                 return recensione;
             }
         } catch (SQLException e) {
@@ -103,6 +139,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
+                recensione.setIdRecensione(rs.getInt("Recensione_idRecensione"));
                 recensioni.add(recensione);
             } return recensioni;
         } catch (SQLException e) {
@@ -122,7 +159,7 @@ public class RecensioneDAO implements IRecensioneDAO{
     @Override
     public List<Recensione> loadRecensioniOfArticolo(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.recensione WHERE Articolo_idArticolo = '"+ idArticolo + "';";
+        String sql = "SELECT * FROM myshop.recensione WHERE Articolo_idArticolo = '"+ idArticolo + "' AND Recensione_idRecensione = 0;";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
         ArrayList<Recensione> recensioni = new ArrayList<>();
@@ -137,6 +174,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensione.setIdCliente((rs.getInt("Cliente_Utente_idUtente")));
+                recensione.setIdRecensione(rs.getInt("Recensione_idRecensione"));
                 recensioni.add(recensione);
             }
             return recensioni;
@@ -172,6 +210,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 recensione.setData(rs.getDate("data"));
                 recensione.setImmagini(fotoDAO.loadAllFotoOfRecensione(rs.getInt("idRecensione")));
                 recensione.setIdCliente(rs.getInt("Cliente_Utente_idUtente"));
+                recensione.setIdRecensione(rs.getInt("Recensione_idRecensione"));
                 recensioni.add(recensione);
             } return recensioni;
         } catch (SQLException e) {
@@ -213,9 +252,33 @@ public class RecensioneDAO implements IRecensioneDAO{
     }
 
     @Override
+    public boolean isRispostaDone(int idRecensione, int idManager) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+
+        String sql = "SELECT count(*) as count FROM myshop.recensione WHERE Cliente_Utente_idUtente='"+idManager+"' AND Recensione_idRecensione='"+idRecensione+"';";
+
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                int count = rs.getInt("count");
+                return count > 0;
+            }
+            return false;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            readOp.close();
+        }
+    }
+
+    @Override
     public int addRecensione(Recensione recensione, int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.recensione (titolo, testo, valutazione, data, Cliente_Utente_idUtente, Articolo_idArticolo) VALUES (?,?,?,?,?,?);";
+        String sql = "INSERT INTO myshop.recensione (titolo, testo, valutazione, data, Cliente_Utente_idUtente, Articolo_idArticolo, Recensione_idRecensione) VALUES (?,?,?,?,?,?,?);";
 
         IDbOperation addByteOp = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByteOp).getPreparedStatement();
@@ -229,6 +292,7 @@ public class RecensioneDAO implements IRecensioneDAO{
                 preparedStatement.setDate(4, (Date) recensione.getData());
                 preparedStatement.setInt(5, recensione.getIdCliente());
                 preparedStatement.setInt(6, idArticolo);
+                preparedStatement.setInt(7, recensione.getIdRecensione());
                 rowCountRecensione = preparedStatement.executeUpdate();
                 preparedStatement.close();
                 if (recensione.getImmagini()!= null){
@@ -287,6 +351,40 @@ public class RecensioneDAO implements IRecensioneDAO{
         int rowCount = executor.executeOperation(remove).getRowsAffected();
         remove.close();
         return rowCount;
+    }
+
+    @Override
+    public int addRisposta(Recensione recensione, int idRecensione) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "INSERT INTO myshop.recensione (titolo, testo, valutazione, data, Cliente_Utente_idUtente, Recensione_idRecensione) VALUES (?,?,?,?,?,?);";
+
+        IDbOperation addByteOp = new WriteByteOperation(sql);
+        PreparedStatement preparedStatement = executor.executeOperation(addByteOp).getPreparedStatement();
+        int rowCountRecensione = 0;
+        int rowCountFotoRecensione = 0;
+        try{
+            if(preparedStatement!=null) {
+                preparedStatement.setString(1, recensione.getTitolo());
+                preparedStatement.setString(2, recensione.getTesto());
+                preparedStatement.setString(3, recensione.getValutazione().toString());
+                preparedStatement.setDate(4, (Date) recensione.getData());
+                preparedStatement.setInt(5, recensione.getIdCliente());
+                preparedStatement.setInt(6, idRecensione);
+                rowCountRecensione = preparedStatement.executeUpdate();
+                preparedStatement.close();
+                if (recensione.getImmagini()!= null){
+                    for ( Foto foto : recensione.getImmagini()) {
+                        rowCountFotoRecensione += fotoDAO.addFotoToRecensione(foto, recensione.getId());
+                    }
+                }
+                return rowCountRecensione + rowCountFotoRecensione;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            addByteOp.close();
+        }
+        return 0;
     }
 
     @Override

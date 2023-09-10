@@ -87,6 +87,9 @@ public class CatalogoPanel extends JPanel {
 
                 if (articolo instanceof Prodotto){
                     componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO);
+                    componenteCatalogo.setCorsia(((Prodotto) articolo).getCollocazione().getCorsia());
+                    componenteCatalogo.setScaffale(((Prodotto) articolo).getCollocazione().getScaffale());
+                    componenteCatalogo.setMagazzino(((Prodotto) articolo).getCollocazione().getMagazzino());
                 } else if (articolo instanceof ProdottoComposito){
                     componenteCatalogo.setTipoArticolo(ArticoloBusiness.TipoArticolo.PRODOTTO_COMPOSITO);
                 } else if (articolo instanceof Servizio){

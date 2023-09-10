@@ -4,6 +4,7 @@ import Model.ListaAcquisto;
 import Model.Recensione;
 import View.Listeners.CatalogoListener;
 import View.Listeners.ClienteListener;
+import View.Listeners.ManagerListener;
 import View.ViewModel.ComponenteCatalogo;
 import net.miginfocom.swing.MigLayout;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 
 public class AddRecensionePanel extends JPanel {
 
-    public AddRecensionePanel(JFrame frame, JDialog dialog, ComponenteCatalogo comp){
+    public AddRecensionePanel(JFrame frame, JDialog dialog, ComponenteCatalogo comp, boolean fromManager, Recensione recensione){
 
         this.setLayout(new MigLayout("insets 20, fillx", "[]push [] []", "10[]15 []5 []8 []5 [] []30 []"));
 
@@ -52,6 +53,13 @@ public class AddRecensionePanel extends JPanel {
         inviaBtn.setActionCommand(CatalogoListener.ADD_RECENSIONE);
         inviaBtn.addActionListener(catalogoListener);
 
+        if (fromManager){
+            ManagerListener managerListener = new ManagerListener((MainPage) frame, dialog, fieldTitolo, fieldTesto, comp, recensione);
+            inviaBtn.setText("Rispondi alla recensione");
+            inviaBtn.setActionCommand(ManagerListener.RISPONDI_RECENSIONE);
+            inviaBtn.addActionListener(managerListener);
+        }
+
         annullaBtn.addActionListener(e -> {
             dialog.dispose();
         });
@@ -74,17 +82,16 @@ public class AddRecensionePanel extends JPanel {
 
         this.add(labelArticolo, "cell 0 0, wrap");
         this.add(labelTitolo, "cell 0 1");
-        this.add(labelValutazione, "cell 2 1, split 2");
-        this.add(valutazioneImm, "cell 2 1, wrap");
+        if (!fromManager){
+            this.add(labelValutazione, "cell 2 1, split 2");
+            this.add(valutazioneImm, "cell 2 1, wrap");
+            this.add(sliderValutazione, "cell 2 2, wrap");
+        }
         this.add(fieldTitolo, "cell 0 2");
-        this.add(sliderValutazione, "cell 2 2, wrap");
         this.add(labelTesto, "cell 0 3");
         this.add(scrollPaneTesto, "cell 0 4 3 2");
-
         this.add(annullaBtn, "cell 0 6, grow");
         this.add(inviaBtn, "cell 2 6, grow");
-
-
 
     }
 

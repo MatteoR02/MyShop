@@ -1,6 +1,7 @@
 package View.ViewModel;
 
 import Business.ArticoloBusiness;
+import Model.Magazzino;
 import Model.Recensione;
 
 import javax.swing.*;
@@ -16,6 +17,9 @@ public class ComponenteCatalogo {
     private String nomeErogatore;
     private float mediaRecensioni;
     private ArticoloBusiness.TipoArticolo tipoArticolo;
+    private String corsia;
+    private String scaffale;
+    private Magazzino magazzino;
     private List<ImageIcon> immagini = new ArrayList<>();
     private List<Recensione> recensioni = new ArrayList<>();
 
@@ -102,5 +106,29 @@ public class ComponenteCatalogo {
 
     public void setMediaRecensioni(float mediaRecensioni) {
         this.mediaRecensioni = mediaRecensioni;
+    }
+
+    public String getCorsia() {
+        return corsia;
+    }
+
+    public void setCorsia(String corsia) {
+        this.corsia = corsia;
+    }
+
+    public String getScaffale() {
+        return scaffale;
+    }
+
+    public void setScaffale(String scaffale) {
+        this.scaffale = scaffale;
+    }
+
+    public Magazzino getMagazzino() {
+        return magazzino;
+    }
+
+    public void setMagazzino(Magazzino magazzino) {
+        this.magazzino = magazzino;
     }
 }

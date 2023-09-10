@@ -216,19 +216,32 @@ public class ArticoloBusiness {
             for (File file :imgFiles) {
                 Foto foto = new Foto();
                 foto.setImmagine(imgToBlob(file));
-                FotoDAO.getInstance().addFotoToArticolo(foto, p.getId());
+                FotoDAO.getInstance().addNewFotoToArticolo(foto, p.getId());
             }
             articoloDAO.updateProdotto(p);
+            result.setResult(ExecuteResult.ResultStatement.OK);
             result.setMessage("prodotto aggiornato!");
         }
         if(check == TipoArticolo.SERVIZIO){
             Servizio s = (Servizio) articolo;
+            for (File file :imgFiles) {
+                Foto foto = new Foto();
+                foto.setImmagine(imgToBlob(file));
+                FotoDAO.getInstance().addNewFotoToArticolo(foto, s.getId());
+            }
             articoloDAO.updateServizio(s);
+            result.setResult(ExecuteResult.ResultStatement.OK);
             result.setMessage("Servizio aggiornato!");
         }
         if(check == TipoArticolo.PRODOTTO_COMPOSITO){
-            ProdottoComposito p = (ProdottoComposito) articolo;
-            articoloDAO.updateProdotto(p);
+            ProdottoComposito pc = (ProdottoComposito) articolo;
+            for (File file :imgFiles) {
+                Foto foto = new Foto();
+                foto.setImmagine(imgToBlob(file));
+                FotoDAO.getInstance().addNewFotoToArticolo(foto, pc.getId());
+            }
+            articoloDAO.updateProdotto(pc);
+            result.setResult(ExecuteResult.ResultStatement.OK);
             result.setMessage("Servizio aggiornato!");
         }
         if(check != TipoArticolo.PRODOTTO && check != TipoArticolo.SERVIZIO && check != TipoArticolo.PRODOTTO_COMPOSITO){

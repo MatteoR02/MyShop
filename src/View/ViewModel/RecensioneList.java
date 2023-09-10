@@ -22,20 +22,24 @@ import java.text.SimpleDateFormat;
 
 public class RecensioneList extends JPanel {
 
-    public RecensioneList(Recensione recensione, ComponenteCatalogo comp, MainPage frame){
-        //this.setLayout(new GridBagLayout());
+    public RecensioneList(Recensione recensione, ComponenteCatalogo comp, MainPage frame, boolean fromManager){
+
         this.setLayout(new MigLayout("", "[]push []push []", "[] [] [grow]20 []"));
         this.setBackground(Color.WHITE);
         this.setBorder(BorderFactory.createLineBorder(Color.black));
+        if (fromManager){
+            this.setBorder(BorderFactory.createLineBorder(Color.ORANGE, 2));
+        }
         Font titoloFont = new Font("Arial", Font.BOLD, 24);
         Font testoFont = new Font("Arial", Font.PLAIN, 18);
         Font clienteFont = new Font("Arial", Font.PLAIN, 17);
 
-        String username = UtenteBusiness.getClienteByID(recensione.getIdCliente()).getSingleObject();
+        String username = UtenteBusiness.getUsernameByID(recensione.getIdCliente()).getSingleObject();
 
         JLabel cliente = new JLabel(username);
         JLabel titolo = new JLabel(recensione.getTitolo());
         JLabel testo = new JLabel("<html>" + recensione.getTesto() + "</html>");
+        JLabel labelFromManager = new JLabel("Risposta del manager");
 
         titolo.setFont(titoloFont);
         testo.setFont(testoFont);
@@ -56,14 +60,17 @@ public class RecensioneList extends JPanel {
         if (recensione.getData() != null){
             data = new JLabel(sdf.format(recensione.getData()) + " ", SwingConstants.RIGHT);
             data.setFont(testoFont);
-
         }
 
         this.add(userImm, "cell 0 0, split 2");
         this.add(cliente, "cell 0 0, wrap");
         this.add(data, "cell 2 0, wrap");
         this.add(titolo, "cell 0 1");
-        this.add(valutazioneIMM, "cell 2 1, gapleft push, wrap");
+        if (!fromManager){
+            this.add(valutazioneIMM, "cell 2 1, gapleft push, wrap");
+        } else {
+            this.add(labelFromManager, "cell 2 1, gapleft push, wrap");
+        }
         this.add(testo, "cell 0 2,span, growx, wrap");
 
         Utente u = (Utente) (SessionManager.getSession().get(SessionManager.LOGGED_USER));
@@ -79,7 +86,7 @@ public class RecensioneList extends JPanel {
                         this.add(button, "cell 0 3, split 2");
                     }
                 }
-            } if (u instanceof Manager){
+            } if (u instanceof Manager && !fromManager){
                 Manager m = (Manager) u;
                 Menu managerRecMenu = new ManagerRecensioneMenu(frame,comp, recensione);
 

@@ -17,6 +17,11 @@ public class PuntoVendita {
         this.articoli = articoli;
     }
 
+    public PuntoVendita(String nome, Indirizzo indirizzo) {
+        this.nome = nome;
+        this.indirizzo = indirizzo;
+    }
+
     public List<Magazzino> getMagazzini() {
         return magazzini;
     }

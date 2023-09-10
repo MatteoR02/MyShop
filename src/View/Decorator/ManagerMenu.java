@@ -19,7 +19,7 @@ public class ManagerMenu extends Menu {
         gestisciArticoliBtn.setActionCommand(ManagerListener.GESTISCI_ART_BTN);
         JButton gestisciClientiBtn = new JButton("Gestisci clienti");
         gestisciClientiBtn.setActionCommand(ManagerListener.GESTISCI_CLIENTI_BTN);
-        JButton prenotazioniBtn = new JButton("Prenotazioni articoli");
+        JButton prenotazioniBtn = new JButton("Prenotazioni");
         prenotazioniBtn.setActionCommand(ManagerListener.TO_PRENOTAZIONI);
         JButton logoutBtn = new JButton("Logout");
         logoutBtn.setActionCommand(LoginListener.LOGOUT_BTN);
