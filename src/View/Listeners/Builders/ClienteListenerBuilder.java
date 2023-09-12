@@ -2,6 +2,7 @@ package View.Listeners.Builders;
 
 import Model.IProdotto;
 import Model.ListaAcquisto;
+import Model.Prenotazione;
 import View.Listeners.ClienteListener;
 import View.MainPage;
 import View.ViewModel.ComponenteCatalogo;
@@ -22,6 +23,7 @@ public final class ClienteListenerBuilder {
     private ArrayList<IProdotto> arrayProdotti;
     private ArrayList<JSpinner> arraySpinners;
     private JButton buttonMostraNascondi;
+    private Prenotazione prenotazione;
 
     public ClienteListenerBuilder(MainPage frame){
         this.frame = frame;
@@ -81,8 +83,13 @@ public final class ClienteListenerBuilder {
         return this;
     }
 
+    public ClienteListenerBuilder prenotazione(Prenotazione prenotazione){
+        this.prenotazione = prenotazione;
+        return this;
+    }
+
     public ClienteListener build (){
-        return new ClienteListener(frame, table, fieldNewLista, listaAcq, dialog, comp, listModel, arrayListeAcq, arrayProdotti, arraySpinners, buttonMostraNascondi);
+        return new ClienteListener(frame, table, fieldNewLista, listaAcq, dialog, comp, listModel, arrayListeAcq, arrayProdotti, arraySpinners, buttonMostraNascondi, prenotazione);
     }
 
 }

@@ -30,6 +30,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return instance;
     }
 
+    /**
+     * Carica la categoria dal database
+     * @param idCategoria della categoria da caricare
+     * @return la categoria caricata dal database
+     */
     @Override
     public Categoria loadCategoria(int idCategoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -68,6 +73,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Carica la categoria come sotto categoria dal database
+     * @param idCategoria della sottocategoria
+     * @return la sottocategoria caricata
+     */
     @Override
     public Categoria loadSottoCategoria(int idCategoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -97,6 +107,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Carica la macrocateogoria dal database
+     * @param idCategoria della macrocategoria da caricare
+     * @return la macrocategoria caricata
+     */
     @Override
     public Categoria loadMacroCategoria(int idCategoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -131,6 +146,10 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Carica tutte le categorie dal database
+     * @return una list di tutte le categorie caricate
+     */
     @Override
     public List<Categoria> loadAllCategorie() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -161,6 +180,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Aggiunge una categoria al database
+     * @param categoria Categoria da aggiungere al database
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addCategoria(Categoria categoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -172,6 +196,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return rowCount;
     }
 
+    /**
+     * Aggiorna una categoria esistente sul database
+     * @param categoria Categoria aggiornata
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateCategoria(Categoria categoria) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -185,6 +214,11 @@ public class CategoriaDAO implements ICategoriaDAO {
         return rowCount;
     }
 
+    /**
+     * Rimuove una categoria dal database
+     * @param idCategoria della categoria da rimuovere
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeCategoria(int idCategoria) {
 
@@ -289,6 +323,10 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Carica tutte le categorie con tipologia PRODOTTO
+     * @return una list di categoria prodotto
+     */
     @Override
     public List<Categoria> loadAllCategorieProdotto() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -320,6 +358,10 @@ public class CategoriaDAO implements ICategoriaDAO {
         return null;
     }
 
+    /**
+     * Carica tutte le categorie con tipologia SERVIZIO
+     * @return una list di categorie servizio
+     */
     @Override
     public List<Categoria> loadAllCategorieServizio() {
         DbOperationExecutor executor = new DbOperationExecutor();

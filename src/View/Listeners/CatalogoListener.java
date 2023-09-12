@@ -8,8 +8,8 @@ import Business.Strategy.OrdinamentoRecensioni.RecensioniMiglioriStrategy;
 import Business.Strategy.OrdinamentoRecensioni.RecensioniRecentiStrategy;
 import Model.*;
 import View.MainPage;
-import View.ViewModel.AddRecensioneDialog;
-import View.ViewModel.AddToListaDialog;
+import View.Dialog.AddRecensioneDialog;
+import View.Dialog.AddToListaDialog;
 import View.ViewModel.ComponenteCatalogo;
 
 import javax.swing.*;
@@ -36,7 +36,6 @@ public class CatalogoListener implements ActionListener {
     public final static String BACK_FOTO = "back_foto";
 
 
-
     private MainPage frame;
     private ComponenteCatalogo comp;
     private JComboBox listeBox;
@@ -46,55 +45,32 @@ public class CatalogoListener implements ActionListener {
     private JTextArea fieldTesto;
     private JSlider sliderValutazione;
     private ArrayList<Recensione> listaRecensioni;
-    private JComboBox comboBox;
+    private JComboBox categoriaBox;
+    private JComboBox ordinamentoBox;
     private Recensione recensione;
     private JLabel labelImm;
     private JLabel labelIndex;
 
-    public CatalogoListener(MainPage frame) {
+
+    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, JComboBox listeBox, JSpinner quantitaSpinner, JDialog dialog, JTextField fieldTitolo, JTextArea fieldTesto, JSlider sliderValutazione, ArrayList<Recensione> listaRecensioni, JComboBox ordinamentoBox, JComboBox categoriaBox, Recensione recensione, JLabel labelImm, JLabel labelIndex) {
         this.frame = frame;
-    }
-
-    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, JLabel labelImm, JLabel labelIndex){
-        this.frame = frame;
-        this.comp = comp;
-        this.labelImm = labelImm;
-        this.labelIndex = labelIndex;
-    }
-
-    public CatalogoListener(MainPage frame, ComponenteCatalogo comp, Recensione recensione){
-        this.frame = frame;
-        this.comp = comp;
-        this.recensione = recensione;
-    }
-
-    public CatalogoListener(JComboBox comboBox){
-        this.comboBox = comboBox;
-    }
-
-    public CatalogoListener(ArrayList<Recensione> listaRecensioni, JComboBox comboBox, ComponenteCatalogo comp) {
-        this.comp = comp;
-        this.listaRecensioni = listaRecensioni;
-        this.comboBox = comboBox;
-    }
-
-    public CatalogoListener(MainPage frame, ComponenteCatalogo comp) {
-        this.frame = frame;
-        this.comp = comp;
-    }
-
-    public CatalogoListener(JDialog dialog,ComponenteCatalogo comp, JComboBox listeBox, JSpinner quantitaSpinner) {
-        this.dialog = dialog;
         this.comp = comp;
         this.listeBox = listeBox;
         this.quantitaSpinner = quantitaSpinner;
-    }
-
-    public CatalogoListener(JDialog dialog, JTextField fieldTitolo, JTextArea fieldTesto, JSlider sliderValutazione, ComponenteCatalogo comp) {
         this.dialog = dialog;
         this.fieldTitolo = fieldTitolo;
         this.fieldTesto = fieldTesto;
         this.sliderValutazione = sliderValutazione;
+        this.listaRecensioni = listaRecensioni;
+        this.ordinamentoBox = ordinamentoBox;
+        this.categoriaBox = categoriaBox;
+        this.recensione = recensione;
+        this.labelImm = labelImm;
+        this.labelIndex = labelIndex;
+    }
+
+    public CatalogoListener(MainPage frame, ComponenteCatalogo comp) {
+        this.frame = frame;
         this.comp = comp;
     }
 
@@ -136,6 +112,8 @@ public class CatalogoListener implements ActionListener {
                 JOptionPane.showMessageDialog(frame, "Devi prima effettuare l'accesso", "Accesso non effettuato", JOptionPane.ERROR_MESSAGE);
             } else if (!ArticoloBusiness.isArticoloBoughtFrom(comp.getIdArticolo(), c.getId()).getSingleObject()){
                 JOptionPane.showMessageDialog(frame, "Non puoi recensire un articolo che non hai acquistato", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
+            } else if (RecensioneBusiness.isRecensioneDone(comp.getIdArticolo(), c.getId())){
+                JOptionPane.showMessageDialog(dialog, "Hai già lasciato una recensione per questo articolo", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
             } else {
                 AddRecensioneDialog addRecensioneDialog = new AddRecensioneDialog(frame, "Invia recensione", comp, false, null);
             }
@@ -146,7 +124,12 @@ public class CatalogoListener implements ActionListener {
             ExecuteResult<Boolean> result = new ExecuteResult<>();
             if(u instanceof Cliente){
                 Cliente c = (Cliente) u;
-                Recensione newRec = new Recensione(fieldTitolo.getText(), fieldTesto.getText(), valutazione, dataAttuale, null, c.getId());
+                String titolo = fieldTitolo.getText();
+                String testo = fieldTesto.getText();
+                if (titolo.isBlank() || testo.isBlank()){
+                    JOptionPane.showMessageDialog(dialog, "Uno dei campi è vuoto", "Recensione non disponibile", JOptionPane.ERROR_MESSAGE);
+                }
+                Recensione newRec = new Recensione(titolo, testo, valutazione, dataAttuale, null, c.getId());
                 newRec.setIdRecensione(0);
                 result = RecensioneBusiness.addRecensione(newRec, comp.getIdArticolo());
             }
@@ -164,7 +147,7 @@ public class CatalogoListener implements ActionListener {
         } else if (SORT_RECENSIONI.equals(action)){
             OrdinamentoRecensioni ordinamentoRecensioni = new OrdinamentoRecensioni(listaRecensioni);
             IOrdinamentoRecensioneStrategy strategy = new RecensioniRecentiStrategy();
-            OrdinamentoRecensioni.Ordinamento ordinamento = (OrdinamentoRecensioni.Ordinamento) comboBox.getSelectedItem();
+            OrdinamentoRecensioni.Ordinamento ordinamento = (OrdinamentoRecensioni.Ordinamento) ordinamentoBox.getSelectedItem();
             switch (ordinamento){
                 case RECENTI -> strategy = new RecensioniRecentiStrategy();
                 case MIGLIORI -> strategy = new RecensioniMiglioriStrategy();
@@ -177,7 +160,7 @@ public class CatalogoListener implements ActionListener {
         } else if (SORT_CATALOGO.equals(action)){
             OrdinamentoArticoli ordinamentoArticoli = new OrdinamentoArticoli((List<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI));
             IOrdinamentoArticoliStrategy strategy = new ArticoliPiuVotatiStrategy();
-            OrdinamentoArticoli.Ordinamento ordinamento = (OrdinamentoArticoli.Ordinamento) comboBox.getSelectedItem();
+            OrdinamentoArticoli.Ordinamento ordinamento = (OrdinamentoArticoli.Ordinamento) ordinamentoBox.getSelectedItem();
             switch (ordinamento) {
                 case PIU_VOTATI -> strategy = new ArticoliPiuVotatiStrategy();
                 case PREZZO_PIU_ALTO -> strategy = new ArticoliPrezzoAltoStrategy();
@@ -190,7 +173,7 @@ public class CatalogoListener implements ActionListener {
 
             frame.mostraCatalogo(null,false);
         } else if (SELECT_CATEGORIA.equals(action)){
-            Categoria categoriaSelezionata = (Categoria) comboBox.getSelectedItem();
+            Categoria categoriaSelezionata = (Categoria) categoriaBox.getSelectedItem();
             ArrayList<Articolo> articoliCat = ArticoloBusiness.getArticoliOfCategoria((ArrayList<Articolo>) SessionManager.getSession().get(SessionManager.ALL_ARTICOLI), categoriaSelezionata);
             frame.mostraCatalogo(articoliCat, true);
 

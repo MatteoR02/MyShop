@@ -3,18 +3,8 @@ package Business;
 import DAO.*;
 import Model.*;
 
-import javax.imageio.ImageIO;
-import javax.sql.rowset.serial.SerialBlob;
-import javax.swing.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class ArticoloBusiness {
 
@@ -27,7 +17,13 @@ public class ArticoloBusiness {
     private static final IErogatoreDAO erogatoreDAO = ErogatoreDAO.getInstance();
     public enum TipoArticolo{PRODOTTO, PRODOTTO_COMPOSITO, SERVIZIO, NOT_ARTICLE}
 
+    private static final Foto defaultFoto = fotoDAO.loadDefaultFoto();
 
+
+    /**
+     * Prende tutti gli articoli e li mette in sessione
+     * @return un result contenente tutti gl iarticoli
+     */
     public static ExecuteResult<Articolo> getAllArticoli(){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
         ArrayList<Articolo> articoliUncheck = articoloDAO.loadAllProdotti(); //carica prodotti e prodotti compositi
@@ -62,6 +58,10 @@ public class ArticoloBusiness {
         return null;
     }
 
+    /**
+     * Fornisce tutti i prodotti e prodotti compositi
+     * @return un result contenente tutti i prodotti e prodotti compositi
+     */
     public static ExecuteResult<Articolo> getAllProdotti(){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
         ArrayList<Articolo> articoliUncheck = articoloDAO.loadAllProdotti(); //carica prodotti e prodotti compositi
@@ -86,6 +86,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Fornisce tutti gli articoli di un punto vendita
+     * @param id del punto vendita
+     * @return un result di tutti gli articoli
+     */
     public static ExecuteResult<Articolo> getAllArticoliFromPV(int id){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
         if(puntoVenditaDAO.isPuntoVendita(id)){
@@ -116,8 +121,11 @@ public class ArticoloBusiness {
         return result;
     }
 
-
-
+    /**
+     * Fornisce uno specifico articolo
+     * @param id dell'articolo desiderato
+     * @return un result contenente l'articolo specifico
+     */
     public static ExecuteResult<Articolo> getArticolo(int id){
         ExecuteResult<Articolo> result = new ExecuteResult<>();
         if(articoloCheckType(id) == TipoArticolo.SERVIZIO){
@@ -147,6 +155,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Fornisce uno specifico prodotto o prodotto composito
+     * @param id del prodotto
+     * @return un result contenente il prodotto specifico
+     */
     public static ExecuteResult<IProdotto> getIProdotto(int id){
         ExecuteResult<IProdotto> result = new ExecuteResult<>();
         if(articoloCheckType(id) == TipoArticolo.SERVIZIO){
@@ -175,6 +188,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Aggiorna l'articolo
+     * @param articolo
+     * @return
+     */
     public static ExecuteResult<Boolean> updateArticolo(Articolo articolo){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -205,6 +223,12 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Aggiorna l'articolo aggiungendoci foto
+     * @param articolo
+     * @param imgFiles file forniti da aggiungere all'articolo
+     * @return
+     */
     public static ExecuteResult<Boolean> updateArticolo(Articolo articolo, ArrayList<File> imgFiles){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -215,7 +239,7 @@ public class ArticoloBusiness {
             Prodotto p = (Prodotto) articolo;
             for (File file :imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(file));
+                foto.setImmagine(FotoBusiness.imgToBlob(file));
                 FotoDAO.getInstance().addNewFotoToArticolo(foto, p.getId());
             }
             articoloDAO.updateProdotto(p);
@@ -226,7 +250,7 @@ public class ArticoloBusiness {
             Servizio s = (Servizio) articolo;
             for (File file :imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(file));
+                foto.setImmagine(FotoBusiness.imgToBlob(file));
                 FotoDAO.getInstance().addNewFotoToArticolo(foto, s.getId());
             }
             articoloDAO.updateServizio(s);
@@ -237,7 +261,7 @@ public class ArticoloBusiness {
             ProdottoComposito pc = (ProdottoComposito) articolo;
             for (File file :imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(file));
+                foto.setImmagine(FotoBusiness.imgToBlob(file));
                 FotoDAO.getInstance().addNewFotoToArticolo(foto, pc.getId());
             }
             articoloDAO.updateProdotto(pc);
@@ -253,6 +277,12 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Aggiunge un articolo
+     * @param articolo
+     * @param tipoArticolo
+     * @return
+     */
     public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -279,14 +309,17 @@ public class ArticoloBusiness {
             result.setMessage(articolo.toString());
         }
         getAllArticoli();
-
-       /* if(result.getSingleObject()){
-            ExecuteResult<Articolo> artResult = new ExecuteResult<>();
-            artResult.execute(SessionManager.NEW_TEMP_ARTICOLI);
-        }*/
         return result;
     }
 
+    /**
+     * Aggiunge un articolo aggiungendoci foto
+     * @param articolo
+     * @param tipoArticolo
+     * @param imgFiles
+     * @param idPuntoVendita
+     * @return
+     */
     public static ExecuteResult<Boolean> addArticolo(Articolo articolo, TipoArticolo tipoArticolo, ArrayList<File> imgFiles, int idPuntoVendita){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -297,7 +330,7 @@ public class ArticoloBusiness {
             p.setImmagini(new ArrayList<Foto>());
             for (File f: imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(f));
+                foto.setImmagine(FotoBusiness.imgToBlob(f));
                 p.getImmagini().add(foto);
             }
             int idProd = articoloDAO.addProdotto(p, true);
@@ -311,7 +344,7 @@ public class ArticoloBusiness {
             s.setImmagini(new ArrayList<Foto>());
             for (File f: imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(f));
+                foto.setImmagine(FotoBusiness.imgToBlob(f));
                 s.getImmagini().add(foto);
             }
             int idServ = articoloDAO.addServizio(s, true);
@@ -323,7 +356,7 @@ public class ArticoloBusiness {
             pc.setImmagini(new ArrayList<Foto>());
             for (File f: imgFiles) {
                 Foto foto = new Foto();
-                foto.setImmagine(imgToBlob(f));
+                foto.setImmagine(FotoBusiness.imgToBlob(f));
                 pc.getImmagini().add(foto);
             }
             int idProdComp = articoloDAO.addProdotto(pc, true);
@@ -339,6 +372,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Elimina un articolo
+     * @param idArticolo
+     * @return
+     */
     public static ExecuteResult<Boolean> removeArticolo(int idArticolo){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -370,6 +408,12 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Verifica se un articolo è stato acquistato da un cliente
+     * @param idArticolo
+     * @param idCliente
+     * @return
+     */
     public static ExecuteResult<Boolean> isArticoloBoughtFrom(int idArticolo, int idCliente){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
 
@@ -405,6 +449,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Prende un prodotto composito e fornisce i suoi sottoprodotti come articoli
+     * @param prodottoComposito
+     * @return i sottoprodotti come un arraylist di articoli
+     */
     public static ArrayList<Articolo> sottoProdottiToArticoli(ProdottoComposito prodottoComposito){
         ArrayList<Articolo> articoliUncheck = new ArrayList<>();
         ArrayList<Articolo> articoli = new ArrayList<>();
@@ -425,6 +474,12 @@ public class ArticoloBusiness {
         return articoli;
     }
 
+    /**
+     * Fornisce tutti gli articoli di una particolare categoria
+     * @param articoli
+     * @param categoria
+     * @return
+     */
     public static ArrayList<Articolo> getArticoliOfCategoria(ArrayList<Articolo> articoli, Categoria categoria){
         ArrayList<Articolo> listArticoli = new ArrayList<>();
         for (Articolo art : articoli) {
@@ -438,6 +493,10 @@ public class ArticoloBusiness {
         return listArticoli;
     }
 
+    /**
+     * Fornisce tutte le categorie
+     * @return
+     */
     public static ExecuteResult<Categoria> getAllCategorie(){
         ExecuteResult<Categoria> result = new ExecuteResult<>();
         ArrayList<Categoria> categorie = (ArrayList<Categoria>) categoriaDAO.loadAllCategorie();
@@ -446,6 +505,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Fornisce tutte le categorie di una particolare tipologia di categoria
+     * @param tipologia
+     * @return
+     */
     public static ExecuteResult<Categoria> getAllCategorie(Categoria.TipoCategoria tipologia){
         ExecuteResult<Categoria> result = new ExecuteResult<>();
         ArrayList<Categoria> categorie = new ArrayList<>();
@@ -458,6 +522,10 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Fornisce una categoria fittizia "Tutto" con id=-1
+     * @return
+     */
     public static Categoria createTuttoCategoria(){
         Categoria tutto = new Categoria();
         tutto.setId(-1);
@@ -465,6 +533,11 @@ public class ArticoloBusiness {
         return tutto;
     }
 
+    /**
+     * Crea una nuova categoria
+     * @param categoria
+     * @return
+     */
     public static ExecuteResult<Boolean> creaCategoria(Categoria categoria){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         int rows = categoriaDAO.addCategoria(categoria);
@@ -480,6 +553,11 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Crea un nuovo erogatore
+     * @param erogatore
+     * @return
+     */
     public static ExecuteResult<Boolean> creaErogatore(Erogatore erogatore){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         int rows = erogatoreDAO.addErogatore(erogatore);
@@ -495,6 +573,10 @@ public class ArticoloBusiness {
         return result;
     }
 
+    /**
+     * Fornisce tutti gli erogatori
+     * @return
+     */
     public static ExecuteResult<Erogatore> getAllErogatori(){
         ExecuteResult<Erogatore> result = new ExecuteResult<>();
         ArrayList<Erogatore> erogatori = (ArrayList<Erogatore>) erogatoreDAO.loadAllErogatori();
@@ -504,6 +586,11 @@ public class ArticoloBusiness {
     }
 
 
+    /**
+     * Controlla la tipologia di un articolo
+     * @param idArticolo
+     * @return
+     */
     public static TipoArticolo articoloCheckType(int idArticolo){
         if(articoloDAO.isProdottoComposito(idArticolo)) return TipoArticolo.PRODOTTO_COMPOSITO;
         if(articoloDAO.isProdotto(idArticolo) || articoloDAO.isSottoProdotto(idArticolo)) return TipoArticolo.PRODOTTO;
@@ -511,55 +598,20 @@ public class ArticoloBusiness {
         else return TipoArticolo.NOT_ARTICLE;
     }
 
+    /**
+     * Verifica se la stringa data è undefined
+     * @param string
+     * @return true se è undefined, false altrimenti
+     */
     public static boolean isUndefined(String string){
         return string.equals("undefined");
     }
 
-    public static ImageIcon blobToImage(Blob imageBlob){
-        try {
-            InputStream in = imageBlob.getBinaryStream();
-            BufferedImage image = ImageIO.read(in);
-            return new ImageIcon(image);
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Blob imgToBlob(File image){
-        try {
-            String imageFormat = "";
-            if(image.getName().endsWith(".png")){
-                imageFormat = "png";
-            } else if (image.getName().endsWith(".jpg")){
-                imageFormat = "jpg";
-            } else if (image.getName().endsWith(".jpeg")){
-                imageFormat = "jpeg";
-            }else if(image.getName().endsWith(".bmp")){
-                imageFormat = "bmp";
-            } else {
-                imageFormat = "png"; //Di default metto png
-            }
-
-            //Leggo l'immagine estrapolandone i dati
-            BufferedImage bufferedImage = ImageIO.read(image);
-            //Uno stream che scrive l'input in un array di bytes
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            //Scrive l'immagine nello Stream che converte i dati e li mette nell'array di bytes
-            ImageIO.write(bufferedImage, imageFormat, byteArrayOutputStream);
-
-            //Contiene l'immagine convertita in Bytes
-            byte[] bytes = byteArrayOutputStream.toByteArray();
-
-            //Ritorna il Blob contenente i bytes dell'array
-            return new SerialBlob(bytes);
-
-        } catch (SQLException | IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
+    /**
+     * Fornisce il nome di una tipologia di articolo
+     * @param tipoArticolo
+     * @return
+     */
     public static String tipoArticoloToString(TipoArticolo tipoArticolo){
         String tipo = "";
         switch (tipoArticolo){
@@ -570,12 +622,20 @@ public class ArticoloBusiness {
         return tipo;
     }
 
+    /**
+     * Controlla se un articolo ha foto
+     * @param articolo
+     * @return
+     */
     public static boolean hasNoFoto(Articolo articolo){
         return articolo.getImmagini().isEmpty();
     }
 
-    private static final Foto defaultFoto = fotoDAO.loadDefaultFoto();
-
+    /**
+     * Aggiunge una foto di default ad un articolo
+     * @param articolo
+     * @return
+     */
     public static Articolo setDefaultFoto(Articolo articolo){
 
         articolo.getImmagini().add(defaultFoto);

@@ -20,6 +20,8 @@ public class RecensioneDAO implements IRecensioneDAO{
     private static final IFotoDAO fotoDAO = FotoDAO.getInstance();
     private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
+    public static final int RECENSIONE_DEFAULT_ID = 0;
+
     private RecensioneDAO(){
         recensione = null;
         rs = null;
@@ -28,6 +30,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return instance;
     }
 
+    /**
+     * Verifica se l'id fornito appartiene ad una recensione sul database
+     * @param idRecensione
+     * @return true se l'id fornito appartiene ad una recensione, false altrimenti
+     */
     @Override
     public boolean isRecensione(int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -51,6 +58,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return false;
     }
 
+    /**
+     * Carica una particolare recensione dal database
+     * @param idRecensione
+     * @return
+     */
     @Override
     public Recensione loadRecensione(int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -86,6 +98,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return null;
     }
 
+    /**
+     * Carica la risposta del manager di una particolare recensione
+     * @param idRecensione
+     * @return
+     */
     @Override
     public Recensione loadRisposta(int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -121,6 +138,10 @@ public class RecensioneDAO implements IRecensioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le recensioni dal database
+     * @return
+     */
     @Override
     public List<Recensione> loadAllRecensioni() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -156,6 +177,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le recensioni di un particolare articolo dal database
+     * @param idArticolo
+     * @return
+     */
     @Override
     public List<Recensione> loadRecensioniOfArticolo(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -192,6 +218,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le recensioni di un particolare cliente dal database
+     * @param idCliente
+     * @return
+     */
     @Override
     public List<Recensione> loadRecensioniOfCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -227,6 +258,12 @@ public class RecensioneDAO implements IRecensioneDAO{
         return null;
     }
 
+    /**
+     * Verifica se un particolare cliente ha effettuato una recensione ad un particolare articolo sul database
+     * @param idArticolo
+     * @param idCliente
+     * @return true se quel cliente ha già effettuato una recensione a quell'articolo, false altrimenti
+     */
     @Override
     public boolean isRecensioneDone(int idArticolo, int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -251,6 +288,12 @@ public class RecensioneDAO implements IRecensioneDAO{
         }
     }
 
+    /**
+     * Verifica se un particolare manager ha già risposto ad una particolare recensione sul database
+     * @param idRecensione
+     * @param idManager
+     * @return true se quel manager ha già risposto alla recensione, false altrimenti
+     */
     @Override
     public boolean isRispostaDone(int idRecensione, int idManager) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -275,6 +318,12 @@ public class RecensioneDAO implements IRecensioneDAO{
         }
     }
 
+    /**
+     * Aggiunge una nuova recensione al database ad un particolare articolo
+     * @param recensione
+     * @param idArticolo
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addRecensione(Recensione recensione, int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -310,6 +359,11 @@ public class RecensioneDAO implements IRecensioneDAO{
         return 0;
     }
 
+    /**
+     * Aggiorna una recensione sul database
+     * @param recensione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateRecensione(Recensione recensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -338,8 +392,16 @@ public class RecensioneDAO implements IRecensioneDAO{
         return 0;
     }
 
+    /**
+     * Elimina una recensione dal database
+     * @param idRecensione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeRecensione(int idRecensione) {
+
+        removeRisposta(idRecensione);
+
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "DELETE FROM recensione WHERE idRecensione = '" + idRecensione + "';";
 
@@ -353,6 +415,12 @@ public class RecensioneDAO implements IRecensioneDAO{
         return rowCount;
     }
 
+    /**
+     * Aggiunge una risposta ad una particolare recensione
+     * @param recensione
+     * @param idRecensione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addRisposta(Recensione recensione, int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -387,11 +455,31 @@ public class RecensioneDAO implements IRecensioneDAO{
         return 0;
     }
 
+    /**
+     * Imposta la chiave esterna riferita a idCliente ad un valore di default
+     * @param idCliente
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int setFKClienteToDefault(int idCliente){
         DbOperationExecutor executor = new DbOperationExecutor();
         String sql = "UPDATE myshop.recensione SET Cliente_Utente_idUtente = '" + UtenteDAO.CLIENTE_DEFAULT_ID +
                 "' WHERE `Cliente_Utente_idUtente` = '" + idCliente + "';";
+        IDbOperation update = new WriteOperation(sql);
+        int rowCount = executor.executeOperation(update).getRowsAffected();
+        update.close();
+        return rowCount;
+    }
+
+    /**
+     * Rimuove la risposta di una particolare recensione
+     * @param idRecensione
+     * @return numero di righe modificate sul database
+     */
+    @Override
+    public int removeRisposta(int idRecensione) {
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "DELETE FROM myshop.recensione WHERE Recensione_idRecensione = '"+idRecensione+"';";
         IDbOperation update = new WriteOperation(sql);
         int rowCount = executor.executeOperation(update).getRowsAffected();
         update.close();

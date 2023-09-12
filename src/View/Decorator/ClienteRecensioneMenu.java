@@ -1,6 +1,7 @@
 package View.Decorator;
 
 import Model.Recensione;
+import View.Listeners.Builders.CatalogoListenerBuilder;
 import View.Listeners.CatalogoListener;
 import View.MainPage;
 import View.ViewModel.ComponenteCatalogo;
@@ -24,7 +25,7 @@ public class ClienteRecensioneMenu extends Menu{
         JButton eliminaBtn = new JButton("Elimina recensione");
         eliminaBtn.setActionCommand(CatalogoListener.DELETE_RECENSIONE);
 
-        CatalogoListener catalogoListener = new CatalogoListener(frame, comp, recensione);
+        CatalogoListener catalogoListener = CatalogoListenerBuilder.newBuilder(frame).compCatalogo(comp).recensione(recensione).build();
         eliminaBtn.addActionListener(catalogoListener);
         modificaBtn.addActionListener(catalogoListener);
 

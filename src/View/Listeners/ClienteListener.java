@@ -2,10 +2,10 @@ package View.Listeners;
 
 import Business.*;
 import Business.Email.ListaAcquistoEmail;
-import Model.Articolo;
-import Model.Cliente;
-import Model.IProdotto;
-import Model.ListaAcquisto;
+import Model.*;
+import View.Dialog.AddListaDialog;
+import View.Dialog.AddPrenotazioneDialog;
+import View.Dialog.AddToListaDialog;
 import View.MainPage;
 import View.ViewModel.*;
 
@@ -20,7 +20,7 @@ public class ClienteListener implements ActionListener {
 
     public final static String TO_LISTE_BTN = "to_liste_btn";
     public final static String REMOVE_FROM_LISTA = "remove_from_lista";
-    public final static String UPDATE_QUANTITY = "update_quantity";
+    public final static String UPDATE_QUANTITY_IN_LISTA = "update_quantity_in_lista";
     public final static String PRINT_LIST = "print_list";
     public final static String CREATE_NEW_LISTA = "create_new_lista";
     public final static String REMOVE_LISTA = "remove_lista";
@@ -31,6 +31,9 @@ public class ClienteListener implements ActionListener {
     public final static String TO_PRENOTA_ARTICOLI = "to_prenota_articoli";
     public final static String PRENOTA_ARTICOLI = "prenota_articoli";
     public final static String TO_PRENOTAZIONI = "to_prenotazioni";
+    public final static String UPDATE_QUANTITY_IN_PRENOTAZIONE = "update_quantity_in_prenotazione";
+    public final static String ANNULLA_PRENOTAZIONE = "annulla_prenotazione";
+    public final static String REMOVE_FROM_PRENOTAZIONE = "remove_from_prenotazione";
 
     private MainPage frame;
     private JTable table;
@@ -43,8 +46,9 @@ public class ClienteListener implements ActionListener {
     private ArrayList<IProdotto> articoli;
     private ArrayList<JSpinner> spinners;
     private JButton button;
+    private Prenotazione prenotazione;
 
-    public ClienteListener(MainPage frame, JTable table, JTextField newLista, ListaAcquisto lista, JDialog dialog, ComponenteCatalogo comp, DefaultListModel<ListaAcquisto> listModel, ArrayList<ListaAcquisto> liste, ArrayList<IProdotto> articoli, ArrayList<JSpinner> spinners, JButton button) {
+    public ClienteListener(MainPage frame, JTable table, JTextField newLista, ListaAcquisto lista, JDialog dialog, ComponenteCatalogo comp, DefaultListModel<ListaAcquisto> listModel, ArrayList<ListaAcquisto> liste, ArrayList<IProdotto> articoli, ArrayList<JSpinner> spinners, JButton button, Prenotazione prenotazione) {
         this.frame = frame;
         this.table = table;
         this.newLista = newLista;
@@ -56,6 +60,7 @@ public class ClienteListener implements ActionListener {
         this.articoli = articoli;
         this.spinners = spinners;
         this.button = button;
+        this.prenotazione = prenotazione;
     }
 
 
@@ -68,7 +73,7 @@ public class ClienteListener implements ActionListener {
         String action = e.getActionCommand();
         if (TO_LISTE_BTN.equals(action)) {
             frame.mostraListe();
-        } else if(UPDATE_QUANTITY.equals(action)){
+        } else if(UPDATE_QUANTITY_IN_LISTA.equals(action)){
             ArrayList<RigaArticoloLista> righeLista = new ArrayList<>();
             ListaTableModel tModel = (ListaTableModel) table.getModel();
             ExecuteResult<Boolean> result = new ExecuteResult<>();
@@ -214,7 +219,7 @@ public class ClienteListener implements ActionListener {
                 articoliQuant.put(prod, (Integer) spinners.get(i).getValue());
                 i++;
             }
-            ExecuteResult<Boolean> result = PrenotazioneBusiness.prenotaArticoli(articoliQuant);
+            ExecuteResult<Boolean> result = PrenotazioneBusiness.prenotaProdotti(articoliQuant);
             if (result.getResult() == ExecuteResult.ResultStatement.OK){
                 JOptionPane.showMessageDialog(dialog,"Prenotazione effettuata con successo", "Prenotazione effettuata", JOptionPane.INFORMATION_MESSAGE);
             } else if (result.getResult() == ExecuteResult.ResultStatement.NOT_OK){
@@ -225,6 +230,58 @@ public class ClienteListener implements ActionListener {
             dialog.dispose();
         } else if (TO_PRENOTAZIONI.equals(action)){
             frame.mostraPrenotazioni();
+        } else if (UPDATE_QUANTITY_IN_PRENOTAZIONE.equals(action)){
+            ArrayList<RigaPrenotazioneLista> righePrenotazione = new ArrayList<>();
+            PrenotazioniClienteTableModel tModel = (PrenotazioniClienteTableModel) table.getModel();
+            ExecuteResult<Boolean> result = new ExecuteResult<>();
+            for (int i=0; i < table.getRowCount(); i++){
+                righePrenotazione.add(tModel.getRighe().get(i));
+                RigaPrenotazioneLista riga = righePrenotazione.get(i);
+                Articolo art = ArticoloBusiness.getArticolo(riga.getIdArticolo()).getSingleObject();
+                result = PrenotazioneBusiness.addOrRemoveToPrenotazione(art, prenotazione, riga.getQuantita(),(Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
+                prenotazione.getProdottiPrenotati().replace((IProdotto) art,riga.getQuantita());
+            }
+            JOptionPane.showMessageDialog(frame,"Le quantità dei prodotti nella prenotazione sono state aggiornate", "Quantità modificata", JOptionPane.INFORMATION_MESSAGE);
+            tModel.fireTableDataChanged();
+            frame.repaint();
+            frame.revalidate();
+        } else if (ANNULLA_PRENOTAZIONE.equals(action)){
+            int input = JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler annullare la prenotazione?", "Annullare prenotazione?",JOptionPane.OK_CANCEL_OPTION, JOptionPane.INFORMATION_MESSAGE);
+            if (input==0){
+                ExecuteResult<Boolean> result = PrenotazioneBusiness.removePrenotazione(prenotazione.getId());
+                JOptionPane.showMessageDialog(frame,"Prenotazione annullata", "Prenotazione annullata", JOptionPane.INFORMATION_MESSAGE);
+                frame.mostraPrenotazioni();
+            }
+        } else if (REMOVE_FROM_PRENOTAZIONE.equals(action)){
+            Map<RigaPrenotazioneLista, Integer> mapProdottoLista = new HashMap<>();
+            PrenotazioniClienteTableModel tModel = (PrenotazioniClienteTableModel) table.getModel();
+            ExecuteResult<Boolean> result = new ExecuteResult<>();
+            for (int i=0; i < table.getRowCount(); i++) {
+                boolean check;
+                RigaPrenotazioneLista rigaSelezionata = tModel.getRighe().get(i);
+                check = rigaSelezionata.getSelezionato();
+                if (check) {
+                    if (!mapProdottoLista.containsKey(rigaSelezionata)) {
+                        mapProdottoLista.put(rigaSelezionata,i);
+                    }
+                }
+            }
+            if (!mapProdottoLista.keySet().isEmpty()){
+                for (RigaPrenotazioneLista riga: mapProdottoLista.keySet() ) {
+                    int idArticolo = riga.getIdArticolo();
+                    Articolo art = ArticoloBusiness.getArticolo(idArticolo).getSingleObject();
+                    result = PrenotazioneBusiness.addOrRemoveToPrenotazione(art, prenotazione, 0,(Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
+                    int indice = mapProdottoLista.get(riga);
+                    tModel.getRighe().remove(riga);
+                    tModel.fireTableRowsDeleted(indice,indice);
+                    JOptionPane.showMessageDialog(frame,result.getMessage(), "Prodotto rimosso dalla prenotazione", JOptionPane.INFORMATION_MESSAGE);
+                    tModel.fireTableDataChanged();
+                    frame.repaint();
+                    frame.revalidate();
+                }
+            } else {
+                JOptionPane.showMessageDialog(frame,"Nessun prodotto selezionato", "Errore prenotazione", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 }

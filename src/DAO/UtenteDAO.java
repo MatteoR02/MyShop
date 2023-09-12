@@ -33,7 +33,7 @@ public class UtenteDAO implements IUtenteDAO{
     }
 
     /**
-     * carica un utente dal db in locale
+     * Carica un utente dal database in locale
      * @param username dell'utente da caricare
      * @return utente
      */
@@ -170,7 +170,7 @@ public class UtenteDAO implements IUtenteDAO{
     }
 
     /**
-     * controlla se l'utente esiste nel db
+     * Controlla se l'utente esiste nel database
      * @param username dell'utente da controllare
      * @return true se l'utente esiste, false altrimenti
      */
@@ -197,6 +197,11 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    /**
+     * Verifica se un email è stata già usata da un utente sul database
+     * @param email
+     * @return true se l'email appartiene già ad un utente esistente, false altrimenti
+     */
     @Override
     public boolean userEmailExists(String email) {
         String sql = "SELECT count(*) AS count FROM myshop.utente as U WHERE U.email='"+ email + "';";
@@ -249,6 +254,11 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    /**
+     * Verifica se l'utente è un manager
+     * @param username
+     * @return true se l'username appartiene ad un manager, false altrimenti
+     */
     @Override
     public boolean isManager(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -273,6 +283,11 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    /**
+     * Verifica se l'utente è un admin
+     * @param username
+     * @return true se l'username fornito appartiene ad un admin, false altrimenti
+     */
     @Override
     public boolean isAdmin(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -297,6 +312,11 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    /**
+     * Carica un particolare cliente dal database fornendo l'username
+     * @param username
+     * @return
+     */
     @Override
     public Cliente loadCliente(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -337,6 +357,11 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica un particolare cliente dal database fornendo il suo id
+     * @param idCliente
+     * @return
+     */
     @Override
     public Cliente loadCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -377,6 +402,10 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i clienti dal database
+     * @return
+     */
     @Override
     public ArrayList<Cliente> loadAllClienti() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -417,6 +446,11 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i clienti da un particolare punto vendita
+     * @param idPV
+     * @return
+     */
     @Override
     public ArrayList<Cliente> loadAllClientiOfPV(int idPV) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -447,6 +481,11 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Aggiunge un nuovo cliente al database
+     * @param cliente
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addCliente(Cliente cliente) {
 
@@ -496,6 +535,11 @@ public class UtenteDAO implements IUtenteDAO{
 
     }
 
+    /**
+     * Rimuove un particolare cliente dal database
+     * @param username
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeCliente(String username) {
         int idUtente = findIdByUsername(username);
@@ -524,6 +568,11 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCountCliente + rowCountUtente;
     }
 
+    /**
+     * Aggiorna un particolare cliente sul database
+     * @param cliente
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateCliente(Cliente cliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -556,6 +605,12 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCountUtente + rowCountCliente;
     }
 
+    /**
+     * Controlla se le credenziali username e password di un utente sono corrette
+     * @param username
+     * @param password
+     * @return true se le credenziali sono corrette, false altrimenti
+     */
     @Override
     public boolean checkCredentials(String username, String password) {
         String sql = "SELECT count(*) AS count FROM myshop.utente as U WHERE U.username='"+username+"' AND BINARY U.password='"+password+"';";
@@ -577,6 +632,11 @@ public class UtenteDAO implements IUtenteDAO{
         }
     }
 
+    /**
+     * Blocca un cliente sul database
+     * @param username
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int blockCliente(String username) {
         int idCliente = findIdByUsername(username);
@@ -588,6 +648,11 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCount;
     }
 
+    /**
+     * Sblocca un cliente sul database
+     * @param username
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int unlockCliente(String username) {
         int idCliente = findIdByUsername(username);
@@ -599,6 +664,12 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCount;
     }
 
+    /**
+     * Cambia lo stato di un particolare cliente sul database
+     * @param username
+     * @param stato
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int changeClienteStatus(String username, Cliente.StatoUtenteType stato){
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -611,6 +682,11 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCount;
     }
 
+    /**
+     * Verifica se un particolare cliente è bloccato
+     * @param username
+     * @return true se quel cliente è bloccato, false altrimenti
+     */
     @Override
     public boolean isBlocked(String username) {
         int idUtente = findIdByUsername(username);
@@ -632,6 +708,11 @@ public class UtenteDAO implements IUtenteDAO{
     }
 
 
+    /**
+     * Carica un particolare manager dal database
+     * @param username
+     * @return
+     */
     @Override
     public Manager loadManager(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -665,11 +746,47 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica un particolare manager dal database fornendo il suo id
+     * @param idManager
+     * @return
+     */
     @Override
     public Manager loadManager(int idManager) {
-      return null;
+        DbOperationExecutor executor = new DbOperationExecutor();
+        String sql = "SELECT * FROM myshop.utente as U INNER JOIN myshop.manager as M on U.idUtente = M.Utente_idUtente WHERE U.idUtente='" + idManager + "';";
+        IDbOperation readOp = new ReadOperation(sql);
+        rs = executor.executeOperation(readOp).getResultSet();
+
+        try {
+            rs.next();
+            if (rs.getRow() == 1) {
+                manager = new Manager();
+                manager.setId(rs.getInt("idUtente"));
+                manager.setPersona(new Persona(rs.getString("nome"), rs.getString("cognome"), rs.getString("email"), rs.getString("telefono"), rs.getDate("data_nascita")));
+                manager.setUsername(rs.getString("username"));
+                manager.setPassword(rs.getString("password"));
+                manager.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
+                return manager;
+            }
+        } catch (SQLException e) {
+            // handle any errors
+            System.out.println("SQLException: " + e.getMessage());
+            System.out.println("SQLState: " + e.getSQLState());
+            System.out.println("VendorError: " + e.getErrorCode());
+        } catch (NullPointerException e) {
+            // handle any errors
+            System.out.println("Resultset: " + e.getMessage());
+        } finally {
+            readOp.close();
+        }
+        return null;
     }
 
+    /**
+     * Carica tutti i manager dal database
+     * @return
+     */
     @Override
     public ArrayList<Manager> loadAllManager() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -704,20 +821,14 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Aggiunge un nuovo manager al database
+     * @param manager
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addManager(Manager manager) {
         DbOperationExecutor executor = new DbOperationExecutor();
-
-        /*String sqlUtente = "INSERT INTO `myshop`.`utente` (`nome`, `cognome`, `email`, `username`, `password`," +
-                " `telefono`, `data_nascita`, `nazione`,  `citta`, `via`, `cap`, `civico`) VALUES " +
-                "('" + manager.getPersona().getNome() + "', '" + manager.getPersona().getCognome() + "', '" + manager.getPersona().getEmail() +
-                "', '" + manager.getUsername() + "', '" + manager.getPassword() +
-                "', '" + manager.getPersona().getTelefono() + "', '" + manager.getPersona().getDataNascita() +
-                "', '" + manager.getIndirizzo().getNazione() + "', '" + manager.getIndirizzo().getCitta() +
-                "', '" + manager.getIndirizzo().getVia() + "', '" + manager.getIndirizzo().getCap() +
-                "', '" + manager.getIndirizzo().getCivico() + "');";
-
-        IDbOperation add = new WriteByteOperation(sqlUtente);*/
 
         String sqlUtente = "INSERT INTO myshop.utente (nome, cognome, email, username, password, telefono, data_nascita, nazione, citta, via, cap, civico) " +
                 "VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
@@ -770,6 +881,11 @@ public class UtenteDAO implements IUtenteDAO{
 
     }
 
+    /**
+     * Elimina un particolare manager dal database
+     * @param username
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeManager(String username) {
         int idUtente = findIdByUsername(username);
@@ -788,6 +904,11 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCountManager + rowCountUtente;
     }
 
+    /**
+     * Aggiorna un manager sul database
+     * @param manager
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateManager(Manager manager) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -804,24 +925,20 @@ public class UtenteDAO implements IUtenteDAO{
                 "', `via` = '" + manager.getIndirizzo().getVia() +
                 "', `civico` = '" + manager.getIndirizzo().getCivico() + "' WHERE `idUtente` = '" + manager.getId() + "';";
 
-        /*String sqlUpdateManager = "UPDATE `myshop`.`cliente` SET `professione` = '" + manager.getProfessione() +
-                "', `canale_preferito` = '" + cliente.getCanalePreferito() +
-                "', `data_abilitazione` = '" + cliente.getDataAbilitazione() +
-                "', `stato` = '" + cliente.getStato() + "' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";*/
-
-        String sqlUpdateManager = "";
 
         IDbOperation updateUtente = new WriteOperation(sqlUpdateUtente);
         int rowCountUtente = executor.executeOperation(updateUtente).getRowsAffected();
         updateUtente.close();
 
-        IDbOperation updateManager = new WriteOperation(sqlUpdateManager);
-        int rowCountCliente = executor.executeOperation(updateManager).getRowsAffected();
-        updateManager.close();
-
-        return rowCountUtente + rowCountCliente;
+        return rowCountUtente;
     }
 
+    /**
+     * Assegna un manager ad un punto vendita sul database
+     * @param idManager
+     * @param idPuntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int assignManager(int idManager, int idPuntoVendita) {
         String sql = "UPDATE puntoVendita SET dipendente_idDipendente= '" + idManager +"' WHERE idPuntoVendita='" + idPuntoVendita +"';";
@@ -833,6 +950,11 @@ public class UtenteDAO implements IUtenteDAO{
         return rowCount;
     }
 
+    /**
+     * Carica un particolare admin dal database fornendo il suo username
+     * @param username
+     * @return
+     */
     @Override
     public Admin loadAdmin(String username) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -865,6 +987,11 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica un particolare admin dal database fornendo il suo id
+     * @param idAdmin
+     * @return
+     */
     @Override
     public Admin loadAdmin(int idAdmin) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -897,6 +1024,10 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Carica tutti gli admin dal database
+     * @return
+     */
     @Override
     public ArrayList<Admin> loadAllAdmin() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -929,6 +1060,11 @@ public class UtenteDAO implements IUtenteDAO{
         return null;
     }
 
+    /**
+     * Aggiunge un admin sul database
+     * @param admin
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addAdmin(Admin admin) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -975,6 +1111,11 @@ public class UtenteDAO implements IUtenteDAO{
 
     }
 
+    /**
+     * Elimina un admin dal database
+     * @param username
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeAdmin(String username) {
         int idUtente = findIdByUsername(username);
@@ -998,6 +1139,11 @@ public class UtenteDAO implements IUtenteDAO{
         return 0;
     }
 
+    /**
+     * Trova l'id di un utente fornendo il suo username
+     * @param username dell'utente di cui si vuole sapere l'id
+     * @return id dell'utente
+     */
     public int findIdByUsername(String username){
         DbOperationExecutor executor = new DbOperationExecutor();
         String sqlFindId = "SELECT `idUtente` FROM myshop.utente WHERE `username` = '" + username + "';";
@@ -1024,6 +1170,11 @@ public class UtenteDAO implements IUtenteDAO{
         return idUtente;
     }
 
+    /**
+     * Trova l'username di un utente fornendo il suo id
+     * @param id dell'utente di cui si vuole sapere l'username
+     * @return username dell'utente
+     */
     public String findUsernameByID(int id){
         DbOperationExecutor executor = new DbOperationExecutor();
         String sqlFindId = "SELECT `username` FROM myshop.utente WHERE `idUtente` = '" + id + "';";
@@ -1050,6 +1201,11 @@ public class UtenteDAO implements IUtenteDAO{
         return username;
     }
 
+    /**
+     * Imposta la chiave esterna riferita a id punto vendita al valore di default
+     * @param idPuntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int setFKPuntoVenditaToDefault(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();

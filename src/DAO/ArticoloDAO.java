@@ -283,10 +283,10 @@ public class ArticoloDAO implements IArticoloDAO {
     }
 
     /**
-     * TODO aggiungere in prodotto_has_prodotto gli id
-     * Aggiunge il prodotto al database
-     * @param prodotto
-     * @return il numero di righe modificate sul database
+     * Aggiunge un nuovo prodotto o prodotto composito sul database
+     * @param prodotto prodotto o prodotto composito da aggiungere
+     * @param returnID flag che mi determina il valore di ritorno
+     * @return se returnID è true mi ritorna l'idArticolo generato dal database, altrimenti mi ritorna il numero di righe modificate sul database
      */
     @Override
     public int addProdotto(Articolo prodotto, boolean returnID) {
@@ -397,59 +397,6 @@ public class ArticoloDAO implements IArticoloDAO {
         return 0;
     }
 
-   /*
-    @Override
-    public int createComposition(List<Integer> idProdotti, String nomeComp, String descrizioneComp, int idCategoria){
-
-        ProdottoComposito prodComp = new ProdottoComposito();
-        for (int idProdotto : idProdotti) {
-            prodComp.addSottoProdotti(loadProdotto(idProdotto));
-        }
-
-        DbOperationExecutor executor = new DbOperationExecutor();
-
-        String sqlArticolo = "INSERT INTO `myshop`.`articolo` (`nome`, `descrizione`, `prezzo`, `Categoria_idCategoria`) VALUES " +
-                "('" + nomeComp + "', '"+ descrizioneComp +"', '" + prodComp.getPrezzo() + "', '"+ idCategoria+"');";
-
-        IDbOperation add = new WriteByteOperation(sqlArticolo);
-        int rowCount = 0;
-        try {
-            PreparedStatement statement = executor.executeOperation(add).getPreparedStatement();
-
-            int idGenProdComp = -1;
-            try {
-                rowCount = statement.executeUpdate(); //aggiungo articolo
-                try (ResultSet generatedID = statement.getGeneratedKeys()) {
-                    if (generatedID.next()) {
-                        idGenProdComp = generatedID.getInt(1);
-                    }
-                }
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            statement.close();
-
-            String sqlProdotto = "INSERT INTO `myshop`.`prodotto` (`Articolo_idArticolo`) VALUES " +
-                    "('" + idGenProdComp + "');";
-            add = new WriteOperation(sqlProdotto);
-            rowCount += executor.executeOperation(add).getRowsAffected();
-
-            for (int idProdotto : idProdotti) {
-                String sqlProdComp = "INSERT INTO `myshop`.`prodotto_has_prodotto` (`Prodotto_Articolo_idArticolo`, `Prodotto_Articolo_idArticolo1`) VALUES " +
-                        "('" + idGenProdComp + "', '"+ idProdotto +"');";
-                add = new WriteOperation(sqlProdComp);
-                rowCount += executor.executeOperation(add).getRowsAffected();
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            add.close();
-        }
-        return rowCount;
-    }*/
-
     /**
      * Aggiorna le informazioni del prodotto
      * @param prodotto
@@ -461,13 +408,10 @@ public class ArticoloDAO implements IArticoloDAO {
         DbOperationExecutor executor = new DbOperationExecutor();
 
         if (!isProdottoComposito(prodotto.getId())){
-            //Se è un prodotto normale le uniche cose da aggiornare sono in articolo e in collocazione
             String sqlArticolo = "UPDATE myshop.articolo SET nome=?, descrizione=?, prezzo=?, Categoria_idCategoria=?, Erogatore_idErogatore=? WHERE idArticolo=?;";
-           // String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
             String sqlCollocazione = "UPDATE myshop.magazzino_has_prodotto SET Magazzino_idMagazzino=?, quantita=?, corsia=?, scaffale=? WHERE Prodotto_Articolo_idArticolo=?;";
 
             IDbOperation writeOpArt = new WriteByteOperation(sqlArticolo);
-            //IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
             IDbOperation writeOpColl = new WriteByteOperation(sqlCollocazione);
 
             try {
@@ -480,12 +424,6 @@ public class ArticoloDAO implements IArticoloDAO {
                 articoloStmt.setInt(6, prodotto.getId());
                 rowCount = articoloStmt.executeUpdate() ;
                 articoloStmt.close();
-
-               /* PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
-                prodottoStmt.setInt(1, ((Prodotto)prodotto).getErogatore().getId() );
-                prodottoStmt.setInt(2, prodotto.getId());
-                rowCount += prodottoStmt.executeUpdate() ;
-                prodottoStmt.close();*/
 
                 PreparedStatement collStmt = executor.executeOperation(writeOpColl).getPreparedStatement();
                 collStmt.setInt(1, ((Prodotto) prodotto).getCollocazione().getMagazzino().getId());
@@ -510,9 +448,7 @@ public class ArticoloDAO implements IArticoloDAO {
         } else if (isProdottoComposito(prodotto.getId())){
 
             String sqlArticolo = "UPDATE articolo SET nome=? , descrizione=?, prezzo=?, Categoria_idCategoria=?, Erogatore_idErogatore=? WHERE idArticolo=?;";
-           // String sqlProdotto = "UPDATE myshop.prodotto SET Produttore_idProduttore=? WHERE Articolo_idArticolo=?;";
             IDbOperation writeOpArt = new WriteByteOperation(sqlArticolo);
-            //IDbOperation writeOpProd = new WriteByteOperation(sqlProdotto);
 
             try {
                 PreparedStatement articoloStmt = executor.executeOperation(writeOpArt).getPreparedStatement();
@@ -524,12 +460,6 @@ public class ArticoloDAO implements IArticoloDAO {
                 articoloStmt.setInt(6, prodotto.getId());
                 rowCount = articoloStmt.executeUpdate();
                 articoloStmt.close();
-
-               /* PreparedStatement prodottoStmt = executor.executeOperation(writeOpProd).getPreparedStatement();
-                prodottoStmt.setInt(1, ((Prodotto)prodotto).getErogatore().getId() );
-                prodottoStmt.setInt(2, prodotto.getId());
-                rowCount += prodottoStmt.executeUpdate() ;
-                prodottoStmt.close();*/
 
                 //Modifico ricorsivamente anche gli eventuali sotto articoli. Se un sotto articolo viene rimosso va chiamato il remove non da qui
                 for (IProdotto p: ((ProdottoComposito)prodotto).getSottoProdotti()) {
@@ -780,18 +710,9 @@ public class ArticoloDAO implements IArticoloDAO {
                 "', `Erogatore_idErogatore` = '" + servizio.getErogatore().getId() +
                 "' WHERE `idArticolo` = '" + servizio.getId() + "';";
 
-        /*String sqlUpdateServizio = "UPDATE `myshop`.`cliente` SET `professione` = '" + cliente.getProfessione() +
-                "', `canale_preferito` = '" + cliente.getCanalePreferito() +
-                "', `data_abilitazione` = '" + cliente.getDataAbilitazione() +
-                "', `stato` = '" + cliente.getStato() + "' WHERE `Utente_idUtente` = '" + cliente.getId() + "';";*/
-
         IDbOperation updateArticolo = new WriteOperation(sqlUpdateArticolo);
         int rowCountArticolo = executor.executeOperation(updateArticolo).getRowsAffected();
         updateArticolo.close();
-
-        /*IDbOperation updateServizio = new WriteOperation(sqlUpdateServizio);
-        int rowCountServizio = executor.executeOperation(updateServizio).getRowsAffected();
-        updateServizio.close();*/
 
         return rowCountArticolo;
     }

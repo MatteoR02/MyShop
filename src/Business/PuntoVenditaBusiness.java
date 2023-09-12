@@ -13,6 +13,13 @@ public class PuntoVenditaBusiness {
     private static IListaAcquistoDAO listaAcquistoDAO = ListaAcquistoDAO.getInstance();
     private static IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
+
+    /**
+     * Aggiorna la quantità di un prodotto in un magazzino
+     * @param prodotto
+     * @param quantitaAggiuntaORimossa
+     * @return
+     */
     public static ExecuteResult<Boolean> aggiornaQuantitaInMagazzino(Prodotto prodotto, int quantitaAggiuntaORimossa){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         int disponibilita = prodotto.getCollocazione().getQuantita();
@@ -33,6 +40,11 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    /**
+     * Crea un manager
+     * @param manager
+     * @return
+     */
     public static ExecuteResult<Boolean> creaManager(Manager manager){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         if (!utenteDAO.userExists(manager.getUsername())){
@@ -63,6 +75,11 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    /**
+     * Fornisce uno specifico punto vendita
+     * @param idPV
+     * @return
+     */
     public static ExecuteResult<PuntoVendita> getPV(int idPV){
         ExecuteResult<PuntoVendita> result = new ExecuteResult<>();
         PuntoVendita puntoVendita = puntoVenditaDAO.loadPuntoVendita(idPV);
@@ -72,6 +89,10 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    /**
+     * Fornisce tutti i punti vendita
+     * @return
+     */
     public static ExecuteResult<PuntoVendita> getAllPV(){
         ExecuteResult<PuntoVendita> result = new ExecuteResult<>();
         ArrayList<PuntoVendita> puntiVendita = (ArrayList<PuntoVendita>) puntoVenditaDAO.loadAllPuntiVendita();
@@ -82,6 +103,11 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    /**
+     * Fornisce tutti i magazzini di uno specifico punto vendita
+     * @param idPV
+     * @return
+     */
     public static ExecuteResult<Magazzino> getAllMagazziniOfPV(int idPV){
         ExecuteResult<Magazzino> result = new ExecuteResult<>();
         ArrayList<Magazzino> magazzini = (ArrayList<Magazzino>) magazzinoDAO.loadMagazziniOfPuntoVendita(idPV);
@@ -92,6 +118,11 @@ public class PuntoVenditaBusiness {
         return result;
     }
 
+    /**
+     * Crea un nuovo punto vendita
+     * @param puntoVendita
+     * @return
+     */
     public static ExecuteResult<Boolean> creaPuntoVendita(PuntoVendita puntoVendita){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         int rows = puntoVenditaDAO.addPuntoVendita(puntoVendita);

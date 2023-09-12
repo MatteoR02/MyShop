@@ -27,6 +27,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return instance;
     }
 
+    /**
+     * Verifica che l'id fornito appartiene ad una prenotazione sul database
+     * @param idPrenotazione
+     * @return true se l'id si riferisce ad una prenotazione, false altrimenti
+     */
     @Override
     public boolean isPrenotazione(int idPrenotazione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -51,6 +56,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         }
     }
 
+    /**
+     * Carica una particolare prenotazione dal database
+     * @param idPrenotazione
+     * @return
+     */
     @Override
     public Prenotazione loadPrenotazione(int idPrenotazione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -85,6 +95,10 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le prenotazioni dal database
+     * @return
+     */
     @Override
     public ArrayList<Prenotazione> loadAllPrenotazioni() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -116,6 +130,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i prodotti e le loro relative quantità di una particolare prenotazione dal database
+     * @param idPrenotazione
+     * @return una mappa di prodotti e le loro relative quantità
+     */
     @Override
     public Map<IProdotto, Integer> loadProdottiFromPrenotazione(int idPrenotazione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -147,6 +166,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le prenotazioni di un particolare cliente dal database
+     * @param idCliente
+     * @return
+     */
     @Override
     public ArrayList<Prenotazione> loadPrenotazioniOfCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -178,6 +202,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le prenotazioni di un particolare punto vendita dal database
+     * @param idPV
+     * @return
+     */
     @Override
     public ArrayList<Prenotazione> loadPrenotazioniOfPV(int idPV) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -209,6 +238,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return null;
     }
 
+    /**
+     * Svuota una prenotazione dal database
+     * @param idPrenotazione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeProdottiFromPrenotazione(int idPrenotazione) {
 
@@ -226,6 +260,12 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return rowCount;
     }
 
+    /**
+     * Rimuove un particolare prodotto da una particolare prenotazione sul database
+     * @param idPrenotazione
+     * @param idProdotto
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeProdottoFromPrenotazione(int idPrenotazione, int idProdotto) {
 
@@ -240,6 +280,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return rowCount;
     }
 
+    /**
+     * Rimuove un particolare prodotto da tutte le prenotazioni in cui è presente sul database
+     * @param idProdotto
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeProdottoFromAllPrenotazioni(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -253,6 +298,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return rowCount;
     }
 
+    /**
+     * Aggiunge una nuova prenotazione sul database
+     * @param prenotazione
+     * @return numero di righe modificate
+     */
     @Override
     public int addPrenotazione(Prenotazione prenotazione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -301,12 +351,17 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
     }
 
 
+    /**
+     * Aggiorna una particolare prenotazione
+     * @param prenotazione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updatePrenotazione(Prenotazione prenotazione) {
         int rowCount = 0;
         DbOperationExecutor executor = new DbOperationExecutor();
 
-        String sqlPrenotazione = "UPDATE myshop.prenotazione SET PuntoVendita_idPuntoVendita=?, data_arrivo=? ,stato=?, WHERE idPrenotazione=?;";
+        String sqlPrenotazione = "UPDATE myshop.prenotazione SET PuntoVendita_idPuntoVendita=?, data_arrivo=? ,stato=? WHERE idPrenotazione=?;";
 
         IDbOperation writeOpPren = new WriteByteOperation(sqlPrenotazione);
 
@@ -335,6 +390,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
             return 0;
     }
 
+    /**
+     * Elimina una prenotazione dal database
+     * @param idPrenotazione
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removePrenotazione(int idPrenotazione) {
 
@@ -350,6 +410,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return rowCountProd + rowCountPrenotazione;
     }
 
+    /**
+     * Verifica se la lista è arrivata
+     * @param idPrenotazione
+     * @return true se lo stato della lista è ARRIVATA, false altrimenti
+     */
     @Override
     public boolean isArrivata(int idPrenotazione) {
         String sql = "SELECT stato FROM myshop.prenotazione WHERE idPrenotazione ='"+idPrenotazione+"';";
@@ -367,6 +432,12 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         }return false;
     }
 
+    /**
+     * Modifica lo stato di una prenotazione sul database
+     * @param idPrenotazione
+     * @param stato
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int changePrenotazioneStatus(int idPrenotazione, Prenotazione.StatoPrenotazione stato) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -377,6 +448,11 @@ public class PrenotazioneDAO implements IPrenotazioneDAO{
         return rowCount;
     }
 
+    /**
+     * Imposta la chiave esterna riferita a prodotto al valore di defautl
+     * @param idProdotto
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int setFKProdottoToDefault(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();

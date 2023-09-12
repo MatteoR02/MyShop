@@ -33,6 +33,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return instance;
     }
 
+    /**
+     * Verifica se l'id fornito appartiene ad un punto vendita sul database
+     * @param idPuntoVendita
+     * @return true se l'id appartiene ad un punto vendita, false altrimenti
+     */
     @Override
     public boolean isPuntoVendita(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -57,6 +62,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         }
     }
 
+    /**
+     * Carica un particolare punto vendita dal database
+     * @param idPuntoVendita
+     * @return
+     */
     @Override
     public PuntoVendita loadPuntoVendita(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -71,7 +81,6 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
                 puntoVendita.setId(rs.getInt("idPuntoVendita"));
                 puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getString("civico")));
                 puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
-                //puntoVendita.setArticoli();
                 return puntoVendita;
             }
         } catch (SQLException e) {
@@ -88,6 +97,10 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i punti vendita dal database
+     * @return
+     */
     @Override
     public List<PuntoVendita> loadAllPuntiVendita() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -120,6 +133,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return null;
     }
 
+    /**
+     * Carica il punto vendita assegnato ad un particolare manager
+     * @param idManager
+     * @return
+     */
     @Override
     public PuntoVendita loadPuntoVenditaOfManager(int idManager) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -152,37 +170,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return null;
     }
 
-    /*@Override
-    public List<PuntoVendita> loadPuntiVenditaOfCliente(int idCliente) {
-        DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.puntovendita AS P INNER JOIN myshop.puntovendita_has_cliente AS PC ON P.idPuntoVendita = PC.PuntoVendita_idPuntoVendita WHERE PC.Cliente_Utente_idUtente='"+ idCliente +"';";
-        IDbOperation readOp = new ReadOperation(sql);
-        rs = executor.executeOperation(readOp).getResultSet();
-        ArrayList<PuntoVendita> puntiVendita = new ArrayList<>();
-
-        try {
-            while (rs.next()){
-                puntoVendita = new PuntoVendita();
-                puntoVendita.setId(rs.getInt("idPuntoVendita"));
-                puntoVendita.setIndirizzo(new Indirizzo(rs.getString("nazione"), rs.getString("citta"), rs.getString("cap"), rs.getString("via"), rs.getInt("civico")));
-                puntoVendita.setMagazzini(magazzinoDAO.loadMagazziniOfPuntoVendita(rs.getInt("idPuntoVendita")));
-                //puntoVendita.setArticoli();
-                puntiVendita.add(puntoVendita);
-            } return puntiVendita;
-        } catch (SQLException e) {
-            // handle any errors
-            System.out.println("SQLException: " + e.getMessage());
-            System.out.println("SQLState: " + e.getSQLState());
-            System.out.println("VendorError: " + e.getErrorCode());
-        } catch (NullPointerException e) {
-            // handle any errors
-            System.out.println("Resultset: " + e.getMessage());
-        } finally {
-            readOp.close();
-        }
-        return null;
-    }*/
-
+    /**
+     * Aggiunge un nuovo punto vendita sul database
+     * @param puntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addPuntoVendita(PuntoVendita puntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -211,6 +203,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return 0;
     }
 
+    /**
+     * Aggiorna un particolare punto vendita sul database
+     * @param puntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updatePuntoVendita(PuntoVendita puntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -239,6 +236,11 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return 0;
     }
 
+    /**
+     * Elimina un particolare punto vendita dal database
+     * @param idPuntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removePuntoVendita(int idPuntoVendita) {
 
@@ -253,6 +255,12 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         return rowCount;
     }
 
+    /**
+     * Aggiunge un particolare articolo ad un particolare punto vendita
+     * @param idArticolo
+     * @param idPuntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addArticoloToPuntoVendita(int idArticolo, int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -276,39 +284,4 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
         }
         return 0;
     }
-
-    /*@Override
-    public int registraCliente(int idCliente, int idPuntoVendita) {
-        DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "INSERT INTO myshop.puntovendita_has_cliente (PuntoVendita_idPuntoVendita, Cliente_Utente_idUtente, data_registrazione) VALUES (?,?,?);";
-
-        IDbOperation addByte = new WriteByteOperation(sql);
-        PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
-        int rowCount;
-        try{
-            if(preparedStatement!=null) {
-                preparedStatement.setInt(1, idPuntoVendita);
-                preparedStatement.setInt(2, idCliente);
-                preparedStatement.setTimestamp(3, Timestamp.valueOf(LocalDateTime.now()));
-                rowCount = preparedStatement.executeUpdate();
-                preparedStatement.close();
-                return rowCount;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            addByte.close();
-        }
-        return 0;
-    }
-
-    @Override
-    public int removeClienteFromPuntoVendita(int idCliente, int idPuntoVendita) {
-        DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "DELETE FROM myshop.puntovendita_has_cliente WHERE Cliente_Utente_idUtente = '" + idCliente + "' AND PuntoVendita_idPuntoVendita = '" + idPuntoVendita + "';";
-        IDbOperation removeCliente = new WriteOperation(sql);
-        int rowCount = executor.executeOperation(removeCliente).getRowsAffected();
-        removeCliente.close();
-        return rowCount;
-    }*/
 }

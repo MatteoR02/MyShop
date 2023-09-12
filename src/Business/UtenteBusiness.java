@@ -1,5 +1,7 @@
 package Business;
 
+import Business.Factory.Notifica;
+import Business.Factory.NotificationFactory;
 import DAO.*;
 import Model.*;
 
@@ -27,6 +29,12 @@ public class UtenteBusiness {
         return instance;
     }
 
+    /**
+     * Effettua il login avendo fornito le credenziali e mette in sessione l'utente loggato
+     * @param username
+     * @param password
+     * @return
+     */
     public LoginResult login(String username, String password){
 
         LoginResult result = new LoginResult();
@@ -85,6 +93,11 @@ public class UtenteBusiness {
         return result;
     }
 
+    /**
+     * Registra un cliente fornendo tutti i dati e lo mette in sessione
+     * @param cliente
+     * @return
+     */
     public static RegisterResult registerCliente(Cliente cliente){
         RegisterResult result = new RegisterResult();
 
@@ -126,7 +139,7 @@ public class UtenteBusiness {
     public static boolean uploadFoto(File img, int idArticolo){
         try {
             Foto foto = new Foto();
-            foto.setImmagine(ArticoloBusiness.imgToBlob(img));
+            foto.setImmagine(FotoBusiness.imgToBlob(img));
             FotoDAO.getInstance().addFotoToArticolo(foto,idArticolo);
             return true;
         } catch (Exception e) {
@@ -136,20 +149,11 @@ public class UtenteBusiness {
         return false;
     }
 
-    public static ExecuteResult<ListaAcquisto> getLista(int idLista){
-        ExecuteResult<ListaAcquisto> result = new ExecuteResult<>();
-        if (listaAcquistoDAO.isListaAcquisto(idLista)){
-            result.setSingleObject(listaAcquistoDAO.loadListaAcquisto(idLista));
-            result.setMessage("Lista d'acquisto caricata con successo");
-            result.setResult(ExecuteResult.ResultStatement.OK);
-            result.execute(SessionManager.LISTE_CLIENTE);
-        } else {
-            result.setMessage("L'id passato non corrisponde ad una lista d'acquisto");
-            result.setResult(ExecuteResult.ResultStatement.NOT_OK);
-        }
-       return result;
-    }
-
+    /**
+     * Fornisce tutte le liste d'acquisto di un cliente e le mette in sessione
+     * @param cliente
+     * @return
+     */
     public static ExecuteResult<ListaAcquisto> getListeOfCliente(Cliente cliente){
         ExecuteResult<ListaAcquisto> result = new ExecuteResult<>();
 
@@ -165,6 +169,12 @@ public class UtenteBusiness {
         return result;
 
     }
+
+    /**
+     * Fornisce tutti i clienti registrati ad uno specifico punto vendita
+     * @param id
+     * @return
+     */
     public static ExecuteResult<Cliente> getAllClientiOfPV(int id){
         ExecuteResult<Cliente> result = new ExecuteResult<>();
         if(puntoVenditaDAO.isPuntoVendita(id)){
@@ -182,18 +192,6 @@ public class UtenteBusiness {
             result.setMessage("L'id inserito non corrisponde ad un punto vendita");
             return result;
         }
-
-        //ArrayList<Articolo> articoli = result.getObject();
-       /* for (int i = 0; i < articoli.size(); i++) {
-            if(articoloCheckType(articoli.get(i).getId()) != TipoArticolo.PRODOTTO_COMPOSITO && articoloCheckType(articoli.get(i).getId()) != TipoArticolo.SERVIZIO){
-                ExecuteResult<Foto> res = FotoBusiness.loadSingleFoto(articoli.get(i).getId(), FotoDAO.ID_ARTICOLO);
-                ArrayList<Foto> photos = res.getObject();
-                ((Prodotto)articoli.get(i)).setImmagini(photos);
-                result.setMessage(result.getMessage() + res.getMessage());
-            }
-        }*/
-
-        //result.setObject(articoli);
 
         result.execute(SessionManager.ALL_CLIENTI_PV);
         return result;
@@ -217,14 +215,33 @@ public class UtenteBusiness {
         return flag;
     }
 
+    /**
+     * Cambia lo stato di un cliente e manda una notifica
+     * @param idCliente
+     * @param statoCliente
+     * @return
+     */
     public static boolean changeClienteStatus(int idCliente, Cliente.StatoUtenteType statoCliente){
         boolean flag = false;
         Cliente cliente = utenteDAO.loadCliente(utenteDAO.findUsernameByID(idCliente));
+        NotificationFactory factory = new NotificationFactory();
+        Notifica n = factory.getCanaleNotifica(cliente.getCanalePreferito());
+
         if(checkRole(cliente.getUsername()) == TipoUtente.CLIENTE){
             if (!(cliente.getStato() == statoCliente)){
                 if(!ArticoloBusiness.isUndefined(cliente.getUsername())){
                     utenteDAO.changeClienteStatus(cliente.getUsername(), statoCliente);
                     flag = true;
+                    if (statoCliente== Cliente.StatoUtenteType.BLOCCATO){
+                        n.setCliente(cliente);
+                        n.setTitolo("Cliente bloccato su myshop");
+                        n.setTesto("Gentile cliente,<br> la informiamo che il suo account è stato bloccato sulla piattaforma MyShop. <br> Contattare l'assistenza per ulteriori informazioni");
+                        n.inviaNotifica();
+                    } else if (statoCliente == Cliente.StatoUtenteType.ABILITATO){
+                        n.setTitolo("Cliente abilitato su myshop");
+                        n.setTesto("Gentile cliente,<br> la informiamo che il suo account è stato abilitato sulla piattaforma MyShop.");
+                        n.inviaNotifica();
+                    }
                 }
             } else{
                 //utente già bloccato
@@ -247,14 +264,24 @@ public class UtenteBusiness {
         return executeResult;
     }
 
-    public static ExecuteResult<String> getUsernameByID(int idCliente){
+    /**
+     * Fornisce l'username di un utente passando il suo id
+     * @param idUtente
+     * @return username utente
+     */
+    public static ExecuteResult<String> getUsernameByID(int idUtente){
         ExecuteResult<String> executeResult = new ExecuteResult<>();
-        String username = utenteDAO.findUsernameByID(idCliente);
+        String username = utenteDAO.findUsernameByID(idUtente);
         executeResult.setSingleObject(username);
         executeResult.setResult(ExecuteResult.ResultStatement.OK);
         return executeResult;
     }
 
+    /**
+     * Controlla il ruolo di un utente
+     * @param username
+     * @return tipo dell'utente
+     */
     public static TipoUtente checkRole(String username){
         if (utenteDAO.isAdmin(username)) {
             return TipoUtente.ADMIN;
@@ -268,10 +295,16 @@ public class UtenteBusiness {
         return null;
     }
 
+    /**
+     * Chiude la sessione per effettuare il logout
+     * @return true se la sessione è vuota
+     */
     public static boolean closeSession(){
         SessionManager.getSession().remove(SessionManager.LOGGED_USER);
         SessionManager.getSession().remove(SessionManager.LISTE_CLIENTE);
         SessionManager.getSession().remove(SessionManager.CATALOGO_VIEW);
+        SessionManager.getSession().remove(SessionManager.PUNTO_VENDITA);
+        SessionManager.getSession().remove(SessionManager.ALL_CLIENTI_PV);
         return SessionManager.getSession().isEmpty();
     }
 

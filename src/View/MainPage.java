@@ -1,11 +1,20 @@
 package View;
 
 import Business.*;
-import DAO.PrenotazioneDAO;
 import Model.*;
-import View.CreaArticolo.*;
+import View.AdminCreazione.*;
+import View.Catalogo.CatalogoPanel;
+import View.Catalogo.InfoArticoloPanel;
 import View.Decorator.*;
 import View.Decorator.Menu;
+import View.ListaClienti.ClientiTablePanel;
+import View.ListeAcquisto.ListeAcquistoPanel;
+import View.Main.AdminMainPanel;
+import View.Main.ClienteMainPanel;
+import View.Main.GuestMainPanel;
+import View.Main.ManagerMainPanel;
+import View.Prenotazioni.PrenotazioniClientePanel;
+import View.Prenotazioni.PrenotazioniManagerPanel;
 import View.ViewModel.ComponenteCatalogo;
 
 import javax.swing.*;

@@ -24,5 +24,6 @@ public interface IRecensioneDAO {
     int addRisposta(Recensione recensione, int idRecensione);
 
     int setFKClienteToDefault(int idRecensione);
+    int removeRisposta(int idRecensione);
 
 }

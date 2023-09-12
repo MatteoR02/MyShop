@@ -34,8 +34,6 @@ public class ClientiTableModel extends AbstractTableModel {
 
         RigaCliente riga = righe.get(rowIndex);
 
-
-
         switch (columnIndex) {
             case 0: return riga.getIdCliente();
             case 1: return riga.getNome();
@@ -61,7 +59,7 @@ public class ClientiTableModel extends AbstractTableModel {
             case 1: riga.setNome(value.toString());
             case 2: riga.setCognome(value.toString());
             case 3: riga.setUsername(value.toString());
-            case 4: riga.getEmail();
+            case 4: riga.setEmail(value.toString());
             case 5: riga.setProfessione(Cliente.ProfessioneType.valueOf(value.toString()));
             case 6: riga.setCanalePreferito(Cliente.CanalePreferitoType.valueOf(value.toString()));
             case 7: riga.setStato(Cliente.StatoUtenteType.valueOf(value.toString()));

@@ -28,6 +28,13 @@ public class FotoDAO implements IFotoDAO{
         return instance;
     }
 
+    public final static int FOTO_DEFAULT_ID = 1;
+
+    /**
+     * Carica una foto dal database
+     * @param idFoto della foto da caricare
+     * @return foto caricata dal database
+     */
     @Override
     public Foto loadFoto(int idFoto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -57,6 +64,10 @@ public class FotoDAO implements IFotoDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le foto dal database
+     * @return list di tutte le foto caricate
+     */
     @Override
     public List<Foto> loadAllFoto() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -86,6 +97,11 @@ public class FotoDAO implements IFotoDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le foto di una particolare recensione
+     * @param idRecensione della recensione di cui si vuole avere le foto
+     * @return list di foto della recensione
+     */
     @Override
     public List<Foto> loadAllFotoOfRecensione(int idRecensione) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -115,6 +131,11 @@ public class FotoDAO implements IFotoDAO{
         return null;
     }
 
+    /**
+     * Carica tutte le foto di un particolare articolo
+     * @param idArticolo dell'articolo di cui si vuole avere le foto
+     * @return list di foto dell'articolo
+     */
     @Override
     public List<Foto> loadAllFotoOfArticolo(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -145,6 +166,11 @@ public class FotoDAO implements IFotoDAO{
         return null;
     }
 
+    /**
+     * Aggiunge una foto al database
+     * @param foto da aggiungere al database
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addFoto(Foto foto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -193,6 +219,11 @@ public class FotoDAO implements IFotoDAO{
         return 0;
     }
 
+    /**
+     * Aggiorna i dati di una foto sul database
+     * @param foto aggiornata
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateFoto(Foto foto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -224,6 +255,11 @@ public class FotoDAO implements IFotoDAO{
     }
 
 
+    /**
+     * Elimina una foto dal database
+     * @param idFoto della foto da eliminare
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeFoto(int idFoto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -242,6 +278,11 @@ public class FotoDAO implements IFotoDAO{
         return rowCountFoto + rowCountArtFoto;
     }
 
+    /**
+     *
+     * @param idFoto
+     * @return true se la foto è di un articolo, false altrimenti
+     */
     @Override
     public boolean isFotoOfArticolo(int idFoto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -290,6 +331,12 @@ public class FotoDAO implements IFotoDAO{
         return 0;
     }
 
+    /**
+     * Aggiunge sul database una foto e la assegna ad un articolo
+     * @param foto nuova da aggiungere al database
+     * @param idArticolo a cui assegnare la foto
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addNewFotoToArticolo(Foto foto, int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -331,10 +378,14 @@ public class FotoDAO implements IFotoDAO{
         return rowCount;
     }
 
+    /**
+     * Carica la foto di default dal database
+     * @return foto di default
+     */
     @Override
     public Foto loadDefaultFoto() {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "SELECT * FROM myshop.foto WHERE idFoto = 1;";
+        String sql = "SELECT * FROM myshop.foto WHERE idFoto = '" + FOTO_DEFAULT_ID +"';";
         IDbOperation readOp = new ReadOperation(sql);
         rs = executor.executeOperation(readOp).getResultSet();
 
@@ -360,6 +411,11 @@ public class FotoDAO implements IFotoDAO{
         return null;
     }
 
+    /**
+     * Imposta sul database la chiave esterna riferita ad articolo a quella di default
+     * @param idArticolo chiave esterna da impostare a valore di default
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int setFKArticoloHasFotoToDefault(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();

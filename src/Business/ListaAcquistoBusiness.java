@@ -16,52 +16,27 @@ public class ListaAcquistoBusiness {
     private static final IArticoloDAO articoloDAO = ArticoloDAO.getInstance();
     private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
+    /**
+     * Fornisce tutte le liste d'acquisto
+     * @return
+     */
     public static ExecuteResult<ListaAcquisto> getAllListe(){
         ExecuteResult<ListaAcquisto> result = new ExecuteResult<>();
         ArrayList<ListaAcquisto> liste = listaAcquistoDAO.loadAllListaAcquisto(); //carica prodotti e prodotti compositi
         articoloDAO.loadAllProdotti();
         articoloDAO.loadAllServizi();
 
-
-
-        //result.setObject(liste);
         result.setMessage(ExecuteResult.ResultStatement.OK.toString());
-        result.execute(SessionManager.ALL_ARTICOLI);
+        result.execute(SessionManager.ALL_LISTE);
 
         return null;
     }
 
-    public static ExecuteResult<Articolo> getAllArticoli(){
-        ExecuteResult<Articolo> result = new ExecuteResult<>();
-        ArrayList<Articolo> articoliUncheck = articoloDAO.loadAllProdotti(); //carica prodotti e prodotti compositi
-        ArrayList<Servizio> serviziUncheck = articoloDAO.loadAllServizi();
-
-        ArrayList<Servizio> servizi = new ArrayList<>();
-        ArrayList<Articolo> articoli = new ArrayList<>();
-
-        for (Servizio serv : serviziUncheck   ) {
-            if (hasNoFoto(serv)){
-                servizi.add((Servizio) setDefaultFoto(serv));
-            } else {
-                servizi.add(serv);
-            }
-        }
-        for (Articolo art : articoliUncheck   ) {
-            if (hasNoFoto(art)){
-                articoli.add(setDefaultFoto(art));
-            } else {
-                articoli.add(art);
-            }
-        }
-
-        articoli.addAll(servizi);
-        result.setObject(articoli);
-        result.setMessage(ExecuteResult.ResultStatement.OK.toString());
-        result.execute(SessionManager.ALL_ARTICOLI);
-
-        return null;
-    }
-
+    /**
+     * Rimuove un articolo da tutte le liste
+     * @param idElementToRemove
+     * @return
+     */
     public static ExecuteResult<Integer> removeArticoloFromAllListe(int idElementToRemove){
         ArrayList<Cliente> clienti = utenteDAO.loadAllClienti();
         ExecuteResult<Integer> result = new ExecuteResult<>();
@@ -83,7 +58,6 @@ public class ListaAcquistoBusiness {
                             result.setResult(ExecuteResult.ResultStatement.OK);
                         }else{
                             //se il prodotto è prresente nella lista già acquistata (al momento) verrà comunque rimosso
-                            //lasciamo però aperto lo spazio ad una implementazione futura che disporrà altre soluzioni
                             iterator.remove();
                             result.setSingleObject(result.getSingleObject() + 1);
                             result.setResult(ExecuteResult.ResultStatement.OK);
@@ -98,6 +72,11 @@ public class ListaAcquistoBusiness {
         return result;
     }
 
+    /**
+     * Aggiorna una lista d'acquisto
+     * @param listaAcquisto
+     * @return
+     */
     public static ExecuteResult<Boolean> updateLista(ListaAcquisto listaAcquisto){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         if(listaAcquistoDAO.isListaAcquisto(listaAcquisto.getId())){
@@ -115,6 +94,11 @@ public class ListaAcquistoBusiness {
         return result;
     }
 
+    /**
+     * Elimina una lista d'acquisto
+     * @param idLista
+     * @return
+     */
     public static ExecuteResult<Boolean> removeLista(int idLista){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         if(listaAcquistoDAO.isListaAcquisto(idLista)){
@@ -131,6 +115,12 @@ public class ListaAcquistoBusiness {
     }
 
 
+    /**
+     * Aggiungi una nuova lista d'acquisto
+     * @param nomeLista
+     * @param cliente
+     * @return
+     */
     public static ExecuteResult<Boolean> addLista(String nomeLista, Cliente cliente){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         listaAcquistoDAO.addListaAcquisto(nomeLista,cliente.getId());
@@ -141,6 +131,14 @@ public class ListaAcquistoBusiness {
         return result;
     }
 
+    /**
+     * Aggiorna le quantità di un articolo all'interno di una lista d'acquisto
+     * @param articolo
+     * @param listaAcquisto
+     * @param quantita
+     * @param cliente
+     * @return
+     */
     public static ExecuteResult<Boolean> addOrRemoveToLista(Articolo articolo, ListaAcquisto listaAcquisto, int quantita, Cliente cliente){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         result.setSingleObject(true);
@@ -220,11 +218,16 @@ public class ListaAcquistoBusiness {
             newLista.execute(SessionManager.NEW_TEMP_LIST);
         }
 
-        //result.setSingleObject(true);
         return result;
 
     }
 
+    /**
+     * Controlla se un prodotto è disponibile per una lista d'acquisto
+     * @param prodotto
+     * @param listaAcquisto
+     * @return
+     */
     public static ExecuteResult<Boolean> checkDisponibilita(Prodotto prodotto, ListaAcquisto listaAcquisto){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         for (Articolo art:listaAcquisto.getArticoli().keySet()  ) {

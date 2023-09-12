@@ -25,6 +25,11 @@ public class ErogatoreDAO implements IErogatoreDAO {
         return instance;
     }
 
+    /**
+     * Carica l'erogatore dal database
+     * @param idErogatore dell'erogatore da caricare
+     * @return erogatore caricato
+     */
     @Override
     public Erogatore loadErogatore(int idErogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -56,6 +61,10 @@ public class ErogatoreDAO implements IErogatoreDAO {
         return null;
     }
 
+    /**
+     * Carica tutti gli erogatori dal database
+     * @return un arraylist di tutti gli erogatori caricati
+     */
     @Override
     public ArrayList<Erogatore> loadAllErogatori() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -87,6 +96,11 @@ public class ErogatoreDAO implements IErogatoreDAO {
         return null;
     }
 
+    /**
+     * Aggiunge un erogatore al database
+     * @param erogatore erogatore da aggiungere al database
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addErogatore(Erogatore erogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -116,6 +130,11 @@ public class ErogatoreDAO implements IErogatoreDAO {
         return 0;
     }
 
+    /**
+     * Aggiorna i dati di un erogatore già esistente sul database
+     * @param erogatore aggiornato
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateErogatore(Erogatore erogatore) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -146,6 +165,11 @@ public class ErogatoreDAO implements IErogatoreDAO {
         return 0;
     }
 
+    /**
+     * Elimina un erogatore dal database
+     * @param idErogatore dell'erogatore da eliminare
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeErogatore(int idErogatore) {
 

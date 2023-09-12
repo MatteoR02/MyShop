@@ -1,6 +1,7 @@
 package View.Decorator;
 
 import View.Listeners.AdminListener;
+import View.Listeners.Builders.AdminListenerBuilder;
 import View.Listeners.CatalogoListener;
 import View.Listeners.ManagerListener;
 import View.MainPage;
@@ -26,7 +27,7 @@ public class AdminCompCatalogoMenu extends Menu{
         eliminaArticoloBtn.setActionCommand(AdminListener.ELIMINA_ARTICOLO);
 
         CatalogoListener catalogoListener = new CatalogoListener(frame, comp);
-        AdminListener adminListener = new AdminListener(frame, comp);
+        AdminListener adminListener = AdminListenerBuilder.newBuilder(frame).compCatalogo(comp).build();
 
         viewArtBtn.addActionListener(catalogoListener);
         modificaArticoloBtn.addActionListener(adminListener);

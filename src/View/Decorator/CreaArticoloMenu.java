@@ -2,6 +2,7 @@ package View.Decorator;
 
 
 import View.Listeners.AdminListener;
+import View.Listeners.Builders.AdminListenerBuilder;
 import View.MainPage;
 
 import javax.swing.*;
@@ -24,7 +25,8 @@ public class CreaArticoloMenu extends Menu {
         JButton creaErogatoreBtn = new JButton("Crea Erogatore");
         creaErogatoreBtn.setActionCommand(AdminListener.TO_CREA_EROGATORE);
 
-        AdminListener adminListener = new AdminListener(frame, selPuntoVenditaBox);
+
+        AdminListener adminListener = AdminListenerBuilder.newBuilder(frame).comboBoxPV(selPuntoVenditaBox).build();
         creaProdottoBtn.addActionListener(adminListener);
         creaServizioBtn.addActionListener(adminListener);
         creaProdottoCompositoBtn.addActionListener(adminListener);

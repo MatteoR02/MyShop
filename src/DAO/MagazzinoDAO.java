@@ -29,6 +29,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return instance;
     }
 
+    /**
+     * Carica un particolare magazzino dal database
+     * @param idMagazzino
+     * @return
+     */
     @Override
     public Magazzino loadMagazzino(int idMagazzino) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -59,6 +64,10 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i magazzini dal database
+     * @return
+     */
     @Override
     public List<Magazzino> loadAllMagazzini() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -89,6 +98,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return null;
     }
 
+    /**
+     * Carica tutti i magazzini di un particolare punto vendita dal database
+     * @param idPuntoVendita
+     * @return
+     */
     @Override
     public List<Magazzino> loadMagazziniOfPuntoVendita(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -119,6 +133,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return null;
     }
 
+    /**
+     * Carica la collocazione di un particolare prodotto dal database
+     * @param idProdotto
+     * @return
+     */
     @Override
     public Collocazione loadCollocazioneOfProdotto(int idProdotto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -153,6 +172,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return null;
     }
 
+    /**
+     * Aggiunge un nuovo magazzino sul database
+     * @param magazzino
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addMagazzino(Magazzino magazzino) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -181,6 +205,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return 0;
     }
 
+    /**
+     * Aggiorna un magazzino esistente sul database
+     * @param magazzino
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateMagazzino(Magazzino magazzino) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -210,6 +239,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return 0;
     }
 
+    /**
+     * Elimina un magazzino dal database
+     * @param idMagazzino
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeMagazzino(int idMagazzino) {
 
@@ -223,6 +257,11 @@ public class MagazzinoDAO implements IMagazzinoDAO{
         return rowCount;
     }
 
+    /**
+     * Imposta la chiave esterna rigerita a punto vendita al valore di default
+     * @param idPuntoVendita
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int setFKPuntoVenditaToDefault(int idPuntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();

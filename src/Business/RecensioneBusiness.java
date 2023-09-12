@@ -1,5 +1,7 @@
 package Business;
 
+import Business.Factory.Notifica;
+import Business.Factory.NotificationFactory;
 import DAO.*;
 import Model.*;
 
@@ -18,7 +20,13 @@ import java.util.ArrayList;
 public class RecensioneBusiness {
 
     private static final IRecensioneDAO recensioneDAO = RecensioneDAO.getInstance();
+    private static final IUtenteDAO utenteDAO = UtenteDAO.getInstance();
 
+    /**
+     * Fornisce tutte le recensioni di un articolo
+     * @param idArticolo
+     * @return
+     */
     public static ExecuteResult<Recensione> getRecensioniOfArticolo(int idArticolo){
         ExecuteResult<Recensione> result = new ExecuteResult<>();
         if (ArticoloBusiness.articoloCheckType(idArticolo) != ArticoloBusiness.TipoArticolo.NOT_ARTICLE){
@@ -33,6 +41,11 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Fornisce una specifica recensione
+     * @param idRecensione
+     * @return
+     */
     public static ExecuteResult<Recensione> getRecensione(int idRecensione){
         ExecuteResult<Recensione> result = new ExecuteResult<>();
         Recensione recensione = recensioneDAO.loadRecensione(idRecensione);
@@ -42,6 +55,11 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Fornisce la risposta di una specifica recensione
+     * @param idRecensione
+     * @return
+     */
     public static ExecuteResult<Recensione> getRisposta(int idRecensione){
         ExecuteResult<Recensione> result = new ExecuteResult<>();
         Recensione recensione = recensioneDAO.loadRisposta(idRecensione);
@@ -56,11 +74,17 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Aggiungi una recensione ad un articolo
+     * @param recensione
+     * @param idArticolo
+     * @return
+     */
     public static ExecuteResult<Boolean> addRecensione(Recensione recensione, int idArticolo){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         if (ArticoloBusiness.articoloCheckType(idArticolo) != ArticoloBusiness.TipoArticolo.NOT_ARTICLE){
             if (ArticoloBusiness.isArticoloBoughtFrom(idArticolo, recensione.getIdCliente()).getSingleObject()){
-                if (recensioneDAO.isRecensioneDone(idArticolo,recensione.getIdCliente())){
+                if (isRecensioneDone(idArticolo,recensione.getIdCliente())){
                     result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
                     result.setSingleObject(false);
                     result.setMessage("Articolo già recensito dal cliente");
@@ -85,19 +109,37 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Aggiungi una risposta ad una recensione e invia notifica
+     * @param recensione
+     * @param idRecensione
+     * @return
+     */
     public static ExecuteResult<Boolean> addRisposta(Recensione recensione, int idRecensione){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         Manager m = (Manager) SessionManager.getSession().get(SessionManager.LOGGED_USER);
-        int rows = recensioneDAO.addRisposta(recensione, idRecensione);
-        if (recensioneDAO.isRispostaDone(m.getId(), idRecensione)) {
+        Recensione recCliente = recensioneDAO.loadRecensione(idRecensione);
+        Cliente c = utenteDAO.loadCliente(recCliente.getIdCliente());
+
+        if (isRispostaDone(idRecensione, m.getId())) {
             result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
             result.setSingleObject(false);
             result.setMessage("Risposta già data alla recensione");
         } else {
+            int rows = recensioneDAO.addRisposta(recensione, idRecensione);
+
+            NotificationFactory factory = new NotificationFactory();
+            Notifica n = factory.getCanaleNotifica(c.getCanalePreferito());
+
             if(rows>0){
                 result.setResult(ExecuteResult.ResultStatement.OK);
                 result.setSingleObject(true);
                 result.setMessage("Risposta aggiunta");
+
+                n.setCliente(c);
+                n.setTitolo("Nuova risposta su MyShop");
+                n.setTesto("La sua recensione ha ricevuto una risposta da parte di un manager <br>" + "<h2>" + recensione.getTitolo() + "</h2> <br>" + recensione.getTesto());
+                n.inviaNotifica();
             } else {
                 result.setResult(ExecuteResult.ResultStatement.NOT_OK);
                 result.setSingleObject(false);
@@ -107,6 +149,11 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Elimina una recensione
+     * @param idRecensione
+     * @return
+     */
     public static ExecuteResult<Boolean> removeRecensione (int idRecensione){
         ExecuteResult<Boolean> result = new ExecuteResult<>();
         if (recensioneDAO.isRecensione(idRecensione)){
@@ -121,6 +168,31 @@ public class RecensioneBusiness {
         return result;
     }
 
+    /**
+     * Controlla se è stata già fatta una recensione ad uno specifico articolo
+     * @param idArticolo
+     * @param idCliente
+     * @return
+     */
+    public static boolean isRecensioneDone(int idArticolo, int idCliente){
+        return recensioneDAO.isRecensioneDone(idArticolo,idCliente);
+    }
+
+    /**
+     * Controlla se è stata già lasciata una risposta ad una specifica recensione
+     * @param idRecensione
+     * @param idManager
+     * @return
+     */
+    public static boolean isRispostaDone(int idRecensione, int idManager){
+        return recensioneDAO.isRispostaDone(idRecensione,idManager);
+    }
+
+    /**
+     * Converte la valutazione di una recensione in intero
+     * @param valutazione
+     * @return valutazione convertita in intero
+     */
     public static Recensione.Punteggio integerToPunteggio(int valutazione){
         Recensione.Punteggio voto = Recensione.Punteggio.ORRIBILE;
         switch (valutazione){

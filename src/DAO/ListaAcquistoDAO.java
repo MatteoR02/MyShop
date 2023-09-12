@@ -32,6 +32,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return instance;
     }
 
+    /**
+     *
+     * @param idLista
+     * @return true se l'id fornito si riferisce ad una lista d'acquisto, false altrimenti
+     */
     @Override
     public boolean isListaAcquisto(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -55,6 +60,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return false;
     }
 
+    /**
+     * Carica una lista d'acquisto dal database
+     * @param idLista da caricare
+     * @return lista d'acquisto caricata
+     */
     @Override
     public ListaAcquisto loadListaAcquisto(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -87,6 +97,10 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return null;
     }
 
+    /**
+     * Carica tutte le liste d'acquisto dal database
+     * @return arraylist di tutte le liste d'acquisto
+     */
     @Override
     public ArrayList<ListaAcquisto> loadAllListaAcquisto() {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -117,6 +131,12 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return null;
     }
 
+    /**
+     * Aggiunge una lista d'acquisto vuota al database
+     * @param nome della nuova lista d'acquisto
+     * @param idCliente a cui appartiene la lista d'acquisto
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int addListaAcquisto(String nome, int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -128,7 +148,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
-    //sistemare data_pagamento
+    /**
+     * Aggiorna una particolare lista d'acquisto sul database
+     * @param listaAcquisto aggiornata
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int updateListaAcquisto(ListaAcquisto listaAcquisto) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -154,6 +178,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    /**
+     * Elimina una particolare lista d'acquisto dal database
+     * @param idLista della lista da eliminare
+     * @return numero di righe modificate sul database
+     */
     @Override
     public int removeListaAcquisto(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -172,6 +201,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    /**
+     * Carica gli articoli e le loro relativa quantità di una particolare lista dal database
+     * @param idLista della lista d'acquisto
+     * @return un hashmap di articoli con le loro relative quantità
+     */
     @Override
     public HashMap<Articolo, Integer> getArticoliFromLista(int idLista) {
 
@@ -210,6 +244,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return null;
     }
 
+    /**
+     * Carica tutte le liste di un particolare cliente dal database
+     * @param idCliente del cliente
+     * @return un arraylist delle liste del cliente
+     */
     @Override
     public ArrayList<ListaAcquisto> getListeOfCliente(int idCliente) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -241,6 +280,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return null;
     }
 
+    /**
+     * Controlla se la lista d'acquisto è pagata
+     * @param idLista della lista da controllare
+     * @return true se la lista d'acquisto è pagata, false altrimenti
+     */
     @Override
     public boolean isPagata(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -264,6 +308,13 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         }
     }
 
+    /**
+     * Aggiunge un particolare articolo con relativa quantità ad una particolare lista d'acquisto sul database
+     * @param idLista della lista d'acquisto
+     * @param idArticolo dell'articolo da aggiungere
+     * @param quantita dell'articolo
+     * @return numero di righe modificate
+     */
     @Override
     public int insertArticoloInLista(int idLista, int idArticolo, int quantita) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -297,6 +348,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    /**
+     * Svuota la lista d'acquisto sul database
+     * @param idLista della lista d'acquisto
+     * @return numero di righe modificate
+     */
     @Override
     public int removeAllArticoliInLista(int idLista) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -307,6 +363,11 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    /**
+     * Rimuove un particolare articolo da tutte le liste su cui è presente sul database
+     * @param idArticolo da rimuovere dalle liste
+     * @return numero di righe modificate
+     */
     @Override
     public int removeArticoloFromListe(int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();
@@ -317,6 +378,12 @@ public class ListaAcquistoDAO implements IListaAcquistoDAO {
         return rowCount;
     }
 
+    /**
+     * Verifica se un particolare articolo è in una particolare lista d'acquisto sul database
+     * @param idLista della lista d'acquisto
+     * @param idArticolo da controllare
+     * @return true se quell'articolo è in quella lista, false altrimenti
+     */
     @Override
     public boolean isInLista(int idLista, int idArticolo) {
         DbOperationExecutor executor = new DbOperationExecutor();

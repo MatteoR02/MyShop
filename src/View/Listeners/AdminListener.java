@@ -73,30 +73,11 @@ public class AdminListener implements ActionListener {
         this.frame = frame;
     }
 
-    public AdminListener(MainPage frame, ComponenteCatalogo componenteCatalogo) {
-        this.frame = frame;
-        this.componenteCatalogo = componenteCatalogo;
-    }
-
-    public AdminListener(MainPage frame, JComboBox selPuntoVenditaBox) {
+    public AdminListener(MainPage frame, JComboBox selPuntoVenditaBox, ComponenteCatalogo componenteCatalogo, PuntoVendita puntoVendita, JTextArea fieldDescrizione, JTextField fieldPrezzo, JTextField fieldCorsia, JTextField fieldScaffale, JComboBox magazzinoBox, JComboBox categoriaBox, JComboBox erogatoreBox, JComboBox tipoBox, JLabel labelImmagini, JTable tableProdotti, JTextField fieldNome, JTextField fieldCognome, JTextField fieldEmail, JTextField fieldTelefono, JTextField fieldUsername, JPasswordField fieldPassword, JDateChooser dataNascita, JTextField fieldSito, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
         this.frame = frame;
         this.selPuntoVenditaBox = selPuntoVenditaBox;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNome, JTextArea fieldDescrizione, JTextField fieldPrezzo, JComboBox categoriaBox, JComboBox erogatoreBox, JLabel labelImmagini, PuntoVendita puntoVendita) {
-        this.frame = frame;
-        this.fieldNome = fieldNome;
-        this.fieldDescrizione = fieldDescrizione;
-        this.fieldPrezzo = fieldPrezzo;
-        this.categoriaBox = categoriaBox;
-        this.erogatoreBox = erogatoreBox;
-        this.labelImmagini = labelImmagini;
+        this.componenteCatalogo = componenteCatalogo;
         this.puntoVendita = puntoVendita;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNome, JTextArea fieldDescrizione, JTextField fieldPrezzo, JTextField fieldCorsia, JTextField fieldScaffale, JComboBox magazzinoBox, JComboBox categoriaBox, JComboBox erogatoreBox, JLabel labelImmagini, PuntoVendita puntoVendita) {
-        this.frame = frame;
-        this.fieldNome = fieldNome;
         this.fieldDescrizione = fieldDescrizione;
         this.fieldPrezzo = fieldPrezzo;
         this.fieldCorsia = fieldCorsia;
@@ -104,51 +85,9 @@ public class AdminListener implements ActionListener {
         this.magazzinoBox = magazzinoBox;
         this.categoriaBox = categoriaBox;
         this.erogatoreBox = erogatoreBox;
-        this.labelImmagini = labelImmagini;
-        this.puntoVendita = puntoVendita;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNome, JTextArea fieldDescrizione, JTextField fieldPrezzo, JComboBox categoriaBox, JComboBox erogatoreBox, JLabel labelImmagini, JTable tableProdotti) {
-        this.frame = frame;
-        this.fieldNome = fieldNome;
-        this.fieldDescrizione = fieldDescrizione;
-        this.fieldPrezzo = fieldPrezzo;
-        this.categoriaBox = categoriaBox;
-        this.erogatoreBox = erogatoreBox;
+        this.tipoBox = tipoBox;
         this.labelImmagini = labelImmagini;
         this.tableProdotti = tableProdotti;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNomeArt, JComboBox tipoBox) {
-        this.frame = frame;
-        this.fieldNome = fieldNomeArt;
-        this.tipoBox = tipoBox;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNome, JTextField fieldSito, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
-        this.frame = frame;
-        this.fieldNome = fieldNome;
-        this.fieldSito = fieldSito;
-        this.fieldNazione = fieldNazione;
-        this.fieldCitta = fieldCitta;
-        this.fieldCap = fieldCap;
-        this.fieldVia = fieldVia;
-        this.fieldCivico = fieldCivico;
-    }
-
-    public AdminListener(MainPage frame, JTextField fieldNome, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
-        this.frame = frame;
-        this.fieldNome = fieldNome;
-        this.fieldNazione = fieldNazione;
-        this.fieldCitta = fieldCitta;
-        this.fieldCap = fieldCap;
-        this.fieldVia = fieldVia;
-        this.fieldCivico = fieldCivico;
-    }
-
-    public AdminListener(MainPage frame, JComboBox selPuntoVenditaBox, JTextField fieldNome, JTextField fieldCognome, JTextField fieldEmail, JTextField fieldTelefono, JTextField fieldUsername, JPasswordField fieldPassword, JDateChooser dataNascita, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico) {
-        this.frame = frame;
-        this.selPuntoVenditaBox = selPuntoVenditaBox;
         this.fieldNome = fieldNome;
         this.fieldCognome = fieldCognome;
         this.fieldEmail = fieldEmail;
@@ -156,6 +95,7 @@ public class AdminListener implements ActionListener {
         this.fieldUsername = fieldUsername;
         this.fieldPassword = fieldPassword;
         this.dataNascita = dataNascita;
+        this.fieldSito = fieldSito;
         this.fieldNazione = fieldNazione;
         this.fieldCitta = fieldCitta;
         this.fieldCap = fieldCap;
@@ -166,6 +106,7 @@ public class AdminListener implements ActionListener {
     public void setComponenteCatalogo(ComponenteCatalogo componenteCatalogo) {
         this.componenteCatalogo = componenteCatalogo;
     }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

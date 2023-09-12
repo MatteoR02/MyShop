@@ -12,6 +12,8 @@ public class SessionManager {
     public static final String NEW_TEMP_LIST = "new_temp_list";
     public static final String ALL_CLIENTI_PV = "all_clienti";
     public static final String CATALOGO_VIEW = "catalogo_view";
+    public static final String ALL_LISTE = "all_liste";
+    public static final String PRENOTAZIONI_CLIENTE = "prenotazioni_cliente";
 
     private static HashMap<String, Object> session = new HashMap<>();
 

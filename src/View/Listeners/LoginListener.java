@@ -33,9 +33,6 @@ public class LoginListener implements ActionListener {
 
     private MainPage frame;
 
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-
     private JTextField fieldNome, fieldCognome, fieldEmail, fieldTelefono, fieldUsername;
     private JPasswordField fieldPassword;
     private JDateChooser dataNascita;
@@ -43,9 +40,9 @@ public class LoginListener implements ActionListener {
     private JComboBox selPuntoVenditaBox, selProfessioneBox, selCanaleBox;
 
 
-    public LoginListener(JTextField usernameField, JPasswordField passwordField) {
-        this.usernameField = usernameField;
-        this.passwordField = passwordField;
+    public LoginListener(JTextField fieldUsername, JPasswordField fieldPassword) {
+        this.fieldUsername = fieldUsername;
+        this.fieldPassword = fieldPassword;
     }
 
     public LoginListener(MainPage frame, JTextField fieldNome, JTextField fieldCognome, JTextField fieldEmail, JTextField fieldTelefono, JTextField fieldUsername, JPasswordField fieldPassword, JDateChooser dataNascita, JTextField fieldNazione, JTextField fieldCitta, JTextField fieldCap, JTextField fieldVia, JTextField fieldCivico, JComboBox selPuntoVenditaBox, JComboBox selProfessioneBox, JComboBox selCanaleBox) {
@@ -81,8 +78,8 @@ public class LoginListener implements ActionListener {
         if (TO_LOGIN_BTN.equals(action)) {
             frame.mostraLogin();
         } else if(LOGIN_BTN.equals(action)){
-            String username = usernameField.getText();
-            String password = new String(passwordField.getPassword());
+            String username = fieldUsername.getText();
+            String password = new String(fieldPassword.getPassword());
             LoginResult result = UtenteBusiness.getInstance().login(username,password);
             if (LoginResult.Result.LOGIN_OK == result.getResult()){
                 frame.mostraMain();
