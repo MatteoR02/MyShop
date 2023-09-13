@@ -4,7 +4,7 @@ import Model.Manager;
 
 import java.io.File;
 
-public class MessaggioManagerEmail extends Email{
+public class MessaggioManagerEmail extends Email {
 
     private Manager manager;
 

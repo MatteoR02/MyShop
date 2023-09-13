@@ -7,6 +7,7 @@ import Business.Strategy.OrdinamentoRecensioni.OrdinamentoRecensioni;
 import Business.Strategy.OrdinamentoRecensioni.RecensioniMiglioriStrategy;
 import Business.Strategy.OrdinamentoRecensioni.RecensioniRecentiStrategy;
 import Model.*;
+import View.Dialog.AddListaDialog;
 import View.MainPage;
 import View.Dialog.AddRecensioneDialog;
 import View.Dialog.AddToListaDialog;
@@ -91,8 +92,13 @@ public class CatalogoListener implements ActionListener {
             if (c == null){
                 JOptionPane.showMessageDialog(frame,"Devi prima effettuare l'accesso","Accesso non effettuato", JOptionPane.ERROR_MESSAGE);
             } else {
-                UtenteBusiness.getListeOfCliente(c);
-                AddToListaDialog addToListaDialog = new AddToListaDialog(frame, "Aggiungi alla lista", comp);
+                ExecuteResult<ListaAcquisto> result = UtenteBusiness.getListeOfCliente(c);
+                if (result.getResult() == ExecuteResult.ResultStatement.OK_WITH_WARNINGS){
+                    AddListaDialog addNewListaDialog = new AddListaDialog(frame, "Crea una nuova lista");
+                } else {
+                    AddToListaDialog addToListaDialog = new AddToListaDialog(frame, "Aggiungi alla lista", comp);
+
+                }
             }
         } else if (ADD_TO_LISTA_BTN.equals(action)){
             Articolo art = ArticoloBusiness.getArticolo(comp.getIdArticolo()).getSingleObject();

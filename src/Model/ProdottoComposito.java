@@ -59,6 +59,43 @@ public class ProdottoComposito extends Articolo implements IProdotto{
     }
 
     @Override
+    public Iterator getIterator() {
+        return new ProdottoCompositoIterator();
+    }
+
+    private class ProdottoCompositoIterator implements Model.Iterator<IProdotto> {
+
+        int index = 0;
+        IProdotto current;
+
+        @Override
+        public IProdotto next() {
+            current = sottoProdotti.get(index);
+            return sottoProdotti.get(index++);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return index < sottoProdotti.size();
+        }
+
+        @Override
+        public IProdotto currentItem() {
+            if (current == null) {
+                return null;
+            } else {
+                return current;
+            }
+        }
+
+        @Override
+        public void reset() {
+            index = 0;
+            current = null;
+        }
+    }
+
+    @Override
     public String toString() {
         return "ProdottoComposito{" +
                 "id=" + id +

@@ -88,7 +88,9 @@ public class ArticoloDAOTest {
 
     @Test
     public void loadProdotto(){
-        System.out.println(articoloDAO.loadProdotto(2));
+        Prodotto prod = articoloDAO.loadProdotto(2);
+        System.out.println(prod);
+        Assert.assertNotNull(prod);
     }
 
     @Test

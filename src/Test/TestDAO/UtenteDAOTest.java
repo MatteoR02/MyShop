@@ -9,6 +9,7 @@ import org.junit.Test;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,13 +73,13 @@ public class UtenteDAOTest {
 
     @Test
     public void addClienteOK(){
-        Persona identita = new Persona("Alessandro","Convertino", "ale@gmail.com","3403403400", Date.valueOf("2023-01-01"));
+        Persona identita = new Persona("Prova","Prova", "prova","3403403400", Date.valueOf("2023-01-01"));
         Indirizzo indirizzo = new Indirizzo("Italia","Lecce","73100","Via AAA","3");
-        //Cliente cliente = new Cliente(identita,"Ale5", "Orango", indirizzo, Cliente.ProfessioneType.STUDENTE, Cliente.CanalePreferitoType.EMAIL, Cliente.StatoUtenteType.ABILITATO,2);
+        Cliente cliente = new Cliente(identita,"USER", "passw", indirizzo, Cliente.ProfessioneType.STUDENTE, Cliente.CanalePreferitoType.EMAIL,Date.valueOf(LocalDate.now()), 2, Cliente.StatoUtenteType.ABILITATO);
 
         IUtenteDAO utenteDAO = UtenteDAO.getInstance();
-        //Assert.assertEquals(2,utenteDAO.addCliente(cliente));
-       // Assert.assertEquals("Italia", cliente.getIndirizzo().getNazione());
+        Assert.assertEquals(2,utenteDAO.addCliente(cliente));
+        Assert.assertEquals("Italia", cliente.getIndirizzo().getNazione());
     }
 
 }

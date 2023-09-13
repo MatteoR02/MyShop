@@ -6,7 +6,6 @@ import Model.*;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 public class PrenotazioneBusiness {
@@ -21,7 +20,7 @@ public class PrenotazioneBusiness {
      * @param idCliente
      * @return
      */
-    public static Boolean isArticoloPrenotato(IProdotto prod, int idCliente){
+    public static Boolean isProdottoPrenotato(IProdotto prod, int idCliente){
         ArrayList<Prenotazione> prenotazioni = prenotazioneDAO.loadPrenotazioniOfCliente(idCliente);
         for (Prenotazione prenotazione : prenotazioni  ) {
             if (prenotazione.getStatoPrenotazione()== Prenotazione.StatoPrenotazione.IN_CORSO){
@@ -45,7 +44,7 @@ public class PrenotazioneBusiness {
         PuntoVendita pv = (PuntoVendita) SessionManager.getSession().get(SessionManager.PUNTO_VENDITA);
 
         for (IProdotto prod : articoli.keySet() ) {
-            if (isArticoloPrenotato(prod, c.getId())){
+            if (isProdottoPrenotato(prod, c.getId())){
                 result.setSingleObject(false);
                 result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
                 result.setMessage("Il prodotto è stato già prenotato dal cliente");

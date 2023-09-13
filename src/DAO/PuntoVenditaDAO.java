@@ -211,18 +211,19 @@ public class PuntoVenditaDAO implements IPuntoVenditaDAO{
     @Override
     public int updatePuntoVendita(PuntoVendita puntoVendita) {
         DbOperationExecutor executor = new DbOperationExecutor();
-        String sql = "UPDATE myshop.puntovendita SET nazione = ?, citta = ?, cap = ?, via = ?, civico = ? WHERE idPuntoVendita = ?;";
+        String sql = "UPDATE myshop.puntovendita SET nome = ?, nazione = ?, citta = ?, cap = ?, via = ?, civico = ? WHERE idPuntoVendita = ?;";
 
         IDbOperation addByte = new WriteByteOperation(sql);
         PreparedStatement preparedStatement = executor.executeOperation(addByte).getPreparedStatement();
         int rowCount;
         try{
             if(preparedStatement!=null) {
-                preparedStatement.setString(1, puntoVendita.getIndirizzo().getNazione());
-                preparedStatement.setString(2, puntoVendita.getIndirizzo().getCitta());
-                preparedStatement.setString(3, puntoVendita.getIndirizzo().getCap());
-                preparedStatement.setString(4, puntoVendita.getIndirizzo().getVia());
-                preparedStatement.setString(5, puntoVendita.getIndirizzo().getCivico());
+                preparedStatement.setString(1, puntoVendita.getNome());
+                preparedStatement.setString(2, puntoVendita.getIndirizzo().getNazione());
+                preparedStatement.setString(3, puntoVendita.getIndirizzo().getCitta());
+                preparedStatement.setString(4, puntoVendita.getIndirizzo().getCap());
+                preparedStatement.setString(5, puntoVendita.getIndirizzo().getVia());
+                preparedStatement.setString(6, puntoVendita.getIndirizzo().getCivico());
                 preparedStatement.setInt(7, puntoVendita.getId());
                 rowCount = preparedStatement.executeUpdate();
                 preparedStatement.close();

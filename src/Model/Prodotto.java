@@ -41,4 +41,9 @@ public class Prodotto extends Articolo implements IProdotto{
     public boolean isDisponibile() {
         return getCollocazione().getQuantita() > 0;
     }
+
+    @Override
+    public Iterator getIterator() {
+        return null;
+    }
 }

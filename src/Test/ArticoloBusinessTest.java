@@ -10,7 +10,7 @@ public class ArticoloBusinessTest {
 
     @Test
     public void isArticoloBoughtFromTest(){
-        ExecuteResult<Boolean> result = ArticoloBusiness.isArticoloBoughtFrom(10,6);
+        ExecuteResult<Boolean> result = ArticoloBusiness.isArticoloBoughtFrom(35,6);
         System.out.println(result.getMessage());
         Assert.assertTrue(result.getSingleObject());
     }

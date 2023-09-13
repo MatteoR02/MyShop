@@ -6,7 +6,7 @@ import Model.ListaAcquisto;
 
 import java.io.File;
 
-public class MyShopEmail extends Email{
+public class MyShopEmail extends Email {
 
     public MyShopEmail(String destinatario, String oggetto, String corpo, File allegato) {
         super(destinatario, oggetto, corpo, allegato);

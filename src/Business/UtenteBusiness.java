@@ -76,6 +76,8 @@ public class UtenteBusiness {
         } else if (tipoUtente==TipoUtente.MANAGER) {
             Manager m = utenteDAO.loadManager(username);
             SessionManager.getSession().put(SessionManager.LOGGED_USER,m);
+            SessionManager.getSession().put(SessionManager.PUNTO_VENDITA, PuntoVenditaBusiness.getPV(m.getIdPuntoVendita()).getSingleObject());
+
             result.setMessage("Benvenuto " + m.getUsername()+ "!");
 
         } else if (tipoUtente==TipoUtente.ADMIN) {
@@ -158,9 +160,18 @@ public class UtenteBusiness {
         ExecuteResult<ListaAcquisto> result = new ExecuteResult<>();
 
         if (checkRole(cliente.getUsername())==TipoUtente.CLIENTE) {
-            result.setObject(listaAcquistoDAO.getListeOfCliente(cliente.getId()));
-            result.setMessage("Liste caricate correttamente!");
-            result.setResult(ExecuteResult.ResultStatement.OK);
+            ArrayList<ListaAcquisto> liste = listaAcquistoDAO.getListeOfCliente(cliente.getId());
+            if (liste.isEmpty()){
+                result.setObject(liste);
+                result.setResult(ExecuteResult.ResultStatement.OK_WITH_WARNINGS);
+                result.setMessage("Nessuna lista trovata");
+            } else {
+                result.setObject(listaAcquistoDAO.getListeOfCliente(cliente.getId()));
+                result.setObject(liste);
+                result.setMessage("Liste caricate correttamente!");
+                result.setResult(ExecuteResult.ResultStatement.OK);
+                result.execute(SessionManager.LISTE_CLIENTE);
+            }
         } else{
             result.setMessage("Utente inserito non valido!");
             result.setResult(ExecuteResult.ResultStatement.NOT_OK);
@@ -226,6 +237,7 @@ public class UtenteBusiness {
         Cliente cliente = utenteDAO.loadCliente(utenteDAO.findUsernameByID(idCliente));
         NotificationFactory factory = new NotificationFactory();
         Notifica n = factory.getCanaleNotifica(cliente.getCanalePreferito());
+        n.setCliente(cliente);
 
         if(checkRole(cliente.getUsername()) == TipoUtente.CLIENTE){
             if (!(cliente.getStato() == statoCliente)){
@@ -233,7 +245,6 @@ public class UtenteBusiness {
                     utenteDAO.changeClienteStatus(cliente.getUsername(), statoCliente);
                     flag = true;
                     if (statoCliente== Cliente.StatoUtenteType.BLOCCATO){
-                        n.setCliente(cliente);
                         n.setTitolo("Cliente bloccato su myshop");
                         n.setTesto("Gentile cliente,<br> la informiamo che il suo account è stato bloccato sulla piattaforma MyShop. <br> Contattare l'assistenza per ulteriori informazioni");
                         n.inviaNotifica();

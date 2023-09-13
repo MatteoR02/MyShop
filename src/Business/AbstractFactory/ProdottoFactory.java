@@ -1,7 +1,6 @@
 package Business.AbstractFactory;
 
-import Model.Articolo;
-import Model.Prodotto;
+import Model.*;
 
 public class ProdottoFactory implements IAbstractFactory<Articolo> {
     @Override

@@ -2,9 +2,11 @@ package Model;
 
 public interface IProdotto {
 
-    public int getId();
-    public String getNome();
-    public Float getPrezzo();
-    public Categoria getCategoria();
-    public boolean isDisponibile();
+    int getId();
+    String getNome();
+    Float getPrezzo();
+    Categoria getCategoria();
+    boolean isDisponibile();
+
+    Iterator getIterator();
 }

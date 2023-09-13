@@ -149,7 +149,9 @@ public class ClienteListener implements ActionListener {
                     JOptionPane.showMessageDialog(dialog, "Nuova lista creata", "Nuova lista", JOptionPane.INFORMATION_MESSAGE);
                     dialog.dispose();
                     UtenteBusiness.getListeOfCliente((Cliente) SessionManager.getSession().get(SessionManager.LOGGED_USER));
-                    frame.mostraListe();
+                    if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.LISTE) frame.mostraListe();
+                    if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.CATALOGO) frame.mostraCatalogo(null, false);
+                    if (frame.getPaginaCorrente() == MainPage.PaginaCorrente.ARTICOLO) frame.mostraCatalogo(null, false);
                 }
             }
 
@@ -161,7 +163,7 @@ public class ClienteListener implements ActionListener {
                 frame.mostraListe();
             }
         } else if(TO_CREATE_NEW_LISTA.equals(action)){
-            AddListaDialog addToListaDialog = new AddListaDialog(frame, "Aggiungi alla lista");
+            AddListaDialog addNewListaDialog = new AddListaDialog(frame, "Crea una nuova lista");
         } else if (MOSTRA_LISTE_PAGATE.equals(action)){
             for (ListaAcquisto listaAcq : liste) {
                 if (listaAcq.getStatoPagamento() == ListaAcquisto.StatoPagamentoType.PAGATO){

@@ -86,6 +86,9 @@ public class MainPage extends JFrame {
         centro.removeAll();
         centro.setLayout(new BorderLayout());
 
+        Utente u = (Utente) SessionManager.getSession().get(SessionManager.LOGGED_USER);
+        ArrayList<Articolo> articoliPV = new ArrayList<>();
+
         if((SessionManager.getSession().get(SessionManager.ALL_ARTICOLI))==null){
             ArticoloBusiness.getAllArticoli();
         }
